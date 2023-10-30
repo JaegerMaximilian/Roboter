@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# AvrStudio Solution File, Format Version 11.00
+Project("{D1100916-62DA-4D80-A9B4-55A1E7CCEEB3}") = "Miniboard", "Miniboard\Miniboard.avrgccproj", "{3C9ED7BE-4FCF-4ED7-8040-BD87BA7E52F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C9ED7BE-4FCF-4ED7-8040-BD87BA7E52F9}.Debug|AVR.ActiveCfg = Debug|AVR
+		{3C9ED7BE-4FCF-4ED7-8040-BD87BA7E52F9}.Debug|AVR.Build.0 = Debug|AVR
+		{3C9ED7BE-4FCF-4ED7-8040-BD87BA7E52F9}.Release|AVR.ActiveCfg = Release|AVR
+		{3C9ED7BE-4FCF-4ED7-8040-BD87BA7E52F9}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,442 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
+    <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
+    <avrdevice>ATxmega256A3U</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>uC1</AssemblyName>
+    <Name>uC1</Name>
+    <RootNamespace>uC1</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <ResetRule>0</ResetRule>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <EraseKey />
+    <AsfFrameworkConfig>
+      <framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.44.1" />
+        </dependencies>
+      </framework-data>
+    </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
+    <avrtoolserialnumber>J42700009013</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E9842</avrdeviceexpectedsignature>
+    <com_atmel_avrdbg_tool_atmelice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>4000000</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J42700009013</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
+    </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterface>PDI</avrtoolinterface>
+    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
+    <com_atmel_avrdbg_tool_simulator>
+      <ToolOptions>
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>
+        </InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolNumber>
+      </ToolNumber>
+      <ToolName>Simulator</ToolName>
+    </com_atmel_avrdbg_tool_simulator>
+    <com_atmel_avrdbg_tool_jtagice3plus>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>0</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagice3plus</ToolType>
+      <ToolNumber>J30200029327</ToolNumber>
+      <ToolName>JTAGICE3</ToolName>
+    </com_atmel_avrdbg_tool_jtagice3plus>
+    <com_atmel_avrdbg_tool_jtagicemk3>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>0</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagicemk3</ToolType>
+      <ToolNumber>J30200029327</ToolNumber>
+      <ToolName>JTAGICE3</ToolName>
+    </com_atmel_avrdbg_tool_jtagicemk3>
+    <custom>
+      <ToolOptions xmlns="">
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType xmlns="">custom</ToolType>
+      <ToolNumber xmlns="">
+      </ToolNumber>
+      <ToolName xmlns="">Custom Programming Tool</ToolName>
+    </custom>
+    <com_atmel_avrdbg_tool_ispmk2>
+      <ToolOptions>
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
+      <ToolNumber>000200048954</ToolNumber>
+      <ToolName>AVRISP mkII</ToolName>
+    </com_atmel_avrdbg_tool_ispmk2>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atxmega256a3u -B "%24(PackRepoDir)\atmel\XMEGAA_DFP\1.1.68\gcc\dev\atxmega256a3u"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.1.68\include</Value>
+            <Value>../Aktuatoren</Value>
+            <Value>../HAL</Value>
+            <Value>../header</Value>
+            <Value>../Pathplaning</Value>
+            <Value>../Robot</Value>
+            <Value>../RRTLAN</Value>
+            <Value>../RTOS</Value>
+            <Value>../Sensoren</Value>
+            <Value>../Tasks</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.linker.miscellaneous.LinkerFlags>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.1.68\include</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atxmega256a3u -B "%24(PackRepoDir)\atmel\XMEGAA_DFP\1.1.68\gcc\dev\atxmega256a3u"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>DEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.1.68\include</Value>
+            <Value>../Aktuatoren</Value>
+            <Value>../HAL</Value>
+            <Value>../header</Value>
+            <Value>../RRTLAN</Value>
+            <Value>../RTOS</Value>
+            <Value>../Sensoren</Value>
+            <Value>../Tasks</Value>
+            <Value>../Robot</Value>
+            <Value>../Navigation</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.linker.miscellaneous.LinkerFlags>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.1.68\include</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Aktuatoren\motor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuatoren\motor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuatoren\qdec_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuatoren\qdec_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuatoren\servo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuatoren\servo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\adc_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\adc_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\ports.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\ports.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\systemclock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\systemclock.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\usart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\watchdog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\watchdog.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="header\define.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="header\global.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Navigation\observation.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Navigation\observation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Navigation\Pfadplanung.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Navigation\Pfadplanung.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Robot\command.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Robot\command.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_applicationLayer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_applicationLayer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_DataLinkLayer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_dataLinkLayer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivedata.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivedata.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivetask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivetask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_serialconfig.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_serialconfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_timeoutmanager.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_timeoutmanager.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transmittingtask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transmittingtask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transportLayer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transportLayer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_usart_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_usart_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RTOS\multitask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RTOS\multitask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\accumulator.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\accumulator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\anaPos.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\anaPos.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\PSE541.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\PSE541.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\sensor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\U300D50.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\U300D50.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\UNDK20.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensoren\UNDK20.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\debug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\debug.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\ki.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\ki.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\liftMotor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\liftMotor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\parser.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\parser.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\spielZeit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\spielZeit.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\start.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\start.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HAL" />
+    <Folder Include="Aktuatoren" />
+    <Folder Include="header" />
+    <Folder Include="Robot" />
+    <Folder Include="Navigation" />
+    <Folder Include="Tasks" />
+    <Folder Include="RTOS" />
+    <Folder Include="Sensoren" />
+    <Folder Include="RRTLAN" />
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>

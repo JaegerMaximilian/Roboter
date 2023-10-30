@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>5.0</ProjectVersion>
+    <ProjectGuid>{3c9ed7be-4fcf-4ed7-8040-bd87ba7e52f9}</ProjectGuid>
+    <avrdevice>ATxmega32A4</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFile>$(MSBuildProjectName).elf</OutputFile>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <UseGlobalToolchain>True</UseGlobalToolchain>
+    <ToolchainDirPath>
+    </ToolchainDirPath>
+    <MakeDirPath>
+    </MakeDirPath>
+    <GlobalToolchainPath>C:\Programme\Atmel\AVR Studio 5.0\AVR ToolChain\bin</GlobalToolchainPath>
+    <AvrGccProjectExtensions>
+    </AvrGccProjectExtensions>
+    <AssemblyName>Miniboard</AssemblyName>
+    <Name>Miniboard</Name>
+    <RootNamespace>Miniboard</RootNamespace>
+    <avrtool />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm.a</Value>
+            <Value>libprintf_flt.a</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.linker.miscellaneous.LinkerFlags>
+      </AvrGcc>
+    </ToolchainSettings>
+    <MemorySettings>
+      <MemorySegments>
+        <InitialStack IsEnabled="0">
+          <Address>0x1000</Address>
+        </InitialStack>
+      </MemorySegments>
+    </MemorySettings>
+    <GenerateHexFile>True</GenerateHexFile>
+    <GenerateMapFile>True</GenerateMapFile>
+    <GenerateListFile>True</GenerateListFile>
+    <GenerateEepFile>True</GenerateEepFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+    <MemorySettings>
+    </MemorySettings>
+    <GenerateHexFile>True</GenerateHexFile>
+    <GenerateMapFile>True</GenerateMapFile>
+    <GenerateListFile>True</GenerateListFile>
+    <GenerateEepFile>True</GenerateEepFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="accumulator.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="accumulator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="adc_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="adc_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="debug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="debug.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="define.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DIPswitch.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DIPswitch.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="eventsystem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="eventsystem.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="global.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LEDcontrol.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LEDcontrol.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Miniboard.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="motor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="motor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="multitask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="multitask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ports.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ports.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="qdec_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="qdec_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="start.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="start.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="StartDevice.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="StartDevice.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="strategy0.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="strategy0.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="systemclock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="systemclock.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="usart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="watchdog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="watchdog.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\AvrGCC.targets" />
+</Project>

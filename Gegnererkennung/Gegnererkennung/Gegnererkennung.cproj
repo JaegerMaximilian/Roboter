@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
+    <ProjectGuid>{29d455c0-8195-44f8-85f0-3c2db87ed716}</ProjectGuid>
+    <avrdevice>ATxmega384D3</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>Gegnererkennung</AssemblyName>
+    <Name>Gegnererkennung</Name>
+    <RootNamespace>Gegnererkennung</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <ResetRule>0</ResetRule>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <EraseKey />
+    <avrtool>com.atmel.avrdbg.tool.ispmk2</avrtool>
+    <avrtoolserialnumber>000200090825</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E9847</avrdeviceexpectedsignature>
+    <avrtoolinterface>PDI</avrtoolinterface>
+    <com_atmel_avrdbg_tool_atmelice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>0</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J42700009191</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
+    </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterfaceclock>0</avrtoolinterfaceclock>
+    <AsfFrameworkConfig>
+      <framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.44.1" />
+        </dependencies>
+      </framework-data>
+    </AsfFrameworkConfig>
+    <com_atmel_avrdbg_tool_jtagice3plus>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>0</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagice3plus</ToolType>
+      <ToolNumber>J30200029327</ToolNumber>
+      <ToolName>JTAGICE3</ToolName>
+    </com_atmel_avrdbg_tool_jtagice3plus>
+    <com_atmel_avrdbg_tool_ispmk2>
+      <ToolOptions>
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
+      <ToolNumber>000200090825</ToolNumber>
+      <ToolName>AVRISP mkII</ToolName>
+    </com_atmel_avrdbg_tool_ispmk2>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atxmega384d3 -B "%24(PackRepoDir)\atmel\XMEGAD_DFP\1.2.120\gcc\dev\atxmega384d3"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAD_DFP\1.2.120\include\</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAD_DFP\1.2.120\include\</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atxmega384d3 -B "%24(PackRepoDir)\atmel\XMEGAD_DFP\1.2.120\gcc\dev\atxmega384d3"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>DEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAD_DFP\1.2.120\include\</Value>
+            <Value>../HAL</Value>
+            <Value>../header</Value>
+            <Value>../RRTLAN</Value>
+            <Value>../RTOS</Value>
+            <Value>../Sensors</Value>
+            <Value>../Tasks</Value>
+            <Value>../obstacle</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize debugging experience (-Og)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.linker.miscellaneous.LinkerFlags>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAD_DFP\1.2.120\include\</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="HAL\accumulator.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\accumulator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\adc_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\adc_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\ports.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\ports.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\spi_hal_atmel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\spi_hal_atmel.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\systemclock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\systemclock.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\usart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\watchdog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\watchdog.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="header\define.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="header\global.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="obstacle\obstacle.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="obstacle\obstacle.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_applicationLayer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_applicationLayer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_DataLinkLayer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_dataLinkLayer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivedata.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivedata.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivetask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_receivetask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_serialconfig.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_serialconfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_timeoutmanager.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_timeoutmanager.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transmittingtask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transmittingtask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transportLayer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transportLayer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_usart_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_usart_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RTOS\multitask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RTOS\multitask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\rplidar.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\rplidar.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\debug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\debug.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HAL" />
+    <Folder Include="header" />
+    <Folder Include="obstacle" />
+    <Folder Include="RRTLAN" />
+    <Folder Include="Tasks" />
+    <Folder Include="Sensors" />
+    <Folder Include="RTOS" />
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>

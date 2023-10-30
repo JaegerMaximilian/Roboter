@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Atmel Studio Solution File, Format Version 11.00
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "uC2", "uC2\uC2.cproj", "{EFA41CBD-5588-4982-BDF6-FE709E319E39}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "LCD", "LCD\LCD.cproj", "{E371E228-6354-4006-868C-E278F8097A2C}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "uC1", "uC1\uC1.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Gegnererkennung", "Gegnererkennung\Gegnererkennung\Gegnererkennung.cproj", "{29D455C0-8195-44F8-85F0-3C2DB87ED716}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFA41CBD-5588-4982-BDF6-FE709E319E39}.Debug|AVR.ActiveCfg = Debug|AVR
+		{EFA41CBD-5588-4982-BDF6-FE709E319E39}.Debug|AVR.Build.0 = Debug|AVR
+		{EFA41CBD-5588-4982-BDF6-FE709E319E39}.Release|AVR.ActiveCfg = Release|AVR
+		{EFA41CBD-5588-4982-BDF6-FE709E319E39}.Release|AVR.Build.0 = Release|AVR
+		{E371E228-6354-4006-868C-E278F8097A2C}.Debug|AVR.ActiveCfg = Debug|AVR
+		{E371E228-6354-4006-868C-E278F8097A2C}.Debug|AVR.Build.0 = Debug|AVR
+		{E371E228-6354-4006-868C-E278F8097A2C}.Release|AVR.ActiveCfg = Release|AVR
+		{E371E228-6354-4006-868C-E278F8097A2C}.Release|AVR.Build.0 = Release|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.ActiveCfg = Debug|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.Build.0 = Debug|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.ActiveCfg = Release|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.Build.0 = Release|AVR
+		{29D455C0-8195-44F8-85F0-3C2DB87ED716}.Debug|AVR.ActiveCfg = Debug|AVR
+		{29D455C0-8195-44F8-85F0-3C2DB87ED716}.Debug|AVR.Build.0 = Debug|AVR
+		{29D455C0-8195-44F8-85F0-3C2DB87ED716}.Release|AVR.ActiveCfg = Release|AVR
+		{29D455C0-8195-44F8-85F0-3C2DB87ED716}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

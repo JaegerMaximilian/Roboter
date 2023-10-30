@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ProjectGuid>{3c9ed7be-4fcf-4ed7-8040-bd87ba7e52f9}</ProjectGuid>
+    <avrdevice>ATxmega32A4</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AvrGccProjectExtensions>
+    </AvrGccProjectExtensions>
+    <AssemblyName>Miniboard</AssemblyName>
+    <Name>Miniboard</Name>
+    <RootNamespace>Miniboard</RootNamespace>
+    <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
+    <AsfVersion>3.1.3</AsfVersion>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <BootSegment>2</BootSegment>
+    <AsfFrameworkConfig>
+      <framework-data>
+  <options />
+  <configurations />
+  <files />
+  <documentation help="" />
+  <offline-documentation help="" />
+  <dependencies>
+    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.42.0" />
+  </dependencies>
+</framework-data>
+    </AsfFrameworkConfig>
+    <ResetRule>0</ResetRule>
+    <EraseKey />
+    <avrtoolserialnumber>J42700009014</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E9541</avrdeviceexpectedsignature>
+    <avrtoolinterface>PDI</avrtoolinterface>
+    <com_atmel_avrdbg_tool_atmelice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>4000000</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J42700009014</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
+    </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
+    <com_atmel_avrdbg_tool_jtagicemkii>
+      <ToolOptions>
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagicemkii</ToolType>
+      <ToolNumber>070000005161</ToolNumber>
+      <ToolName>JTAGICE mkII</ToolName>
+    </com_atmel_avrdbg_tool_jtagicemkii>
+    <com_atmel_avrdbg_tool_ispmk2>
+      <ToolOptions>
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
+      <ToolNumber>000200107622</ToolNumber>
+      <ToolName>AVRISP mkII</ToolName>
+    </com_atmel_avrdbg_tool_ispmk2>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputFileName>Miniboard</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atxmega32a4 -B "%24(PackRepoDir)\atmel\XMEGAA_DFP\1.0.36\gcc\dev\atxmega32a4"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.0.36\include</Value>
+            <Value>../Aktuator</Value>
+            <Value>../Defines</Value>
+            <Value>../RTOS</Value>
+            <Value>../Tasks</Value>
+            <Value>../HAL</Value>
+            <Value>../Sensorik</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.general.UseVprintfLibrary>True</avrgcc.linker.general.UseVprintfLibrary>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>printf_flt</Value>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.linker.miscellaneous.LinkerFlags>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputFileName>Miniboard</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atxmega32a4 -B "%24(PackRepoDir)\atmel\XMEGAA_DFP\1.0.36\gcc\dev\atxmega32a4"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.0.36\include</Value>
+            <Value>../Aktuator</Value>
+            <Value>../Defines</Value>
+            <Value>../HAL</Value>
+            <Value>../RTOS</Value>
+            <Value>../Tasks</Value>
+            <Value>../Sensorik</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,-u,vfprintf -lprintf_flt -lm</avrgcc.linker.miscellaneous.LinkerFlags>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Aktuator\dynamixel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuator\dynamixel.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuator\motor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuator\motor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuator\qdec_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Aktuator\qdec_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Defines\define.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Defines\global.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\accumulator.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\accumulator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\adc_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\adc_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\DIPswitch.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\DIPswitch.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\eventsystem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\eventsystem.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\LEDcontrol.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\LEDcontrol.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\ports.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\ports.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\StartDevice.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\StartDevice.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\systemclock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\systemclock.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\usart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\watchdog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HAL\watchdog.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Miniboard.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RTOS\multitask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RTOS\multitask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensorik\QTR_1RC.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\debug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\debug.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\QTR_1RC.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\start.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\start.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\strategy0.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\strategy0.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HAL" />
+    <Folder Include="Aktuator" />
+    <Folder Include="Defines" />
+    <Folder Include="Sensorik" />
+    <Folder Include="Tasks" />
+    <Folder Include="RTOS" />
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\AvrGCC.targets" />
+</Project>
