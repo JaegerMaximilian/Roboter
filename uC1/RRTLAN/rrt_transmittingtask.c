@@ -347,7 +347,7 @@ void setDataLCD_RRTLAN(uint8_t points, uint8_t time)
 	sendArray[0] = points;
 	sendArray[1] = time;
 	
-	Send_Application_Data(&LCD, VALUE_LCD_PORTNBR, sendArray, 2);
+// 	Send_Application_Data(&LCD, VALUE_LCD_PORTNBR, sendArray, 2);
 }
 
 /**************************************************************************

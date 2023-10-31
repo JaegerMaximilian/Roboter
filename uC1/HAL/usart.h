@@ -106,22 +106,26 @@ typedef struct getData getChar_t;
 
 /* buffer size */
 #define USART_C0_BUF_SIZE        200
+#define USART_C1_BUF_SIZE        100
 #define USART_F0_BUF_SIZE        400
 
 /* usart buffer D0, E1, F0 */
 _USART_EXTERN uint8_t recBufC0[USART_C0_BUF_SIZE], transBufC0[USART_C0_BUF_SIZE];
+_USART_EXTERN uint8_t recBufC1[USART_C1_BUF_SIZE], transBufC1[USART_C1_BUF_SIZE];
 _USART_EXTERN uint8_t recBufF0[USART_F0_BUF_SIZE], transBufF0[USART_F0_BUF_SIZE];
 
 /* usart D0, E0 */
-_USART_EXTERN tsUsart usartC0, usartF0;
+_USART_EXTERN tsUsart usartC0, usartC1, usartF0;
 
 #define DEBUG_IF	usartF0
 #define WIFI_IF		usartC0
+#define LCD_IF		usartC1
 
 /* **************************** */
 /* ***      prototypes      *** */
 /* **************************** */
 uint8_t usartc0_init(uint16_t sizeRecBuf, uint16_t sizeTransBuf);
+uint8_t usartc1_init(uint16_t sizeRecBuf, uint16_t sizeTransBuf);
 uint8_t usartf0_init(uint16_t sizeRecBuf, uint16_t sizeTransBuf);
 getChar_t getChar_uart(tsUsart *usart);
 uint8_t putChar_uart(tsUsart *usart, uint8_t data);

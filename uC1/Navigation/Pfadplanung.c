@@ -777,7 +777,7 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B)
 	/* system of equations to calculate an intersection */
 	/* Ax*Alpha - Dx*Beta = Cx */
 	/* Ay*Alpha - Dy*Beta = Cy */
-	detK = A.v.x * B.v.y - A.v.y * B.v.x;
+	detK = (int16_t)(A.v.x * B.v.y) - (int16_t)(A.v.y * B.v.x);
 	
 	/* if detK == 0 -> vector A and B are parallel */
 	if (detK != 0)
@@ -787,8 +787,8 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B)
 		C.y = B.o.Ypos - A.o.Ypos;
 		
 		/* calcualte the numerator of Alpha and Beta */
-		zAlpha =  C.x * B.v.y - C.y * B.v.x;
-		zBeta =  C.x * A.v.y - C.y * A.v.x;
+		zAlpha =  (int16_t)(C.x * B.v.y) - (int16_t)(C.y * B.v.x);
+		zBeta =  (int16_t)(C.x * A.v.y) - (int16_t)(C.y * A.v.x);
 		
 		/* intersection only at: (0 < Alpha < 1) and (0 < Beta < 1) - Alpha = zAlpha/detK and Beta = zBeta/detK */
 		/*  -> zAlpha, detK and zBeta must have the same sign */

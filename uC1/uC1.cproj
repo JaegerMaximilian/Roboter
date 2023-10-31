@@ -41,7 +41,7 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
-    <avrtoolserialnumber>J42700009013</avrtoolserialnumber>
+    <avrtoolserialnumber>J42700005297</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x1E9842</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_atmelice>
       <ToolOptions>
@@ -51,7 +51,7 @@
         <InterfaceName>PDI</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
-      <ToolNumber>J42700009013</ToolNumber>
+      <ToolNumber>J42700005297</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
     <avrtoolinterface>PDI</avrtoolinterface>
@@ -108,7 +108,7 @@
         <InterfaceName>PDI</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
-      <ToolNumber>000200048954</ToolNumber>
+      <ToolNumber>000200107308</ToolNumber>
       <ToolName>AVRISP mkII</ToolName>
     </com_atmel_avrdbg_tool_ispmk2>
   </PropertyGroup>
@@ -406,6 +406,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Tasks\liftMotor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\nextion.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tasks\nextion.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Tasks\parser.c">

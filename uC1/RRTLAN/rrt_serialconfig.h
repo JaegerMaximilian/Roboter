@@ -106,8 +106,8 @@ Data Stack size     : 1024
 //////////////////////////////////////////////////////////////////////////////////////////
 // #define _SERIAL_INTERFACE_C0
 // #define BAUDRATEC0 115200			// Wifi
-#define _SERIAL_INTERFACE_C1		
-#define BAUDRATEC1 230400			// LCD
+// #define _SERIAL_INTERFACE_C1		
+// #define BAUDRATEC1 230400			// LCD
 //#define _SERIAL_INTERFACE_D0
 //#define BAUDRATED0 230400
 #define _SERIAL_INTERFACE_D1		// µC1 -> µC2
@@ -187,7 +187,7 @@ Data Stack size     : 1024
 #define MCU2		USART_data_D1
 //#define WIFI		USART_data_C0
 //#define MCU3		USART_data_E1
-#define LCD			USART_data_C1
+//#define LCD			USART_data_C1
 #define GEGNER		USART_data_F0
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

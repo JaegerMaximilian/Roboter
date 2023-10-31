@@ -72,6 +72,7 @@ All Rights Reserved.
 #include "U300D50.h"
 #include "gripper.h"
 #include "observation.h"
+#include "nextion.h"
 
 // define Robot type => save in EEPROM
 // (Position Süd = Master / Position Nord = Slave)
@@ -199,8 +200,8 @@ void initDevice ()
 	/* start observation task */
 	InitObservation();
 	
-	/* start wifi-communication */
-	//	InitWifi();
+	/* start LCD-communication */
+	InitNextion();
 	
 	/* start enemydetection with US and Lidar */
 	//InitEnemyDetection();

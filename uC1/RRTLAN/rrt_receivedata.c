@@ -312,12 +312,12 @@ unsigned char rrtlanDebugMsg_LCDTask(void)
 	unsigned char nbr_of_bytes = 0;
 	unsigned char receiveArray[200];
 
-	if(Received_AppData_Available(&LCD, DEBUG_MSG_LCD_PORTNBR, &nbr_of_bytes))
-	{
-		Receive_Application_Data(&LCD, DEBUG_MSG_LCD_PORTNBR, receiveArray);
-		
-		writeString_usart(&usartF0, receiveArray);
-	}
+// 	if(Received_AppData_Available(&LCD, DEBUG_MSG_LCD_PORTNBR, &nbr_of_bytes))
+// 	{
+// 		Receive_Application_Data(&LCD, DEBUG_MSG_LCD_PORTNBR, receiveArray);
+// 		
+// 		writeString_usart(&usartF0, receiveArray);
+// 	}
 	
 	return(DISABLE);
 }
@@ -334,13 +334,13 @@ unsigned char rrtlanEinstellung_LCDTask(void)
 	uint8_t nbr_of_bytes = 0;
 	uint8_t receiveArray[6];
 
-	if(Received_AppData_Available(&LCD, EINSTELLUNG_LCD_PORTNBR, &nbr_of_bytes))
-	{
-		Receive_Application_Data(&LCD, EINSTELLUNG_LCD_PORTNBR, receiveArray);
-		
-		SpielFarbe = receiveArray[0];
-		Strategie = receiveArray[1];
-	}
+// 	if(Received_AppData_Available(&LCD, EINSTELLUNG_LCD_PORTNBR, &nbr_of_bytes))
+// 	{
+// 		Receive_Application_Data(&LCD, EINSTELLUNG_LCD_PORTNBR, receiveArray);
+// 		
+// 		SpielFarbe = receiveArray[0];
+// 		Strategie = receiveArray[1];
+// 	}
 	
 	return(DISABLE);
 }

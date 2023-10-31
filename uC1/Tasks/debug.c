@@ -89,6 +89,7 @@
 #include "wifi.h"
 #include "enemyDetection.h"
 #include "gripper.h"
+#include "nextion.h"
 
 uint8_t CANRec = 0;
 uint8_t punkte_Kirschen_Zusatz =0;
@@ -137,7 +138,8 @@ uint8_t DebugTask(void)
 {
 	static uint8_t State = 0;
 
-	
+	static uint8_t Points = 0;
+	static uint8_t Time = 0;
 	uint8_t text1[150];//, text2[150], data[50] = {0,1,2,3,4,5,6,7};
 	//static convData_t d;
 	//
@@ -159,15 +161,23 @@ uint8_t DebugTask(void)
 
 	
 	SET_CYCLE(DEBUG_TASKNBR, 500);
-
+	Points++;
+	Time++;
+	if(Time>100)
+	{
+		Time=0;
+	}
+	
+	NextionSetPoints(Points);
+	NextionSetTime(Time);
 	//    LED_PORT.OUT ^= ledBit;
 	// //   ledBit = (ledBit != 0x40) ? ledBit << 1 : 0x20;
 	//    ledBit = (ledBit != 0x80) ? ledBit << 1 : 0x20;
 
 	TOGGLE_PIN(LED_PORT1, LED1);
-	TOGGLE_PIN(LED_PORT1, LED2);
-	TOGGLE_PIN(LED_PORT1, LED3);
-	TOGGLE_PIN(LED_PORT2, LED4);
+// 	TOGGLE_PIN(LED_PORT1, LED2);
+// 	TOGGLE_PIN(LED_PORT1, LED3);
+// 	TOGGLE_PIN(LED_PORT2, LED4);
 	
 	
 	//	se_array[SE_RES1_NBR].Phi = 0;

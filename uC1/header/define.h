@@ -115,12 +115,8 @@
 #define LIFT_MOTOR_TASKNBR						6
 
 #define PARSER_TASKNBR							7
+#define NEXTION_TASKNBR							8
 
-#define ARM_LEFT_TASKNBR						8
-#define ARM_RIGHT_TASKNBR						9
-#define GRIPPER_TASKNBR							8
-#define GRIPPER_RIGHT_TASKNBR					9
-#define CAKEBUILDER_TASKNBR						10
 
 #define SPIELFARBE_TASKNBR						11
 #define SPIELZEIT_TASKNBR						12

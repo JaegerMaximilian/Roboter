@@ -126,6 +126,7 @@ _GLOBAL_EXTERN uint8_t spielZeit, spielfarbeRAM, RobotType_RAM, Punkte_Kirschen,
 _GLOBAL_EXTERN uint16_t sysTime;
 _GLOBAL_EXTERN uint8_t gegnerErkennung;
 
+_GLOBAL_EXTERN uint8_t SpielFarbe, Strategie, Page, ConfigPlanter, ConfigStehlen;
 
 //_GLOBAL_EXTERN point_t startPos;
 

@@ -45,7 +45,7 @@ Data Stack size     : 1024
 RRTLAN_RECEIVEDATA_EXTERN float winkel_x, winkel_y;
 RRTLAN_RECEIVEDATA_EXTERN int16_t xPos, yPos, phiPos, vIst;
 RRTLAN_RECEIVEDATA_EXTERN uint8_t statusAntrieb;
-RRTLAN_RECEIVEDATA_EXTERN uint8_t SpielFarbe, Strategie;
+//RRTLAN_RECEIVEDATA_EXTERN uint8_t SpielFarbe, Strategie, Page, ConfigPlanter, ConfigStehlen;
 
 RRTLAN_RECEIVEDATA_EXTERN uint16_t rearpressureleft;
 RRTLAN_RECEIVEDATA_EXTERN uint16_t rearpressureright;

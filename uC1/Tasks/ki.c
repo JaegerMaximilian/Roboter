@@ -56,6 +56,7 @@ All Rights Reserved.
 #include "command.h"
 #include "PSE541.h"
 #include "observation.h"
+#include "../../uC2/HAL/ports.h"
 
 
 #define _DEBUG_MOTION_
@@ -122,14 +123,14 @@ void InitKI(void)
 		PATH_DISABLE_OBSTACLE(i);
 	}
 	/* Start-Zone der Ladybugs */
-	PATH_SetStaticObstacle(0, 1050, 0, 1950, 250);
+	PATH_SetStaticObstacle(0, 900, 0, 2100, 300);
 	PATH_ENABLE_OBSTACLE(0);
-	/* geschützte Start-Zone blauer Roboter */
-	PATH_SetStaticObstacle(1, 2550, 0, 3000, 450);
-	PATH_ENABLE_OBSTACLE(1);
-	/* geschützte Start-Zone gelber Roboter */
-	PATH_SetStaticObstacle(2, 0, 0, 450, 450);
-	PATH_ENABLE_OBSTACLE(2);
+	///* geschützte Start-Zone blauer Roboter */
+	//PATH_SetStaticObstacle(1, 2550, 0, 3000, 450);
+	//PATH_ENABLE_OBSTACLE(1);
+	///* geschützte Start-Zone gelber Roboter */
+	//PATH_SetStaticObstacle(2, 0, 0, 450, 450);
+	//PATH_ENABLE_OBSTACLE(2);
 	
 	Punkte = 5;
 	
@@ -175,12 +176,30 @@ void InitKI(void)
 					case STRATEGY_ACTIVE:
 					{
 
+
 						
 						break;
 					}
 					case STRATEGY_PASSIVE:
 					{
-						// da steht Task 1000 drin
+						KI_Task[1].Priority = 100;
+						KI_Task[1].Start = 1000;
+						KI_Task[1].Status = OPEN;
+						KI_Task[2].Priority = 97;
+						KI_Task[2].Start = 2000;
+						KI_Task[2].Status = OPEN;
+						KI_Task[3].Priority = 96;
+						KI_Task[3].Start = 3000;
+						KI_Task[3].Status = OPEN;
+						KI_Task[4].Priority = 95;
+						KI_Task[4].Start = 4000;
+						KI_Task[4].Status = OPEN;
+						KI_Task[5].Priority = 99;
+						KI_Task[5].Start = 5000;
+						KI_Task[5].Status = OPEN;
+						KI_Task[6].Priority = 98;
+						KI_Task[6].Start = 6000;
+						KI_Task[6].Status = OPEN;
 						break;
 					}
 					case STRATEGY_SPECIAL1:
@@ -651,15 +670,35 @@ uint8_t KiTask(void)
 		case 1000:
 		{
 			point_t start, ziel;
-			
+
 			start.Xpos = xPos;
 			start.Ypos = yPos;
+
+			ziel.Xpos = 1500;
+			ziel.Ypos = 500;
 			
-			ziel.Xpos = 1000;
-			ziel.Ypos = 800;
+			//SET_PIN(LED_PORT1, LED2);
+			
+			//wp_KI[0].Xpos = 2200;
+			//wp_KI[0].Ypos = 219;
+			//
+			//wp_KI[1].Xpos = 1500;
+			//wp_KI[1].Ypos = 500;
+			//
+			//wp_KI[2].Xpos = 1500;
+			//wp_KI[2].Ypos = 1400;
+			//
+			//wp_KI[3].Xpos = 2000;
+			//wp_KI[3].Ypos = 1300;
+			//
+			//wpNbr = 4;
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
+				SET_PIN(LED_PORT1, LED3);
+				//wp_KI[wpNbr].Xpos = 1000;
+				//wp_KI[wpNbr].Ypos = 1300;
+				//wpNbr++;
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 1010;
 			}
@@ -669,6 +708,8 @@ uint8_t KiTask(void)
 
 		case 1010:
 		{
+			
+			TOGGLE_PIN(LED_PORT2, LED4);
 			/* check observation-result */
 			switch (GetObservationResult())
 			{

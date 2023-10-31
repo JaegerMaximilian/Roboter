@@ -189,6 +189,131 @@ ISR(USARTC0_TXC_vect)
 }
 
 
+/* ########################################################################
+   ########################################################################
+   ######                        U S A R T C 1                       ######
+   ########################################################################
+   ######################################################################## */
+/* ************************************************************** */
+/*! \brief Initialize the USARTC1.
+ *
+ *  Function initialize the USARTC1 -> LCD
+ *
+ *  \param size of receive buffer.
+ *  \param size of transmit buffer.
+ *
+ *  \version 13.05.2021
+ */
+/* ************************************************************** */
+uint8_t usartc1_init(uint16_t sizeRecBuf, uint16_t sizeTransBuf)
+{
+	/* allocate memory for receive buffer */
+	usartC1.RecBuffer = recBufC1;
+	/* allocate memory for transmit buffer */
+	usartC1.TransBuffer = transBufC1;
+
+	/* set buffer size */
+	usartC1.RecBufSize = sizeRecBuf;
+	usartC1.TransBufSize = sizeTransBuf;
+
+   /* Note: the correct PORTC direction for the RxD, TxD and XCK signals
+      is configured in the ports_init function */
+   /* Transmitter is enabled
+      Set TxD=1 */
+   PORTC.OUTSET|=0x80;
+
+   /* Communication mode: Asynchronous USART
+      Data bits: 8
+      Stop bits: 1
+      Parity: Disabled */
+   USARTC1.CTRLC=USART_CMODE_ASYNCHRONOUS_gc | USART_PMODE_DISABLED_gc | USART_CHSIZE_8BIT_gc;
+
+   /* Receive complete interrupt: Low Level
+      Transmit complete interrupt: Low Level
+      Data register empty interrupt: Disabled */
+   USARTC1.CTRLA=(USARTC1.CTRLA & (~(USART_RXCINTLVL_gm | USART_TXCINTLVL_gm | USART_DREINTLVL_gm))) |
+      USART_RXCINTLVL_LO_gc | USART_TXCINTLVL_LO_gc | USART_DREINTLVL_OFF_gc;
+
+   /* Required Baud rate: 115200
+      BSEL = (F_osc / 16 / F_baud / 2^BSCALE) - 1 @ BSCALE >= 0
+      BSEL = ((F_osc / 16 / F_baud) - 1) / 2^BSCALE @ BSCALE < 0
+	   CTRLA: BSEL[7:0] */
+	/* 115200 Baud */
+   USARTC1.BAUDCTRLA=0x2E;
+   /* CTRLB: BSCALE[3:0]:BSEL[11:8] */
+   USARTC1.BAUDCTRLB=0x98;
+	
+	///* 1 MBaud */
+	//USARTF0.BAUDCTRLA=0x80;
+	//// CTRLB: BSCALE[3:0]:BSEL[11:8]
+	//USARTF0.BAUDCTRLB=0x90;
+
+	///* 9600 Baud */
+	//USARTF0.BAUDCTRLA=0x0C;
+	//// CTRLB: BSCALE[3:0]:BSEL[11:8]
+	//USARTF0.BAUDCTRLB=0x40;
+
+
+   /* Receiver: On
+      Transmitter: On
+      Double transmission speed mode: Off
+      Multi-processor communication mode: Off */
+   USARTC1.CTRLB=(USARTC1.CTRLB & (~(USART_RXEN_bm | USART_TXEN_bm | USART_CLK2X_bm | USART_MPCM_bm | USART_TXB8_bm))) |
+      USART_RXEN_bm | USART_TXEN_bm;   
+      
+   /* set pointer to USARTC0 register */
+   usartC1.usart = &USARTC1;
+
+	/* set interrupt level */
+	usartC1.CTRLA_mask = USART_DREINTLVL_LO_gc;
+
+	/* initialization was OK */
+	return(USART_INIT_OK);
+}
+
+
+
+
+/* ************************************************************** */
+/*! \brief Receive-ISR of the USARTC1.
+ *
+ *  Receive interrupt service routine of the USARTC1
+ *
+ *  \version 27.05.2013
+ */
+/* ************************************************************** */
+ISR(USARTC1_RXC_vect)
+{
+	readData_usart(&usartC1);
+}
+
+
+/* ************************************************************** */
+/*! \brief Receive-ISR of the USARTC1.
+ *
+ *  Receive interrupt service routine of the USARTC1
+ *
+ *  \version 27.05.2013
+ */
+/* ************************************************************** */
+ISR(USARTC1_DRE_vect)
+{
+	writeData_usart(&usartC1);
+}
+
+/* ************************************************************** */
+/*! \brief Transmit-ISR of the USARTC1.
+ *
+ *  Transmit interrupt service routine of the USARTC1
+ *
+ *  \version 27.05.2013
+ */
+/* ************************************************************** */
+ISR(USARTC1_TXC_vect)
+{
+ // writeData_usart(&usartD0);
+}
+
 
 /* ########################################################################
    ########################################################################
