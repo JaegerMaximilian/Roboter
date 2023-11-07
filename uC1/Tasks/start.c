@@ -85,49 +85,33 @@ unsigned char StartTask(void)
 	if(START_SCHNUR)
 	{
 		// Nullposition für die Spielfarbe setzen
-		if(SpielFarbe == BLUE_L1)			// Spielfeld Grün1
+		
+		if(SpielFarbe == BLUE_L1)			// Spielfeld BLUE L1
 		{
 			setPosition_RRTLAN(X0_POS_BLUE_L1_ZONE, Y0_POS_BLUE_L1_ZONE, PHI0_BLUE_L1_ZONE);
 		}
-		else if (SpielFarbe == GREEN_2)
+		else if (SpielFarbe == Yellow_L2) // Spielfeld Yellow L2
 		{
 			setPosition_RRTLAN(X0_POS_Yellow_L2_ZONE, Y0_POS_Yellow_L2_ZONE, PHI0_Yellow_L2_ZONE);
 		}
-		else if (SpielFarbe == GREEN_3)
+		else if (SpielFarbe == BLUE_L3)// Spielfeld BLUE L3
 		{
-			setPosition_RRTLAN(X0_POS_GREEN3_ZONE, Y0_POS_GREEN3_ZONE, PHI0_GREEN3_ZONE);
+			setPosition_RRTLAN(X0_POS_BLUE_L3_ZONE, Y0_POS_BLUE_L3_ZONE, PHI0_BLUE_L3_ZONE);
 		}
-		else if (SpielFarbe == Yellow_R3)
-		{
-			setPosition_RRTLAN(X0_POS_Yellow_R3_ZONE, Y0_POS_Yellow_R3_ZONE, PHI0_Yellow_R3_ZONE);
-		}
-		else if (SpielFarbe == GREEN_5)
-		{
-			setPosition_RRTLAN(X0_POS_GREEN5_ZONE, Y0_POS_GREEN5_ZONE, PHI0_GREEN5_ZONE);
-		}
-		else if (SpielFarbe == BLUE_1)
-		{
-			setPosition_RRTLAN(X0_POS_BLUE1_ZONE, Y0_POS_BLUE1_ZONE, PHI0_BLUE1_ZONE);
-		}
-		else if (SpielFarbe == Yellow_R1)
-		{
-			setPosition_RRTLAN(X0_POS_BLUE2_ZONE, Y0_POS_BLUE2_ZONE, PHI0_BLUE2_ZONE);
-		}
-		else if (SpielFarbe == BLUE_3)
-		{
-			setPosition_RRTLAN(X0_POS_BLUE3_ZONE, Y0_POS_BLUE3_ZONE, PHI0_BLUE3_ZONE);
-		}
-		else if (SpielFarbe == BLUE_4)
+		else if (SpielFarbe == Yellow_R1)// Spielfeld Yellow R1
 		{
 			setPosition_RRTLAN(X0_POS_Yellow_R1_ZONE, Y0_POS_Yellow_R1_ZONE, PHI0_Yellow_R1_ZONE);
 		}
-		else if (SpielFarbe == BLUE_L3)
+		else if (SpielFarbe == BLUE_R2)// Spielfeld BLUE R2
 		{
-			setPosition_RRTLAN(X0_POS_BLUE5_ZONE, Y0_POS_BLUE5_ZONE, PHI0_BLUE5_ZONE);
+			setPosition_RRTLAN(X0_POS_BLUE_R2_ZONE, Y0_POS_BLUE_R2_ZONE, PHI0_BLUE_R2_ZONE);
+		}
+		else if (SpielFarbe == Yellow_R3)// Spielfeld Yellow R3
+		{
+			setPosition_RRTLAN(X0_POS_Yellow_R3_ZONE, Y0_POS_Yellow_R3_ZONE, PHI0_Yellow_R3_ZONE);
 		}
 		
 		InitKI();
-		
 		
 		return(DISABLE);
 	}

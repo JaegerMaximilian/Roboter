@@ -56,7 +56,7 @@ All Rights Reserved.
 #include "command.h"
 #include "PSE541.h"
 #include "observation.h"
-#include "../../uC2/HAL/ports.h"
+#include "nextion.h"
 
 
 #define _DEBUG_MOTION_
@@ -165,37 +165,327 @@ void InitKI(void)
 	KI_Task[1].Status = OPEN;
 
 
-	if ((Strategie != STRATEGY_HOMOLOGATION) && (Strategie != STRATEGY_ENEMY) && (Strategie != STRATEGY_PERIMETER))
+	if (Strategie != STRATEGY_HOMOLOGATION)
 	{
 		switch (SpielFarbe)
 		{
 
 			switch (Strategie)
 			{
-				case NEXTION_STRATEGY_L1_L2_P1 || NEXTION_STRATEGY_R1_R2_P1:
+				// Strategy M1 ==> R1 ==> R2 bzw. M1 ==> L1 ==> L2
+				case NEXTION_STRATEGY_L1_L2_P1: case NEXTION_STRATEGY_R1_R2_P1:
 				{
 					
 					KI_Task[1].Priority = 100;
-					KI_Task[1].Status = OPEN;
 					KI_Task[6].Priority = 99;
-					KI_Task[6].Status = OPEN;
 					KI_Task[5].Priority = 98;
-					KI_Task[5].Status = OPEN;
 					
 					KI_Task[2].Priority = 97;
-					KI_Task[2].Status = OPEN;
 					KI_Task[3].Priority = 97;
-					KI_Task[3].Status = OPEN;
 					KI_Task[4].Priority = 97;
-					KI_Task[4].Status = OPEN;
+
+					break;
+				}
+				//Strategy M1 ==> M2 ==> R2  bzw. M1 ==> M2 ==> L2
+				case NEXTION_STRATEGY_L1_L2_A1: case NEXTION_STRATEGY_R1_R2_A1:
+				{
+					KI_Task[1].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[5].Priority = 98;
 					
-					if(Strategie == NEXTION_STRATEGY_R1_R2_P1)
-					{
-						ChangePrioToYellow();
-					}
+					KI_Task[2].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[6].Priority = 97;
+					
+					break;
+				}
+				//Strategy L1 ==> R1 ==> R2  bzw. R1 ==> L1 ==> L2
+				case NEXTION_STRATEGY_L1_L2_R1: case NEXTION_STRATEGY_R1_R2_R1:
+				{
+					KI_Task[6].Priority = 100;
+					KI_Task[2].Priority = 99;
+					KI_Task[3].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy L1 ==> M1 ==> R1  bzw. R1 ==> M1 ==> L1
+				case NEXTION_STRATEGY_L1_L2_R2: case NEXTION_STRATEGY_L1_R3_R2: case NEXTION_STRATEGY_R1_R2_R2: case NEXTION_STRATEGY_R1_L3_R2:
+				{
+					KI_Task[6].Priority = 100;
+					KI_Task[1].Priority = 99;
+					KI_Task[2].Priority = 98;
+					
+					KI_Task[3].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy L1 ==> M1 ==> R2  bzw. R1 ==> M1 ==> L2
+				case NEXTION_STRATEGY_L1_L2_R3: case NEXTION_STRATEGY_L1_R1_R2: case NEXTION_STRATEGY_R1_R2_R3: case NEXTION_STRATEGY_R1_L1_R2:
+				{
+					KI_Task[6].Priority = 100;
+					KI_Task[1].Priority = 99;
+					KI_Task[3].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy L1 ==> M2 ==> R2  bzw. R1 ==> M2 ==> L2
+				case NEXTION_STRATEGY_L1_L2_R4: case NEXTION_STRATEGY_L1_R1_R1: case NEXTION_STRATEGY_R1_R2_R4: case NEXTION_STRATEGY_R1_L1_R1:
+				{
+					KI_Task[6].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[3].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[2].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy L1 ==> L2  bzw. R1 ==> R2
+				case NEXTION_STRATEGY_L1_R1_P1: case NEXTION_STRATEGY_L1_R3_P1: case NEXTION_STRATEGY_R1_L1_P1: case NEXTION_STRATEGY_R1_L3_P1:
+				{
+					KI_Task[6].Priority = 100;
+					KI_Task[5].Priority = 99;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[2].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[4].Priority = 97;
+					
+					break;
+				}
+				//Strategy L1 ==> M2 ==> L2  bzw. R1 ==> M2 ==> R2
+				case NEXTION_STRATEGY_L1_R1_P2: case NEXTION_STRATEGY_R1_L1_P2:
+				{
+					KI_Task[6].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[5].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[2].Priority = 97;
+					KI_Task[3].Priority = 97;
+					
+					break;
+				}
+				//Strategy L1 ==> L2 ==> M2  bzw. R1 ==> R2 ==> M2
+				case NEXTION_STRATEGY_L1_R1_P3: case NEXTION_STRATEGY_L1_R3_R1: case NEXTION_STRATEGY_R1_L1_P3: case NEXTION_STRATEGY_R1_L3_R1:
+				{
+					KI_Task[6].Priority = 100;
+					KI_Task[5].Priority = 99;
+					KI_Task[4].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[2].Priority = 97;
+					KI_Task[3].Priority = 97;
+					
+					break;
+				}
+				//Strategy M1 ==> M2 ==> L2  bzw. M1 ==> M2 ==> R2
+				case NEXTION_STRATEGY_L1_R1_A1: case NEXTION_STRATEGY_L1_R3_A2: case NEXTION_STRATEGY_R1_L1_A1: case NEXTION_STRATEGY_R1_L3_A2:
+				{
+					KI_Task[1].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[5].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[6].Priority = 97;
+					
+					break;
+				}
+				//Strategy M1 ==> M2 ==> L1  bzw. M1 ==> M2 ==> R1
+				case NEXTION_STRATEGY_L1_R1_A2: case NEXTION_STRATEGY_L1_R3_A1: case NEXTION_STRATEGY_R1_L1_A2: case NEXTION_STRATEGY_R1_L3_A1:
+				{
+					KI_Task[1].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[6].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
 					break;
 				}
 
+				//Strategy M1 ==> L2 ==> L1  bzw. M1 ==> R2 ==> R1
+				case NEXTION_STRATEGY_L1_R3_P2: case NEXTION_STRATEGY_R1_L3_P2:
+				{
+					KI_Task[1].Priority = 100;
+					KI_Task[5].Priority = 99;
+					KI_Task[6].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[4].Priority = 97;
+					
+					break;
+				}
+				//Strategy R2 ==> M2 ==> L1  bzw. L2 ==> M2 ==> R1
+				case NEXTION_STRATEGY_R2_R1_P1: case NEXTION_STRATEGY_R2_L2_R3: case NEXTION_STRATEGY_L2_L1_P1: case NEXTION_STRATEGY_L2_R2_R3:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[6].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[2].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R2 ==> M2 ==> L2  bzw. L2 ==> M2 ==> R2
+				case NEXTION_STRATEGY_R2_R1_P2: case NEXTION_STRATEGY_L2_L1_P2:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[5].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[2].Priority = 97;
+					KI_Task[6].Priority = 97;
+					
+					break;
+				}
+				//Strategy R2 ==> M1 ==> L1  bzw. L2 ==> M1 ==> R1
+				case NEXTION_STRATEGY_R2_R1_A1: case NEXTION_STRATEGY_R2_L2_R2: case NEXTION_STRATEGY_L2_L1_A1: case NEXTION_STRATEGY_L2_R2_R2:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[1].Priority = 99;
+					KI_Task[6].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R2 ==> M2 ==> M1  bzw. L2 ==> M2 ==> M1
+				case NEXTION_STRATEGY_R2_R1_A2: case NEXTION_STRATEGY_R2_L2_A2: case NEXTION_STRATEGY_L2_L1_A2: case NEXTION_STRATEGY_L2_R2_A2:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[1].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[5].Priority = 97;
+					KI_Task[6].Priority = 97;
+					
+					break;
+				}
+				//Strategy R1 ==> M1 ==> L1  bzw. L1 ==> M1 ==> R1
+				case NEXTION_STRATEGY_R2_R3_P1: case NEXTION_STRATEGY_R2_L2_R1: case NEXTION_STRATEGY_L2_L3_P1: case NEXTION_STRATEGY_L2_R2_R1:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[1].Priority = 99;
+					KI_Task[6].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R1 ==> M1 ==> M2  bzw. L1 ==> M1 ==> M2
+				case NEXTION_STRATEGY_R2_R3_A1:  case NEXTION_STRATEGY_L2_L3_A1:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[1].Priority = 99;
+					KI_Task[6].Priority = 98;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R1 ==> M2 ==> L2  bzw. L1 ==> M2 ==> R2
+				case NEXTION_STRATEGY_R2_R3_R1:  case NEXTION_STRATEGY_L2_L3_R1:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[5].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[2].Priority = 97;
+					KI_Task[6].Priority = 97;
+					
+					break;
+				}
+				//Strategy R1 ==> M2 ==> L1  bzw. L1 ==> M2 ==> R1
+				case NEXTION_STRATEGY_R2_R3_R2:  case NEXTION_STRATEGY_L2_L3_R2:
+				{
+					KI_Task[2].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[6].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R1 ==> R2
+				case NEXTION_STRATEGY_R2_L2_P1:  case NEXTION_STRATEGY_L2_R2_P1:
+				{
+					KI_Task[2].Priority = 100;
+					KI_Task[3].Priority = 99;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R2 ==> R1
+				case NEXTION_STRATEGY_R2_L2_P2:  case NEXTION_STRATEGY_L2_R2_P2:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[2].Priority = 99;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[3].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R2 ==> R1 ==> M1
+				case NEXTION_STRATEGY_R2_L2_A1:  case NEXTION_STRATEGY_L2_R2_A1:
+				{
+					KI_Task[3].Priority = 100;
+					KI_Task[2].Priority = 99;
+					KI_Task[1].Priority = 98;
+					
+					KI_Task[3].Priority = 97;
+					KI_Task[4].Priority = 97;
+					KI_Task[5].Priority = 97;
+					
+					break;
+				}
+				//Strategy R1 ==> M2 ==> R2
+				case NEXTION_STRATEGY_R2_L2_A3:  case NEXTION_STRATEGY_L2_R2_A3:
+				{
+					KI_Task[2].Priority = 100;
+					KI_Task[4].Priority = 99;
+					KI_Task[3].Priority = 98;
+					
+					KI_Task[1].Priority = 97;
+					KI_Task[5].Priority = 97;
+					KI_Task[6].Priority = 97;
+					
+					break;
+				}
 			}
 		}
 	}
@@ -208,35 +498,12 @@ void InitKI(void)
 		{
 			
 		}
-
 		
-
-		// *******************************************
-		// Strategy: STRATEGY_ENEMY
-		// *******************************************
-		if(Strategie == STRATEGY_ENEMY)
-		{
-			// ****************************************
-			// P U R P L E
-			// ****************************************
-			if(SpielFarbe == BLUE_4 )
-			{
-				KI_Task[50].Priority = 99;
-				KI_Task[50].Status = OPEN;
-			}
-
-			
-		}
-		
-		// *******************************************
-		// Strategy: STRATEGY_PERIMETER
-		// *******************************************
-		if(Strategie == STRATEGY_PERIMETER)
-		{
-
-		}
-		
-		
+	}
+	
+	if(SpielFarbe == Yellow_L2 || SpielFarbe == Yellow_R1 || SpielFarbe == Yellow_R3)
+	{
+		ChangePrioToYellow();
 	}
 }
 

@@ -118,6 +118,8 @@ _KI_EXTERN uint8_t HomePositionReached;  //0-> home position not reached; 1-> ho
 ***                        Prototypen-Definition                        ***
 **************************************************************************/
 void InitKI(void);
+void ChangePrioToYellow(void);
+
 void SetNextStepKI(unsigned int Current, unsigned int Next, unsigned int Error);
 uint8_t KiTask(void);
 uint8_t KiWatchTask(void);
