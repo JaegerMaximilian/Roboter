@@ -52,6 +52,7 @@ All Rights Reserved.
 #include "rrt_serialconfig.h"
 #include "spielZeit.h"
 #include "command.h"
+#include "nextion.h"
 
 
 /**************************************************************************
@@ -84,21 +85,21 @@ unsigned char StartTask(void)
 	if(START_SCHNUR)
 	{
 		// Nullposition für die Spielfarbe setzen
-		if(SpielFarbe == GREEN_1)			// Spielfeld Grün1
+		if(SpielFarbe == BLUE_L1)			// Spielfeld Grün1
 		{
-			setPosition_RRTLAN(X0_POS_GREEN1_ZONE, Y0_POS_GREEN1_ZONE, PHI0_GREEN1_ZONE);
+			setPosition_RRTLAN(X0_POS_BLUE_L1_ZONE, Y0_POS_BLUE_L1_ZONE, PHI0_BLUE_L1_ZONE);
 		}
 		else if (SpielFarbe == GREEN_2)
 		{
-			setPosition_RRTLAN(X0_POS_GREEN2_ZONE, Y0_POS_GREEN2_ZONE, PHI0_GREEN2_ZONE);
+			setPosition_RRTLAN(X0_POS_Yellow_L2_ZONE, Y0_POS_Yellow_L2_ZONE, PHI0_Yellow_L2_ZONE);
 		}
 		else if (SpielFarbe == GREEN_3)
 		{
 			setPosition_RRTLAN(X0_POS_GREEN3_ZONE, Y0_POS_GREEN3_ZONE, PHI0_GREEN3_ZONE);
 		}
-		else if (SpielFarbe == GREEN_4)
+		else if (SpielFarbe == Yellow_R3)
 		{
-			setPosition_RRTLAN(X0_POS_GREEN4_ZONE, Y0_POS_GREEN4_ZONE, PHI0_GREEN4_ZONE);
+			setPosition_RRTLAN(X0_POS_Yellow_R3_ZONE, Y0_POS_Yellow_R3_ZONE, PHI0_Yellow_R3_ZONE);
 		}
 		else if (SpielFarbe == GREEN_5)
 		{
@@ -108,7 +109,7 @@ unsigned char StartTask(void)
 		{
 			setPosition_RRTLAN(X0_POS_BLUE1_ZONE, Y0_POS_BLUE1_ZONE, PHI0_BLUE1_ZONE);
 		}
-		else if (SpielFarbe == BLUE_2)
+		else if (SpielFarbe == Yellow_R1)
 		{
 			setPosition_RRTLAN(X0_POS_BLUE2_ZONE, Y0_POS_BLUE2_ZONE, PHI0_BLUE2_ZONE);
 		}
@@ -118,9 +119,9 @@ unsigned char StartTask(void)
 		}
 		else if (SpielFarbe == BLUE_4)
 		{
-			setPosition_RRTLAN(X0_POS_BLUE4_ZONE, Y0_POS_BLUE4_ZONE, PHI0_BLUE4_ZONE);
+			setPosition_RRTLAN(X0_POS_Yellow_R1_ZONE, Y0_POS_Yellow_R1_ZONE, PHI0_Yellow_R1_ZONE);
 		}
-		else if (SpielFarbe == BLUE_5)
+		else if (SpielFarbe == BLUE_L3)
 		{
 			setPosition_RRTLAN(X0_POS_BLUE5_ZONE, Y0_POS_BLUE5_ZONE, PHI0_BLUE5_ZONE);
 		}

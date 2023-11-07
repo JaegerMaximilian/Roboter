@@ -169,254 +169,34 @@ void InitKI(void)
 	{
 		switch (SpielFarbe)
 		{
-			case GREEN_1:
+
+			switch (Strategie)
 			{
-				switch (Strategie)
+				case NEXTION_STRATEGY_L1_L2_P1 || NEXTION_STRATEGY_R1_R2_P1:
 				{
-					case STRATEGY_ACTIVE:
+					
+					KI_Task[1].Priority = 100;
+					KI_Task[1].Status = OPEN;
+					KI_Task[6].Priority = 99;
+					KI_Task[6].Status = OPEN;
+					KI_Task[5].Priority = 98;
+					KI_Task[5].Status = OPEN;
+					
+					KI_Task[2].Priority = 97;
+					KI_Task[2].Status = OPEN;
+					KI_Task[3].Priority = 97;
+					KI_Task[3].Status = OPEN;
+					KI_Task[4].Priority = 97;
+					KI_Task[4].Status = OPEN;
+					
+					if(Strategie == NEXTION_STRATEGY_R1_R2_P1)
 					{
-
-
-						
-						break;
+						ChangePrioToYellow();
 					}
-					case STRATEGY_PASSIVE:
-					{
-						KI_Task[1].Priority = 100;
-						KI_Task[1].Start = 1000;
-						KI_Task[1].Status = OPEN;
-						KI_Task[2].Priority = 97;
-						KI_Task[2].Start = 2000;
-						KI_Task[2].Status = OPEN;
-						KI_Task[3].Priority = 96;
-						KI_Task[3].Start = 3000;
-						KI_Task[3].Status = OPEN;
-						KI_Task[4].Priority = 95;
-						KI_Task[4].Start = 4000;
-						KI_Task[4].Status = OPEN;
-						KI_Task[5].Priority = 99;
-						KI_Task[5].Start = 5000;
-						KI_Task[5].Status = OPEN;
-						KI_Task[6].Priority = 98;
-						KI_Task[6].Start = 6000;
-						KI_Task[6].Status = OPEN;
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
+					break;
 				}
-				break;
-			}
-			
-			case GREEN_2:
-			{
-				switch (Strategie)
-				{
-					case STRATEGY_ACTIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_PASSIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
 
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
-				}
-				break;
 			}
-			case GREEN_3:
-			{
-				
-				break;
-			}
-			case GREEN_4:
-			{
-				switch (Strategie)
-				{
-					case STRATEGY_ACTIVE:
-					{
-
-						break;
-					}
-					case STRATEGY_PASSIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
-				}
-				
-				break;
-			}
-			case GREEN_5:
-			{
-				switch (Strategie)
-				{
-					case STRATEGY_ACTIVE:
-					{
-
-						break;
-					}
-					case STRATEGY_PASSIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
-				}
-				break;
-			}
-			case BLUE_1:
-			{
-				switch (Strategie)
-				{
-					case STRATEGY_ACTIVE:
-					{
-
-						break;
-					}
-					case STRATEGY_PASSIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
-				}
-				break;
-			}
-			case BLUE_2:
-			{
-				switch (Strategie)
-				{
-					case STRATEGY_ACTIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_PASSIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
-				}
-				break;
-				
-				
-			}
-			case BLUE_3:
-			{
-				
-				break;
-			}
-			case BLUE_4:
-			{
-				switch (Strategie)
-				{
-					case STRATEGY_ACTIVE:
-					{
-						break;
-					}
-					case STRATEGY_PASSIVE:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
-						
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
-				}
-				break;
-			}
-			case BLUE_5:
-			{
-				switch (Strategie)
-				{
-					case STRATEGY_ACTIVE:
-					{
-
-						break;
-					}
-					case STRATEGY_PASSIVE:
-					{
-
-						break;
-					}
-					case STRATEGY_SPECIAL1:
-					{
-
-						break;
-					}
-					case STRATEGY_SPECIAL2:
-					{
-						
-						break;
-					}
-				}
-				break;
-			}
-			
 		}
 	}
 	else
@@ -477,7 +257,24 @@ void SetNextStepKI(unsigned int Current, unsigned int Next, unsigned int Error)
 	KI_StateError = Error;
 }
 
-
+/**************************************************************************
+***   FUNKTIONNAME: ChangePrioToYellow                                  ***
+***   FUNKTION: Ändern der Prios für Blau                               ***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+void ChangePrioToYellow()
+{
+	int prio2 = KI_Task[2].Priority;
+	int prio3 = KI_Task[3].Priority;
+	int prio5 = KI_Task[5].Priority;
+	int prio6 = KI_Task[6].Priority;
+	
+	KI_Task[2].Priority = prio6;
+	KI_Task[3].Priority = prio5;
+	KI_Task[5].Priority = prio3;
+	KI_Task[6].Priority = prio2;
+}
 
 
 

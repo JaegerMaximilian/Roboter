@@ -81,17 +81,6 @@
 
 #define AUTOMATIK 2
 
-#define GREEN_1					21
-#define GREEN_2					22
-#define GREEN_3					23
-#define GREEN_4					24
-#define GREEN_5					25
-
-#define BLUE_1					31
-#define BLUE_2					32
-#define BLUE_3					33
-#define BLUE_4					34
-#define BLUE_5					35
 
 #define STRATEGY_PASSIVE		50
 #define STRATEGY_ACTIVE		51
@@ -236,18 +225,6 @@
 ***		                       MOTOREN
 **************************************************************************/
 
-/**************************************************************************
-***		                       STRATEGIEN                      			
-**************************************************************************/
-#define STRATEGY_PASSIVE		50
-#define STRATEGY_ACTIVE			51
-#define STRATEGY_SPECIAL1		52
-#define STRATEGY_SPECIAL2		53
-#define STRATEGY_ENEMY		54
-#define STRATEGY_HOMOLOGATION	55
-
-
-
 #define GEGNER_ERKENNUNG_BEIDE		8
 #define GEGNER_ERKENNUNG_SMALL		9
 #define GEGNER_ERKENNUNG_BIG			10
@@ -257,55 +234,38 @@
 ***		                       STARTPOSITIONEN                      			
 **************************************************************************/
 
-/* ROBOTER GREEN1 MASTER */
-#define X0_POS_GREEN1_ZONE				2818
-#define Y0_POS_GREEN1_ZONE				219
-#define PHI0_GREEN1_ZONE				1800
+/* ROBOTER BLUE L1 MASTER */
+#define X0_POS_BLUE_L1_ZONE				2818
+#define Y0_POS_BLUE_L1_ZONE				219
+#define PHI0_BLUE_L1_ZONE				1800
 
-/* ROBOTER GREEN2 MASTER */
-#define X0_POS_GREEN2_ZONE				1125
-#define Y0_POS_GREEN2_ZONE				182
-#define PHI0_GREEN2_ZONE				900
+/* ROBOTER Yellow L2 MASTER */
+#define X0_POS_Yellow_L2_ZONE			2818
+#define Y0_POS_Yellow_L2_ZONE			994
+#define PHI0_Yellow_L2_ZONE				1800
 
-/* ROBOTER GREEN3 MASTER */
-#define X0_POS_GREEN3_ZONE				240
-#define Y0_POS_GREEN3_ZONE				900
-#define PHI0_GREEN3_ZONE				900
+/* ROBOTER BLUE L3 MASTER */
+#define X0_POS_BLUE_L3_ZONE				2818
+#define Y0_POS_BLUE_L3_ZONE				1775
+#define PHI0_BLUE_L3_ZONE				1800
 
-/* ROBOTER GREEN4 MASTER */
-#define X0_POS_GREEN4_ZONE				203
-#define Y0_POS_GREEN4_ZONE				1775
-#define PHI0_GREEN4_ZONE				0
+/* ROBOTER Yellow R1 MASTER */
+#define X0_POS_Yellow_R1_ZONE			203
+#define Y0_POS_Yellow_R1_ZONE			219
+#define PHI0_Yellow_R1_ZONE				0
 
-/* ROBOTER GREEN5 MASTER */
-#define X0_POS_GREEN5_ZONE				1875
-#define Y0_POS_GREEN5_ZONE				1818
-#define PHI0_GREEN5_ZONE				2700
+/* ROBOTER BLUE R2 MASTER */
+#define X0_POS_BLUE_R2_ZONE				203
+#define Y0_POS_BLUE_R2_ZONE				994
+#define PHI0_BLUE_R2_ZONE				0
 
-/* ROBOTER BLUE1 MASTER */
-#define X0_POS_BLUE5_ZONE				2818
-#define Y0_POS_BLUE5_ZONE				1781
-#define PHI0_BLUE5_ZONE					1800
+/* ROBOTER Yellow R3 MASTER */
+#define X0_POS_Yellow_R3_ZONE			203
+#define Y0_POS_Yellow_R3_ZONE			1775
+#define PHI0_Yellow_R3_ZONE				0
 
-/* ROBOTER BLUE2 MASTER */
-#define X0_POS_BLUE4_ZONE				1125
-#define Y0_POS_BLUE4_ZONE				1818
-#define PHI0_BLUE4_ZONE					2700
 
-/* ROBOTER BLUE3 MASTER */
-#define X0_POS_BLUE3_ZONE				240
-#define Y0_POS_BLUE3_ZONE				900
-#define PHI0_BLUE3_ZONE					900
 
-/* ROBOTER BLUE4 MASTER */
-#define X0_POS_BLUE2_ZONE				202
-#define Y0_POS_BLUE2_ZONE				225
-#define PHI0_BLUE2_ZONE					0
-
-/* ROBOTER BLUE5 MASTER */
-#define X0_POS_BLUE1_ZONE				1875
-#define Y0_POS_BLUE1_ZONE				182
-#define PHI0_BLUE1_ZONE					900
 
 
 

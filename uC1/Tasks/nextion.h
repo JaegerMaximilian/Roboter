@@ -21,12 +21,12 @@
 /* broadcast-address */
 #define NEXTION_BROADCAST_ID	'B'
 /* playing colour */
-#define NEXTION_L1_BLAU			1
-#define NEXTION_L2_GELB			2
-#define NEXTION_L3_BLAU			3
-#define NEXTION_R1_GELB			4
-#define NEXTION_R2_BLAU			5
-#define NEXTION_R3_GELB			6
+#define BLUE_L1					1
+#define Yellow_L2				2
+#define BLUE_L3					3
+#define Yellow_R1				4
+#define BLUE_R2					5
+#define Yellow_R3				6
 
 /* strategies blue */
 /* strategy L1/L2 */
