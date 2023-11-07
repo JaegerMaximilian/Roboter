@@ -525,6 +525,54 @@ void SetNextStepKI(unsigned int Current, unsigned int Next, unsigned int Error)
 }
 
 /**************************************************************************
+***   FUNKTIONNAME: AddDifferencePerQuadrant                            ***
+***   FUNKTION: ?ndern der Prios f?r Blau                               ***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+point_t AddDifferencePerQuadrant(point_t start, point_t ziel )
+{
+	point_t middlePoint;
+	
+	/* Declare the relative distance you want to the Plants for the Middle Point manually below*/
+	middlePoint.Xpos = 50;
+	middlePoint.Ypos = 50;
+	
+	if(ziel.Xpos >start.Xpos && ziel.Ypos > start.Ypos)
+	/*Quadrant 1*/
+	{
+		middlePoint.Xpos = ziel.Xpos - middlePoint.Xpos;
+		middlePoint.Ypos = ziel.Ypos - middlePoint.Ypos;
+	}
+	else if(ziel.Xpos < start.Xpos && ziel.Ypos > start.Ypos)
+	/*Quadrant 2*/
+	{
+		middlePoint.Xpos = ziel.Xpos + middlePoint.Xpos;
+		middlePoint.Ypos = ziel.Ypos - middlePoint.Ypos;
+	}
+	else if(ziel.Xpos < start.Xpos && ziel.Ypos < start.Ypos)
+	/*Quadrant 3*/
+	{
+		middlePoint.Xpos = ziel.Xpos + middlePoint.Xpos;
+		middlePoint.Ypos = ziel.Ypos + middlePoint.Ypos;
+	}
+	else if(ziel.Xpos > start.Xpos && ziel.Ypos < start.Ypos)
+	/*Quadrant 4*/
+	{
+		middlePoint.Xpos = ziel.Xpos - middlePoint.Xpos;
+		middlePoint.Ypos = ziel.Ypos + middlePoint.Ypos;
+	}
+	else
+	/* Error Handling: if start and ziel are equal, return ziel as middlePoint */
+	{
+		middlePoint.Xpos = ziel.Xpos;
+		middlePoint.Ypos = ziel.Ypos;
+		return middlePoint;
+	}
+	return middlePoint;
+}
+
+/**************************************************************************
 ***   FUNKTIONNAME: ChangePrioToYellow                                  ***
 ***   FUNKTION: Ändern der Prios für Blau                               ***
 ***   TRANSMIT PARAMETER: NO                                            ***
@@ -731,38 +779,30 @@ uint8_t KiTask(void)
 		// ******
 		// ********************************************************************
 		// ********************************************************************
+		//SET_PIN(LED_PORT1, LED3);
+		//TOGGLE_PIN(LED_PORT2, LED4);
+		
 		case 1000:
 		{
-			point_t start, ziel;
-
+			point_t start, ziel, plants;
+			
+			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-
-			ziel.Xpos = 1500;
-			ziel.Ypos = 500;
+			// Position where the plants stand
+			plants.Xpos = 1500;
+			plants.Ypos = 500;
 			
-			//SET_PIN(LED_PORT1, LED2);
+			// Middle Point to move correctly to the plant from the correct Quadrant
+			ziel = AddDifferencePerQuadrant(start,plants);
 			
-			//wp_KI[0].Xpos = 2200;
-			//wp_KI[0].Ypos = 219;
-			//
-			//wp_KI[1].Xpos = 1500;
-			//wp_KI[1].Ypos = 500;
-			//
-			//wp_KI[2].Xpos = 1500;
-			//wp_KI[2].Ypos = 1400;
-			//
-			//wp_KI[3].Xpos = 2000;
-			//wp_KI[3].Ypos = 1300;
-			//
-			//wpNbr = 4;
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				SET_PIN(LED_PORT1, LED3);
-				//wp_KI[wpNbr].Xpos = 1000;
-				//wp_KI[wpNbr].Ypos = 1300;
-				//wpNbr++;
+				// Set Plants-Position as 3rd Position to move to
+				wp_KI[wpNbr].Xpos = plants.Xpos;
+				wp_KI[wpNbr].Ypos = plants.Ypos;
+				wpNbr++;
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 1010;
 			}
@@ -773,13 +813,14 @@ uint8_t KiTask(void)
 		case 1010:
 		{
 			
-			TOGGLE_PIN(LED_PORT2, LED4);
+			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					
 					KI_State = 1020;
 					break;
 				}
@@ -795,30 +836,17 @@ uint8_t KiTask(void)
 		
 		case 1020:
 		{
-			// 			cmd_Drive(0,0,360,180,0,0,0,0,TURN_REL,ON,NULL,NULL);
-			// 			KI_State = 1030;
+			//Wait specific time
+			SET_CYCLE(KI_TASKNBR, 2000);
+			KI_Task[1].Status = DONE;
+			// Jump to KI-Verteiler-State
+			KI_State = 20;
 			
 			break;
 		}
 
-		case 1030:
-		{
-			/* check observation-result */
-			switch (GetObservationResult())
-			{
-				/* motion was OK */
-				case OBSERVATION_MOTION_OK:
-				{
-					break;
-				}
-				/* error happened during the motion */
-				case OBSERVATION_MOTION_ERROR:
-				{
-					break;
-				}
-			}
-			break;
-		}
+		
+		
 
 
 		// ********************************************************************
@@ -830,7 +858,62 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 2000:
 		{
-			KI_State = 2000;
+			point_t start, ziel, plants;
+			
+			// Start Position to begin movement from
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+			// Position where the plants stand
+			plants.Xpos = 1000;
+			plants.Ypos = 700;
+			
+			// Middle Point to move correctly to the plant from the correct Quadrant
+			ziel = AddDifferencePerQuadrant(start,plants);
+			
+			
+			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			{
+				// Set Plants-Position as 3rd Position to move to
+				wp_KI[wpNbr].Xpos = plants.Xpos;
+				wp_KI[wpNbr].Ypos = plants.Ypos;
+				wpNbr++;
+				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				KI_State = 2010;
+			}
+			
+			break;
+		}
+		
+		case 2010:
+		{
+			
+			
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					KI_State = 2020;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 2000;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 2020:
+		{
+			//Wait specific time
+			SET_CYCLE(KI_TASKNBR, 2000);
+			KI_Task[2].Status = DONE;
+			// Jump to KI-Verteiler-State
+			KI_State = 20;
 			
 			break;
 		}
@@ -845,7 +928,63 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 3000:
 		{
-			KI_State = 3000;
+			point_t start, ziel, plants;
+			
+			// Start Position to begin movement from
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+			// Position where the plants stand
+			plants.Xpos = 1000;
+			plants.Ypos = 1300;
+			
+			// Middle Point to move correctly to the plant from the correct Quadrant
+			ziel = AddDifferencePerQuadrant(start,plants);
+			
+			
+			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			{
+				// Set Plants-Position as 3rd Position to move to
+				wp_KI[wpNbr].Xpos = plants.Xpos;
+				wp_KI[wpNbr].Ypos = plants.Ypos;
+				wpNbr++;
+				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				KI_State = 3010;
+			}
+			
+			break;
+		}
+		
+		case 3010:
+		{
+			
+			
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					KI_State = 3020;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 3000;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 3020:
+		{
+			//Wait specific time
+			SET_CYCLE(KI_TASKNBR, 2000);
+			KI_Task[3].Status = DONE;
+			// Jump to KI-Verteiler-State
+			KI_State = 20;
+			
 			break;
 		}
 		
@@ -859,7 +998,63 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 4000:
 		{
-			KI_State = 4000;
+			point_t start, ziel, plants;
+			
+			// Start Position to begin movement from
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+			// Position where the plants stand
+			plants.Xpos = 1500;
+			plants.Ypos = 1500;
+			
+			// Middle Point to move correctly to the plant from the correct Quadrant
+			ziel = AddDifferencePerQuadrant(start,plants);
+			
+			
+			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			{
+				// Set Plants-Position as 3rd Position to move to
+				wp_KI[wpNbr].Xpos = plants.Xpos;
+				wp_KI[wpNbr].Ypos = plants.Ypos;
+				wpNbr++;
+				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				KI_State = 4010;
+			}
+			
+			break;
+		}
+		
+		case 4010:
+		{
+			
+			
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					KI_State = 4020;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 4000;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 4020:
+		{
+			//Wait specific time
+			SET_CYCLE(KI_TASKNBR, 2000);
+			KI_Task[4].Status = DONE;
+			// Jump to KI-Verteiler-State
+			KI_State = 20;
+			
 			break;
 		}
 		
@@ -873,8 +1068,62 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 5000:
 		{
+			point_t start, ziel, plants;
 			
-			KI_State = 5000;
+			// Start Position to begin movement from
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+			// Position where the plants stand
+			plants.Xpos = 2000;
+			plants.Ypos = 1300;
+			
+			// Middle Point to move correctly to the plant from the correct Quadrant
+			ziel = AddDifferencePerQuadrant(start,plants);
+			
+			
+			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			{
+				// Set Plants-Position as 3rd Position to move to
+				wp_KI[wpNbr].Xpos = plants.Xpos;
+				wp_KI[wpNbr].Ypos = plants.Ypos;
+				wpNbr++;
+				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				KI_State = 5010;
+			}
+			
+			break;
+		}
+		
+		case 5010:
+		{
+			
+			
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					KI_State = 5020;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 5000;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 5020:
+		{
+			//Wait specific time
+			SET_CYCLE(KI_TASKNBR, 2000);
+			KI_Task[5].Status = DONE;
+			// Jump to KI-Verteiler-State
+			KI_State = 20;
 			
 			break;
 		}
@@ -889,7 +1138,62 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 6000:
 		{
-			KI_State = 6000;
+			point_t start, ziel, plants;
+			
+			// Start Position to begin movement from
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+			// Position where the plants stand
+			plants.Xpos = 2000;
+			plants.Ypos = 700;
+			
+			// Middle Point to move correctly to the plant from the correct Quadrant
+			ziel = AddDifferencePerQuadrant(start,plants);
+			
+			
+			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			{
+				// Set Plants-Position as 3rd Position to move to
+				wp_KI[wpNbr].Xpos = plants.Xpos;
+				wp_KI[wpNbr].Ypos = plants.Ypos;
+				wpNbr++;
+				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				KI_State = 6010;
+			}
+			
+			break;
+		}
+		
+		case 6010:
+		{
+			
+			
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					KI_State = 6020;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 6000;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 6020:
+		{
+			//Wait specific time
+			SET_CYCLE(KI_TASKNBR, 2000);
+			KI_Task[6].Status = DONE;
+			// Jump to KI-Verteiler-State
+			KI_State = 20;
 			
 			break;
 		}
