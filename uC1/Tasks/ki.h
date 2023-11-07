@@ -53,6 +53,7 @@ Data Stack size     : 1024
 #define DID					2     // Die fremde Aufgaben wurde bereits erledigt
 #define IS_DOING			3     // Der fremde Roboter erledigt diese Aufgabe im Augenblick
 #define PENDING				4	  // Aufgabe die noch nicht vorhanden ist
+#define LOCKED				5	  // Aufgabe die zu Beginn gesperrt wurde
 
 #define MAX_KI_TASKS		65		// Maximale Aufgaben (Tasks)
 
@@ -119,6 +120,7 @@ _KI_EXTERN uint8_t HomePositionReached;  //0-> home position not reached; 1-> ho
 **************************************************************************/
 void InitKI(void);
 void ChangePrioToYellow(void);
+void ActivatePlantAsObstacle(void);
 
 void SetNextStepKI(unsigned int Current, unsigned int Next, unsigned int Error);
 uint8_t KiTask(void);

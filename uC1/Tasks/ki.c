@@ -125,14 +125,20 @@ void InitKI(void)
 	/* Start-Zone der Ladybugs */
 	PATH_SetStaticObstacle(0, 900, 0, 2100, 300);
 	PATH_ENABLE_OBSTACLE(0);
-	///* geschützte Start-Zone blauer Roboter */
-	//PATH_SetStaticObstacle(1, 2550, 0, 3000, 450);
-	//PATH_ENABLE_OBSTACLE(1);
-	///* geschützte Start-Zone gelber Roboter */
-	//PATH_SetStaticObstacle(2, 0, 0, 450, 450);
-	//PATH_ENABLE_OBSTACLE(2);
 	
-	Punkte = 5;
+	///* geschützte Start-Zone blauer Roboter */
+	if(SpielFarbe == Yellow_R1 || SpielFarbe == Yellow_R3 || SpielFarbe == Yellow_L2 )
+	{
+		PATH_SetStaticObstacle(1, 2500, 0, 3000, 500);
+		PATH_ENABLE_OBSTACLE(1);
+	}
+
+	///* geschützte Start-Zone gelber Roboter */
+	if(SpielFarbe == BLUE_L1 || SpielFarbe == BLUE_L3 || SpielFarbe == BLUE_R2)
+	{
+		PATH_SetStaticObstacle(2, 0, 0, 500, 500);
+		PATH_ENABLE_OBSTACLE(2);
+	}
 	
 	// Enemy detection
 	gegnerErkennung = OFF;
@@ -152,22 +158,8 @@ void InitKI(void)
 	// ******   A U F G A B E N   I N I T I A L I S I E R E N
 	// *******************************************
 
+	////////////////////Initialize Plant Tasks////////////////////
 
-
-	// *********************************************************************************************************************************
-	// *********************************************************************************************************************************
-	// *********************************************************************************************************************************
-	// Strategy BOTH
-	// *********************************************************************************************************************************
-	// *********************************************************************************************************************************
-	// *********************************************************************************************************************************
-	KI_Task[1].Status = OPEN;
-	KI_Task[2].Status = OPEN;
-	KI_Task[3].Status = OPEN;
-	KI_Task[4].Status = OPEN;
-	KI_Task[5].Status = OPEN;
-	KI_Task[6].Status = OPEN;
-	
 	if (Strategie != STRATEGY_HOMOLOGATION)
 	{
 		switch (Strategie)
@@ -180,9 +172,9 @@ void InitKI(void)
 				KI_Task[2].Priority = 99;
 				KI_Task[3].Priority = 98;
 				
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
-				KI_Task[6].Priority = 97;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 
 				break;
 			}
@@ -193,9 +185,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[3].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[5].Priority = 97;
-				KI_Task[6].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -206,9 +198,9 @@ void InitKI(void)
 				KI_Task[2].Priority = 99;
 				KI_Task[3].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -219,9 +211,9 @@ void InitKI(void)
 				KI_Task[1].Priority = 99;
 				KI_Task[2].Priority = 98;
 				
-				KI_Task[3].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[3].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -232,9 +224,9 @@ void InitKI(void)
 				KI_Task[1].Priority = 99;
 				KI_Task[3].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -245,9 +237,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[3].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[2].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[2].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -257,10 +249,10 @@ void InitKI(void)
 				KI_Task[6].Priority = 100;
 				KI_Task[5].Priority = 99;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[2].Priority = 97;
-				KI_Task[3].Priority = 97;
-				KI_Task[4].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
+				KI_Task[4].Priority = 90;
 				
 				break;
 			}
@@ -271,9 +263,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[5].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[2].Priority = 97;
-				KI_Task[3].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
 				
 				break;
 			}
@@ -284,9 +276,9 @@ void InitKI(void)
 				KI_Task[5].Priority = 99;
 				KI_Task[4].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[2].Priority = 97;
-				KI_Task[3].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
 				
 				break;
 			}
@@ -297,9 +289,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[5].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[3].Priority = 97;
-				KI_Task[6].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -310,9 +302,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[3].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -324,9 +316,9 @@ void InitKI(void)
 				KI_Task[5].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[3].Priority = 97;
-				KI_Task[4].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
+				KI_Task[4].Priority = 90;
 				
 				break;
 			}
@@ -337,9 +329,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[2].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[2].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -350,9 +342,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[5].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[2].Priority = 97;
-				KI_Task[6].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[2].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -363,9 +355,9 @@ void InitKI(void)
 				KI_Task[1].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -376,9 +368,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[1].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[5].Priority = 97;
-				KI_Task[6].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -389,9 +381,9 @@ void InitKI(void)
 				KI_Task[1].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -402,9 +394,9 @@ void InitKI(void)
 				KI_Task[1].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[2].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[2].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -415,9 +407,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[5].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[2].Priority = 97;
-				KI_Task[6].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[2].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -428,9 +420,9 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[3].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[3].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -440,10 +432,10 @@ void InitKI(void)
 				KI_Task[2].Priority = 100;
 				KI_Task[3].Priority = 99;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[3].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[3].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -453,10 +445,10 @@ void InitKI(void)
 				KI_Task[3].Priority = 100;
 				KI_Task[2].Priority = 99;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[3].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[3].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -467,9 +459,9 @@ void InitKI(void)
 				KI_Task[2].Priority = 99;
 				KI_Task[1].Priority = 98;
 				
-				KI_Task[3].Priority = 97;
-				KI_Task[4].Priority = 97;
-				KI_Task[5].Priority = 97;
+				KI_Task[3].Priority = 90;
+				KI_Task[4].Priority = 90;
+				KI_Task[5].Priority = 90;
 				
 				break;
 			}
@@ -480,13 +472,20 @@ void InitKI(void)
 				KI_Task[4].Priority = 99;
 				KI_Task[3].Priority = 98;
 				
-				KI_Task[1].Priority = 97;
-				KI_Task[5].Priority = 97;
-				KI_Task[6].Priority = 97;
+				KI_Task[1].Priority = 90;
+				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
 		}
+		
+		//+++++++++++++++To Do: Funktion zum Priorisieren der Abstellpositionen+++++++++++++++++++++
+		
+		//+++++++++++++++To Do: Funktion zum Priorisieren der Solarpanesl+++++++++++++++++++++++++++
+		
+		
+
 	}
 	else
 	{
@@ -499,11 +498,34 @@ void InitKI(void)
 		}
 		
 	}
-	
+	// *******************************************
+	// Convert Priority to Yellow
+	// *******************************************
 	if(SpielFarbe == Yellow_L2 || SpielFarbe == Yellow_R1 || SpielFarbe == Yellow_R3)
 	{
 		ChangePrioToYellow();
 	}
+	
+	// *******************************************
+	// Set State of Plant to Open if in pre-adjusted plan or to pending if not
+	// *******************************************
+	for (int i=1; i<7; i++)
+	{
+		if(KI_Task[i].Priority == 90)
+		{
+			KI_Task[i].Status = PENDING;
+		}
+		else
+		{
+			KI_Task[i].Status = OPEN;
+		}
+	}
+	
+	// *******************************************
+	// Set Plant as Obstacle if not used
+	// *******************************************
+	ActivatePlantAsObstacle();
+	
 }
 
 
@@ -573,7 +595,7 @@ point_t AddDifferencePerQuadrant(point_t start, point_t ziel )
 
 /**************************************************************************
 ***   FUNKTIONNAME: ChangePrioToYellow                                  ***
-***   FUNKTION: Ändern der Prios für Blau                               ***
+***   FUNKTION: Ändern der Prios von Blau auf Gelb                     ***
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
@@ -590,8 +612,40 @@ void ChangePrioToYellow()
 	KI_Task[6].Priority = prio2;
 }
 
-
-
+/**************************************************************************
+***   FUNKTIONNAME: AktivatePlantsAsObstacle                            ***
+***   FUNKTION: Sets Plants which arent used in the actual plan as		***
+***   Obstacles															***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+void ActivatePlantAsObstacle()
+{
+	//Plant 1000
+	PATH_SetStaticObstacle(3, 1350, 1350, 1650, 1650);
+	//Plant 2000
+	PATH_SetStaticObstacle(4, 1850, 1150, 2150, 1450);
+	//Plant 3000
+	PATH_SetStaticObstacle(5, 1850, 550, 2150, 850);
+	//Plant 4000
+	PATH_SetStaticObstacle(6, 1350, 350, 1650, 650);
+	//Plant 5000
+	PATH_SetStaticObstacle(7, 850, 550, 1150, 850);
+	//Plant 6000
+	PATH_SetStaticObstacle(8, 850, 1150, 1150, 1450);
+	
+	for (int i = 1; i<7; i++)
+	{
+		if(KI_Task[i].Status == PENDING)
+		{
+			PATH_ENABLE_OBSTACLE(i+2);
+		}
+		else
+		{
+			PATH_DISABLE_OBSTACLE(i+2);
+		}
+	}
+}
 
 
 /**************************************************************************
