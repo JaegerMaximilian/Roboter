@@ -438,9 +438,9 @@ void InitKI(void)
 				KI_Task[3].Priority = 99;
 				
 				KI_Task[1].Priority = 90;
-				KI_Task[3].Priority = 90;
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -451,9 +451,9 @@ void InitKI(void)
 				KI_Task[2].Priority = 99;
 				
 				KI_Task[1].Priority = 90;
-				KI_Task[3].Priority = 90;
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -464,9 +464,9 @@ void InitKI(void)
 				KI_Task[2].Priority = 99;
 				KI_Task[1].Priority = 98;
 				
-				KI_Task[3].Priority = 90;
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
@@ -691,17 +691,17 @@ void ChangePrioToYellow()
 void ActivatePlantAsObstacle()
 {
 	//Plant 1000
-	PATH_SetStaticObstacle(3, 1250, 250, 1750, 750);
+	PATH_SetStaticObstacle(3, 1225, 225, 1775, 775);
 	//Plant 2000
-	PATH_SetStaticObstacle(4, 750, 450, 1250, 950);
+	PATH_SetStaticObstacle(4, 725, 425, 1275, 975);
 	//Plant 3000
-	PATH_SetStaticObstacle(5, 750, 1050, 1250, 1550);
+	PATH_SetStaticObstacle(5, 725, 1025, 1275, 1575);
 	//Plant 4000
-	PATH_SetStaticObstacle(6, 1250, 1250, 1750, 1750);
+	PATH_SetStaticObstacle(6, 1225, 1225, 1775, 1775);
 	//Plant 5000
-	PATH_SetStaticObstacle(7, 1750, 1050, 2250, 1550);
+	PATH_SetStaticObstacle(7, 1725, 1025, 2275, 1575);
 	//Plant 6000
-	PATH_SetStaticObstacle(8, 1750, 450, 2250, 950);
+	PATH_SetStaticObstacle(8, 1725, 425, 2275, 975);
 
 	
 	for (int i = 1; i<7; i++)
