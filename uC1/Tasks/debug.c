@@ -163,13 +163,13 @@ uint8_t DebugTask(void)
 	SET_CYCLE(DEBUG_TASKNBR, 500);
 	Points++;
 	Time++;
-	if(Time>100)
-	{
-		Time=0;
-	}
+	//if(Time>100)
+	//{
+		//Time=0;
+	//}
 	
 	NextionSetPoints(Points);
-	NextionSetTime(Time);
+	NextionSetTime(spielZeit);
 	//    LED_PORT.OUT ^= ledBit;
 	// //   ledBit = (ledBit != 0x40) ? ledBit << 1 : 0x20;
 	//    ledBit = (ledBit != 0x80) ? ledBit << 1 : 0x20;

@@ -53,7 +53,14 @@ Data Stack size     : 1024
 #define DID					2     // Die fremde Aufgaben wurde bereits erledigt
 #define IS_DOING			3     // Der fremde Roboter erledigt diese Aufgabe im Augenblick
 #define PENDING				4	  // Aufgabe die noch nicht vorhanden ist
-#define LOCKED				5	  // Aufgabe die zu Beginn gesperrt wurde
+#define LOCKED				5	  // Task locked if it is not configured or enemy area
+
+
+//State of Game
+#define GetPlants			1
+#define ParkPlants			10
+#define SolarPanels			30
+#define StealPlants			40
 
 #define MAX_KI_TASKS		65		// Maximale Aufgaben (Tasks)
 
@@ -65,10 +72,10 @@ Data Stack size     : 1024
 // Settings für Roboter Verfahren
 #define STANDARD_VELOCITY			600		//[m/s]
 #define START_VELOCITY				310		//[m/s]
-#define MIN_VELOCITY				170	//[m/s]
-#define Cherry_VELOCITY				80
+#define MIN_VELOCITY				170		//[m/s]
+#define Cherry_VELOCITY				80		//[m/s]
 #define MAX_VELOCITY				800		//[m/s]
-//[m/s]
+
 
 
 

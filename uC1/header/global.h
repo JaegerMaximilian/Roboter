@@ -123,6 +123,10 @@ _GLOBAL_EXTERN float geschwindigkeitsVorzeichen;
 
 _GLOBAL_EXTERN uint8_t spielZeit, spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte, Punkte_SlaveRobot;
 
+_GLOBAL_EXTERN uint8_t PlantsInRobot;
+
+_GLOBAL_EXTERN uint8_t StateOfGame;
+
 _GLOBAL_EXTERN uint16_t sysTime;
 _GLOBAL_EXTERN uint8_t gegnerErkennung;
 

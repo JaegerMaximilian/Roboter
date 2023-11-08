@@ -28,6 +28,8 @@
 #define Yellow_R1				4
 #define BLUE_R2					5
 #define Yellow_R3				6
+#define BLUE					10
+#define Yellow					20
 
 /* strategies blue */
 /* strategy L1/L2 */

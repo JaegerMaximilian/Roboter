@@ -67,18 +67,12 @@ char text[200];
 /* to stop the robot only once at end of match */
 uint8_t stopEngin = 0;
 
-
-
-
-
 /* the last 5 sec no new task will be chosen */
 #define KI_DISABLE_TIME			0
-
 
 // Distanzen für Gegnererkennung (Ultraschallsensoren)
 #define  WATCH_DIS_FRONT		600
 #define TURN_AROUND_DIS			WATCH_DIS_FRONT + 200
-
 
 element_t wp_KI[10];
 uint8_t wpNbr;
@@ -111,7 +105,18 @@ void InitKI(void)
 	
 	
 	KI_State = 0;
+	StateOfGame = GetPlants;
 	HomePositionReached=0;
+	PlantsInRobot = 0;
+	
+	if(SpielFarbe == BLUE_L1 || SpielFarbe == BLUE_L3 || SpielFarbe == BLUE_R2)
+	{
+		SpielFarbe = BLUE;
+	}
+	if(SpielFarbe == Yellow_L2 || SpielFarbe == Yellow_R1 || SpielFarbe == Yellow_R3)
+	{
+		SpielFarbe = Yellow;
+	}
 	
 	
 	/* ******************* */
@@ -127,14 +132,14 @@ void InitKI(void)
 	PATH_ENABLE_OBSTACLE(0);
 	
 	///* geschützte Start-Zone blauer Roboter */
-	if(SpielFarbe == Yellow_R1 || SpielFarbe == Yellow_R3 || SpielFarbe == Yellow_L2 )
+	if(SpielFarbe == Yellow)
 	{
 		PATH_SetStaticObstacle(1, 2500, 0, 3000, 500);
 		PATH_ENABLE_OBSTACLE(1);
 	}
 
 	///* geschützte Start-Zone gelber Roboter */
-	if(SpielFarbe == BLUE_L1 || SpielFarbe == BLUE_L3 || SpielFarbe == BLUE_R2)
+	if(SpielFarbe == BLUE)
 	{
 		PATH_SetStaticObstacle(2, 0, 0, 500, 500);
 		PATH_ENABLE_OBSTACLE(2);
@@ -377,11 +382,11 @@ void InitKI(void)
 			//Strategy R1 ==> M1 ==> L1  bzw. L1 ==> M1 ==> R1
 			case NEXTION_STRATEGY_R2_R3_P1: case NEXTION_STRATEGY_R2_L2_R1: case NEXTION_STRATEGY_L2_L3_P1: case NEXTION_STRATEGY_L2_R2_R1:
 			{
-				KI_Task[3].Priority = 100;
+				KI_Task[2].Priority = 100;
 				KI_Task[1].Priority = 99;
 				KI_Task[6].Priority = 98;
 				
-				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
@@ -390,25 +395,25 @@ void InitKI(void)
 			//Strategy R1 ==> M1 ==> M2  bzw. L1 ==> M1 ==> M2
 			case NEXTION_STRATEGY_R2_R3_A1:  case NEXTION_STRATEGY_L2_L3_A1:
 			{
-				KI_Task[3].Priority = 100;
+				KI_Task[2].Priority = 100;
 				KI_Task[1].Priority = 99;
-				KI_Task[6].Priority = 98;
+				KI_Task[4].Priority = 98;
 				
-				KI_Task[2].Priority = 90;
-				KI_Task[4].Priority = 90;
+				KI_Task[3].Priority = 90;
 				KI_Task[5].Priority = 90;
+				KI_Task[6].Priority = 90;
 				
 				break;
 			}
 			//Strategy R1 ==> M2 ==> L2  bzw. L1 ==> M2 ==> R2
 			case NEXTION_STRATEGY_R2_R3_R1:  case NEXTION_STRATEGY_L2_L3_R1:
 			{
-				KI_Task[3].Priority = 100;
+				KI_Task[2].Priority = 100;
 				KI_Task[4].Priority = 99;
 				KI_Task[5].Priority = 98;
 				
 				KI_Task[1].Priority = 90;
-				KI_Task[2].Priority = 90;
+				KI_Task[3].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
 				break;
@@ -479,6 +484,70 @@ void InitKI(void)
 				break;
 			}
 		}
+		// *******************************************
+		// Set State of Parking Positions and Solar Panels
+		// *******************************************
+		if(SpielFarbe == Yellow)
+		{
+			//Parking Positions
+			KI_Task[11].Status = LOCKED;
+			KI_Task[12].Status = LOCKED;
+			KI_Task[13].Status = LOCKED;
+			KI_Task[16].Status = LOCKED;
+			KI_Task[24].Status = LOCKED;
+			KI_Task[25].Status = LOCKED;
+			
+			KI_Task[14].Status = LOCKED;
+			KI_Task[21].Status = OPEN;
+			KI_Task[22].Status = OPEN;
+			KI_Task[23].Status = OPEN;
+			KI_Task[26].Status = OPEN;
+			
+			if(ConfigPlanter == 1)
+			{
+				KI_Task[15].Status = OPEN;
+			}
+			else
+			{
+				KI_Task[15].Status = LOCKED;
+			}
+			
+			//Solar Panels
+			KI_Task[30].Status = LOCKED;
+			KI_Task[31].Status = OPEN;
+			KI_Task[32].Status = OPEN;
+		}
+		if(SpielFarbe == BLUE)
+		{
+			//Parking Positions
+			KI_Task[14].Status = LOCKED;
+			KI_Task[15].Status = LOCKED;
+			KI_Task[21].Status = LOCKED;
+			KI_Task[22].Status = LOCKED;
+			KI_Task[23].Status = LOCKED;
+			KI_Task[26].Status = LOCKED;
+			
+			KI_Task[11].Status = OPEN;
+			KI_Task[12].Status = OPEN;
+			KI_Task[13].Status = OPEN;
+			KI_Task[16].Status = OPEN;
+			KI_Task[24].Status = LOCKED;
+			KI_Task[25].Status = OPEN;
+			
+			if(ConfigPlanter == 1)
+			{
+				KI_Task[25].Status = OPEN;
+			}
+			else
+			{
+				KI_Task[25].Status = LOCKED;
+			}
+			
+			//Solar Panels
+			KI_Task[30].Status = OPEN;
+			KI_Task[31].Status = OPEN;
+			KI_Task[32].Status = LOCKED;
+		}
 		
 		//+++++++++++++++To Do: Funktion zum Priorisieren der Abstellpositionen+++++++++++++++++++++
 		
@@ -501,7 +570,7 @@ void InitKI(void)
 	// *******************************************
 	// Convert Priority to Yellow
 	// *******************************************
-	if(SpielFarbe == Yellow_L2 || SpielFarbe == Yellow_R1 || SpielFarbe == Yellow_R3)
+	if(SpielFarbe == Yellow)
 	{
 		ChangePrioToYellow();
 	}
@@ -622,17 +691,18 @@ void ChangePrioToYellow()
 void ActivatePlantAsObstacle()
 {
 	//Plant 1000
-	PATH_SetStaticObstacle(3, 1350, 1350, 1650, 1650);
+	PATH_SetStaticObstacle(3, 1250, 250, 1750, 750);
 	//Plant 2000
-	PATH_SetStaticObstacle(4, 1850, 1150, 2150, 1450);
+	PATH_SetStaticObstacle(4, 750, 450, 1250, 950);
 	//Plant 3000
-	PATH_SetStaticObstacle(5, 1850, 550, 2150, 850);
+	PATH_SetStaticObstacle(5, 750, 1050, 1250, 1550);
 	//Plant 4000
-	PATH_SetStaticObstacle(6, 1350, 350, 1650, 650);
+	PATH_SetStaticObstacle(6, 1250, 1250, 1750, 1750);
 	//Plant 5000
-	PATH_SetStaticObstacle(7, 850, 550, 1150, 850);
+	PATH_SetStaticObstacle(7, 1750, 1050, 2250, 1550);
 	//Plant 6000
-	PATH_SetStaticObstacle(8, 850, 1150, 1150, 1450);
+	PATH_SetStaticObstacle(8, 1750, 450, 2250, 950);
+
 	
 	for (int i = 1; i<7; i++)
 	{
@@ -647,7 +717,24 @@ void ActivatePlantAsObstacle()
 	}
 }
 
+/**************************************************************************
+***   FUNKTIONNAME: PrioritiseParkingPosition                           ***
+***   FUNKTION: Prioritise Parking Positions of Plants					***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+void PrioritiseParkingPositionsOfPlants()
+{
+	if(PlantsInRobot == 3 && ConfigPlanter)
+	{
+		KI_Task[15].Priority = 89;
+		KI_Task[11].Priority = 88;
+		KI_Task[13].Priority = 87;
+		KI_Task[12].Priority = 86;
+		KI_Task[16].Priority = 85;
+	}
 
+}
 /**************************************************************************
 ***   FUNCTIONNAME:        KiTask                                       ***
 ***   FUNCTION:            KI                                           ***
@@ -778,7 +865,7 @@ uint8_t KiTask(void)
 				// *********************************************************
 				// Die Aufgabe mit der höchsten Priorität suchen
 				// *********************************************************
-				for(i = 1; i < MAX_KI_TASKS; i++)
+				for(i = i; i < MAX_KI_TASKS; i++)
 				{
 					if((KI_Task[i].Priority >= KI_Task[KI_maxPriority].Priority) && (KI_Task[i].Priority > 0))
 					{
@@ -909,6 +996,10 @@ uint8_t KiTask(void)
 			//Wait specific time
 			SET_CYCLE(KI_TASKNBR, 2000);
 			KI_Task[1].Status = DONE;
+			
+			//Count up Plants in Robot
+			PlantsInRobot++;
+			
 			// Jump to KI-Verteiler-State
 			KI_State = 20;
 			
@@ -996,6 +1087,8 @@ uint8_t KiTask(void)
 			//Wait specific time
 			SET_CYCLE(KI_TASKNBR, 2000);
 			KI_Task[2].Status = DONE;
+			//Count up Plants in Robot
+			PlantsInRobot++;
 			// Jump to KI-Verteiler-State
 			KI_State = 20;
 			
@@ -1080,6 +1173,8 @@ uint8_t KiTask(void)
 			//Wait specific time
 			SET_CYCLE(KI_TASKNBR, 2000);
 			KI_Task[3].Status = DONE;
+			//Count up Plants in Robot
+			PlantsInRobot++;
 			// Jump to KI-Verteiler-State
 			KI_State = 20;
 			
@@ -1164,6 +1259,8 @@ uint8_t KiTask(void)
 			//Wait specific time
 			SET_CYCLE(KI_TASKNBR, 2000);
 			KI_Task[4].Status = DONE;
+			//Count up Plants in Robot
+			PlantsInRobot++;
 			// Jump to KI-Verteiler-State
 			KI_State = 20;
 			
@@ -1248,6 +1345,8 @@ uint8_t KiTask(void)
 			//Wait specific time
 			SET_CYCLE(KI_TASKNBR, 2000);
 			KI_Task[5].Status = DONE;
+			//Count up Plants in Robot
+			PlantsInRobot++;
 			// Jump to KI-Verteiler-State
 			KI_State = 20;
 			
@@ -1332,6 +1431,8 @@ uint8_t KiTask(void)
 			//Wait specific time
 			SET_CYCLE(KI_TASKNBR, 2000);
 			KI_Task[6].Status = DONE;
+			//Count up Plants in Robot
+			PlantsInRobot++;
 			// Jump to KI-Verteiler-State
 			KI_State = 20;
 			
