@@ -128,7 +128,7 @@ void InitKI(void)
 		PATH_DISABLE_OBSTACLE(i);
 	}
 	/* Start-Zone der Ladybugs */
-	PATH_SetStaticObstacle(0, 900, 0, 2100, 300);
+	PATH_SetStaticObstacle(0, 925, 0, 2075, 275);
 	PATH_ENABLE_OBSTACLE(0);
 	
 	///* geschützte Start-Zone blauer Roboter */
@@ -691,17 +691,17 @@ void ChangePrioToYellow()
 void ActivatePlantAsObstacle()
 {
 	//Plant 1000
-	PATH_SetStaticObstacle(3, 1225, 225, 1775, 775);
+	PATH_SetStaticObstacle(3, 1250, 250, 1750, 750);
 	//Plant 2000
-	PATH_SetStaticObstacle(4, 725, 425, 1275, 975);
+	PATH_SetStaticObstacle(4, 750, 450, 1250, 950);
 	//Plant 3000
-	PATH_SetStaticObstacle(5, 725, 1025, 1275, 1575);
+	PATH_SetStaticObstacle(5, 750, 1050, 1250, 1550);
 	//Plant 4000
-	PATH_SetStaticObstacle(6, 1225, 1225, 1775, 1775);
+	PATH_SetStaticObstacle(6, 1250, 1250, 1750, 1750);
 	//Plant 5000
-	PATH_SetStaticObstacle(7, 1725, 1025, 2275, 1575);
+	PATH_SetStaticObstacle(7, 1750, 1050, 2250, 1550);
 	//Plant 6000
-	PATH_SetStaticObstacle(8, 1725, 425, 2275, 975);
+	PATH_SetStaticObstacle(8, 1750, 450, 2250, 950);
 
 	
 	for (int i = 1; i<7; i++)
