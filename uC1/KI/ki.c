@@ -57,6 +57,7 @@ All Rights Reserved.
 #include "PSE541.h"
 #include "observation.h"
 #include "nextion.h"
+#include "logger.h"
 
 
 #define _DEBUG_MOTION_
@@ -576,7 +577,7 @@ void InitKI(void)
 	}
 	
 	// *******************************************
-	// Set State of Plant to Open if in pre-adjusted plan or to pending if not
+	// Set State of First Plant to Open if in pre-adjusted plan or to pending if not
 	// *******************************************
 	for (int i=1; i<7; i++)
 	{
@@ -804,13 +805,15 @@ uint8_t KiTask(void)
 	// 		KI_State = 48000;
 	// 	}
 	
-	sprintf(text1, "#%ld;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n*", (uint32_t)KI_State, enemyRobot[0].Xpos, enemyRobot[0].Ypos,
+	sprintf(text1, "%ld;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n", (uint32_t)KI_State, enemyRobot[0].Xpos, enemyRobot[0].Ypos,
 	enemyRobot[1].Xpos, enemyRobot[1].Ypos,
 	enemyRobot[2].Xpos, enemyRobot[2].Ypos,
 	enemyRobot[3].Xpos, enemyRobot[3].Ypos,
 	enemyRobot[4].Xpos, enemyRobot[4].Ypos);
-	writeString_usart(&WIFI_IF, text1);
 	
+	uint8_t index = 1;
+	SendDebugMessage(text1,1);
+	SendPlaygroundPositionMessage(&index, &(enemyRobot[0].Xpos),&(enemyRobot[0].Ypos),1);	
 	
 	// ********************************************************************
 	// ********************************************************************
