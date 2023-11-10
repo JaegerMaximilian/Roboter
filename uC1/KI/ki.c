@@ -109,6 +109,8 @@ void InitKI(void)
 	StateOfGame = GetPlants;
 	HomePositionReached=0;
 	PlantsInRobot = 0;
+	ParkedPlants = 0;
+	
 	
 	if(SpielFarbe == BLUE_L1 || SpielFarbe == BLUE_L3 || SpielFarbe == BLUE_R2)
 	{
@@ -581,13 +583,13 @@ void InitKI(void)
 	// *******************************************
 	for (int i=1; i<7; i++)
 	{
-		if(KI_Task[i].Priority == 90)
+		if(KI_Task[i].Priority == 100)
 		{
-			KI_Task[i].Status = PENDING;
+			KI_Task[i].Status = OPEN;
 		}
 		else
 		{
-			KI_Task[i].Status = OPEN;
+			KI_Task[i].Status = PENDING;
 		}
 	}
 	
@@ -813,7 +815,7 @@ uint8_t KiTask(void)
 	
 	uint8_t index = 1;
 	SendDebugMessage(text1,1);
-	SendPlaygroundPositionMessage(&index, &(enemyRobot[0].Xpos),&(enemyRobot[0].Ypos),1);	
+	SendPlaygroundPositionMessage(&index, &(enemyRobot[0].Xpos),&(enemyRobot[0].Ypos),1);
 	
 	// ********************************************************************
 	// ********************************************************************
@@ -913,6 +915,38 @@ uint8_t KiTask(void)
 			
 			break;
 		}
+		// *****************************************
+		// Enable Next Plant
+		// *****************************************
+		case 550:
+		{
+			uint8_t done = 0;
+			for (int prio = 99;prio>97; prio--)
+			{
+				for (int i = 1;i<6; i++)
+				{
+					if(KI_Task[i].Priority == prio && KI_Task[i].Status == PENDING)
+					{
+						KI_Task[i].Status = OPEN;
+						break;
+					}
+
+				}
+				if(done)
+				{
+					break;
+				}
+			}
+			if(done)
+			{
+				KI_State = 20;
+			}
+			else
+			{
+				KI_State = 20;//gehört raus
+				//KI_State = 500;
+			}
+		}
 		
 
 		// ********************************************************************
@@ -928,6 +962,7 @@ uint8_t KiTask(void)
 		case 1000:
 		{
 			point_t start, ziel, plants;
+			
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
@@ -945,7 +980,6 @@ uint8_t KiTask(void)
 			/* if the distance to drive is smaller as 300 mm -> drive direct to the goal */
 			if (s > 700.0)
 			{
-
 				// Middle Point to move correctly to the plant from the correct Quadrant
 				ziel = AddDifferencePerQuadrant(start,plants);
 			}
@@ -966,28 +1000,43 @@ uint8_t KiTask(void)
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 1010;
 			}
+			else
+			{
+				KI_State = 1020;
+			}
 			
 			break;
 		}
 
+		
 		case 1010:
 		{
-			
-			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					//Set Task to Done
+					KI_Task[1].Status = DONE;
 					
-					KI_State = 1020;
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 2000);
+					
+					//Count up Plants in Robot
+					PlantsInRobot++;
+					
+					
+					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					{
+						KI_State = 550;
+					}
 					break;
 				}
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					KI_State = 1000;
+					KI_State = 1020;
 					break;
 				}
 			}
@@ -996,16 +1045,26 @@ uint8_t KiTask(void)
 		
 		case 1020:
 		{
-			//Wait specific time
-			SET_CYCLE(KI_TASKNBR, 2000);
-			KI_Task[1].Status = DONE;
+			uint8_t motionFailureCount = 0;
 			
-			//Count up Plants in Robot
-			PlantsInRobot++;
+			motionFailureCount++;
 			
-			// Jump to KI-Verteiler-State
-			KI_State = 20;
+			if(motionFailureCount<2 && KI_Task[1].Status != DONE)
+			{
+				//Drive Back
+				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				KI_State = 1000;
+			}
 			
+			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
+			else
+			{
+				// Jump to Case 500
+				//KI_State = 500;
+				KI_Task[1].Status = DONE; //==> gehört Raus
+				KI_State = 550; //==> gehört Raus
+			}
+
 			break;
 		}
 
@@ -1058,27 +1117,42 @@ uint8_t KiTask(void)
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 2010;
 			}
+			else
+			{
+				KI_State = 2020;
+			}
 			
 			break;
 		}
 		
 		case 2010:
 		{
-			
-			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 2020;
+					//Set Task to Done
+					KI_Task[1].Status = DONE;
+					
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 2000);
+					
+					//Count up Plants in Robot
+					PlantsInRobot++;
+					
+					
+					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					{
+						KI_State = 550;
+					}
 					break;
 				}
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					KI_State = 2000;
+					KI_State = 2020;
 					break;
 				}
 			}
@@ -1087,14 +1161,26 @@ uint8_t KiTask(void)
 		
 		case 2020:
 		{
-			//Wait specific time
-			SET_CYCLE(KI_TASKNBR, 2000);
-			KI_Task[2].Status = DONE;
-			//Count up Plants in Robot
-			PlantsInRobot++;
-			// Jump to KI-Verteiler-State
-			KI_State = 20;
+			uint8_t motionFailureCount = 0;
 			
+			motionFailureCount++;
+			
+			if(motionFailureCount<2 && KI_Task[2].Status != DONE)
+			{
+				//Drive Back
+				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				KI_State = 2000;
+			}
+			
+			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
+			else
+			{
+				// Jump to Case 500
+				//KI_State = 500;
+				KI_Task[2].Status = DONE; //==> gehört Raus
+				KI_State = 550; //==> gehört Raus
+			}
+
 			break;
 		}
 		
@@ -1144,27 +1230,42 @@ uint8_t KiTask(void)
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 3010;
 			}
+			else
+			{
+				KI_State = 3020;
+			}
 			
 			break;
 		}
 		
 		case 3010:
 		{
-			
-			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 3020;
+					//Set Task to Done
+					KI_Task[1].Status = DONE;
+					
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 2000);
+					
+					//Count up Plants in Robot
+					PlantsInRobot++;
+					
+					
+					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					{
+						KI_State = 550;
+					}
 					break;
 				}
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					KI_State = 3000;
+					KI_State = 3020;
 					break;
 				}
 			}
@@ -1173,14 +1274,26 @@ uint8_t KiTask(void)
 		
 		case 3020:
 		{
-			//Wait specific time
-			SET_CYCLE(KI_TASKNBR, 2000);
-			KI_Task[3].Status = DONE;
-			//Count up Plants in Robot
-			PlantsInRobot++;
-			// Jump to KI-Verteiler-State
-			KI_State = 20;
+			uint8_t motionFailureCount = 0;
 			
+			motionFailureCount++;
+			
+			if(motionFailureCount<1 && KI_Task[3].Status != DONE)
+			{
+				//Drive Back
+				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				KI_State = 3000;
+			}
+			
+			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
+			else
+			{
+				// Jump to Case 500
+				//KI_State = 500;
+				KI_Task[3].Status = DONE; //==> gehört Raus
+				KI_State = 550; //==> gehört Raus
+			}
+
 			break;
 		}
 		
@@ -1230,27 +1343,42 @@ uint8_t KiTask(void)
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 4010;
 			}
+			else
+			{
+				KI_State = 4020;
+			}
 			
 			break;
 		}
 		
 		case 4010:
 		{
-			
-			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 4020;
+					//Set Task to Done
+					KI_Task[1].Status = DONE;
+					
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 2000);
+					
+					//Count up Plants in Robot
+					PlantsInRobot++;
+					
+					
+					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					{
+						KI_State = 550;
+					}
 					break;
 				}
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					KI_State = 4000;
+					KI_State = 4020;
 					break;
 				}
 			}
@@ -1259,14 +1387,26 @@ uint8_t KiTask(void)
 		
 		case 4020:
 		{
-			//Wait specific time
-			SET_CYCLE(KI_TASKNBR, 2000);
-			KI_Task[4].Status = DONE;
-			//Count up Plants in Robot
-			PlantsInRobot++;
-			// Jump to KI-Verteiler-State
-			KI_State = 20;
+			uint8_t motionFailureCount = 0;
 			
+			motionFailureCount++;
+			
+			if(motionFailureCount<2 && KI_Task[4].Status != DONE)
+			{
+				//Drive Back
+				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				KI_State = 4000;
+			}
+			
+			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
+			else
+			{
+				// Jump to Case 500
+				//KI_State = 500;
+				KI_Task[4].Status = DONE; //==> gehört Raus
+				KI_State = 550; //==> gehört Raus
+			}
+
 			break;
 		}
 		
@@ -1316,27 +1456,42 @@ uint8_t KiTask(void)
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 5010;
 			}
+			else
+			{
+				KI_State = 5020;
+			}
 			
 			break;
 		}
 		
 		case 5010:
 		{
-			
-			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 5020;
+					//Set Task to Done
+					KI_Task[1].Status = DONE;
+					
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 2000);
+					
+					//Count up Plants in Robot
+					PlantsInRobot++;
+					
+					
+					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					{
+						KI_State = 550;
+					}
 					break;
 				}
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					KI_State = 5000;
+					KI_State = 5020;
 					break;
 				}
 			}
@@ -1345,14 +1500,26 @@ uint8_t KiTask(void)
 		
 		case 5020:
 		{
-			//Wait specific time
-			SET_CYCLE(KI_TASKNBR, 2000);
-			KI_Task[5].Status = DONE;
-			//Count up Plants in Robot
-			PlantsInRobot++;
-			// Jump to KI-Verteiler-State
-			KI_State = 20;
+			uint8_t motionFailureCount = 0;
 			
+			motionFailureCount++;
+			
+			if(motionFailureCount<2 && KI_Task[5].Status != DONE)
+			{
+				//Drive Back
+				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				KI_State = 5000;
+			}
+			
+			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
+			else
+			{
+				// Jump to Case 500
+				//KI_State = 500;
+				KI_Task[5].Status = DONE; //==> gehört Raus
+				KI_State = 550; //==> gehört Raus
+			}
+
 			break;
 		}
 		
@@ -1402,27 +1569,43 @@ uint8_t KiTask(void)
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 6010;
 			}
+			else
+			{
+				KI_State = 6020;
+			}
+			
 			
 			break;
 		}
 		
 		case 6010:
 		{
-			
-			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 6020;
+					//Set Task to Done
+					KI_Task[1].Status = DONE;
+					
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 2000);
+					
+					//Count up Plants in Robot
+					PlantsInRobot++;
+					
+					
+					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					{
+						KI_State = 550;
+					}
 					break;
 				}
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					KI_State = 6000;
+					KI_State = 6020;
 					break;
 				}
 			}
@@ -1431,14 +1614,26 @@ uint8_t KiTask(void)
 		
 		case 6020:
 		{
-			//Wait specific time
-			SET_CYCLE(KI_TASKNBR, 2000);
-			KI_Task[6].Status = DONE;
-			//Count up Plants in Robot
-			PlantsInRobot++;
-			// Jump to KI-Verteiler-State
-			KI_State = 20;
+			uint8_t motionFailureCount = 0;
 			
+			motionFailureCount++;
+			
+			if(motionFailureCount<2 && KI_Task[6].Status != DONE)
+			{
+				//Drive Back
+				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				KI_State = 6000;
+			}
+			
+			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
+			else
+			{
+				// Jump to Case 500
+				//KI_State = 500;
+				KI_Task[6].Status = DONE; //==> gehört Raus
+				KI_State = 550; //==> gehört Raus
+			}
+
 			break;
 		}
 

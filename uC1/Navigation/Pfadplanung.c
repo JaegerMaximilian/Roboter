@@ -35,8 +35,8 @@ uint8_t PATH_DriveToAbsPos(point_t start, point_t ziel, point_t *pointList, uint
 	/* calculate the distance to drive */
 	s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.));
 	
-	/* if the distance to drive is smaller as 600 mm -> drive direct to the goal */
-	if (s < 600.0)
+	/* if the distance to drive is smaller as 300 mm -> drive direct to the goal */
+	if (s < 300.0)
 	{
 		pointList[0].Xpos = ziel.Xpos;
 		pointList[0].Ypos = ziel.Ypos;
