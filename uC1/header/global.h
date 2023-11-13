@@ -126,6 +126,7 @@ _GLOBAL_EXTERN uint8_t spielZeit, spielfarbeRAM, RobotType_RAM, Punkte_Kirschen,
 _GLOBAL_EXTERN uint8_t PlantsInRobot;
 _GLOBAL_EXTERN uint8_t ParkedPlants;
 _GLOBAL_EXTERN uint8_t OpenPlants;
+_GLOBAL_EXTERN uint8_t motionFailureCount;
 
 _GLOBAL_EXTERN uint8_t StateOfGame;
 

@@ -79,7 +79,6 @@ Data Stack size     : 1024
 
 
 
-
 // Struktur der Roboter (Position)
 typedef point_t robot_t;
 
@@ -130,6 +129,7 @@ void ChangePrioToYellow(void);
 void ActivatePlantAsObstacle(void);
 
 void SetNextStepKI(unsigned int Current, unsigned int Next, unsigned int Error);
+void DriveBack(uint8_t distance, uint8_t speed);
 uint8_t KiTask(void);
 uint8_t KiWatchTask(void);
 uint8_t KiWatchRobotPositionTask(void);

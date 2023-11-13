@@ -110,6 +110,8 @@ void InitKI(void)
 	HomePositionReached=0;
 	PlantsInRobot = 0;
 	ParkedPlants = 0;
+	OpenPlants = 6;
+	motionFailureCount = 0;
 	
 	
 	if(SpielFarbe == BLUE_L1 || SpielFarbe == BLUE_L3 || SpielFarbe == BLUE_R2)
@@ -131,7 +133,7 @@ void InitKI(void)
 		PATH_DISABLE_OBSTACLE(i);
 	}
 	/* Start-Zone der Ladybugs */
-	PATH_SetStaticObstacle(0, 925, 0, 2075, 275);
+	PATH_SetStaticObstacle(0, 950, 0, 2050, 250);
 	PATH_ENABLE_OBSTACLE(0);
 	
 	///* geschützte Start-Zone blauer Roboter */
@@ -738,6 +740,26 @@ void PrioritiseParkingPositionsOfPlants()
 	}
 
 }
+void DriveBack(uint8_t distance, uint8_t speed)
+{
+	if((xPos>(200+distance))&&(xPos<(2800-distance))&&(yPos>(200+distance))&&(yPos<(1800-distance)))
+	{
+		cmd_Drive(0,0,-speed,0,0,0,0,distance,POS_REL,ON,NULL,NULL);
+		switch (GetObservationResult())
+		{
+			/* motion was OK */
+			case OBSERVATION_MOTION_OK:
+			{
+				break;
+			}
+			/* error happened during the motion */
+			case OBSERVATION_MOTION_ERROR:
+			{
+				break;
+			}
+		}
+	}
+}
 /**************************************************************************
 ***   FUNCTIONNAME:        KiTask                                       ***
 ***   FUNCTION:            KI                                           ***
@@ -921,30 +943,38 @@ uint8_t KiTask(void)
 		case 550:
 		{
 			uint8_t done = 0;
-			for (int prio = 99;prio>97; prio--)
+			motionFailureCount = 0;
+			
+			//KI_State = 20;
+			//break;
+			for (int prio = 99;prio>96; prio--)
 			{
-				for (int i = 1;i<6; i++)
+				for (int i = 1;i<7; i++)
 				{
-					if(KI_Task[i].Priority == prio && KI_Task[i].Status == PENDING)
+					if((KI_Task[i].Priority == prio) && (KI_Task[i].Status == PENDING))
 					{
 						KI_Task[i].Status = OPEN;
+						ActivatePlantAsObstacle();
+						done = 1;
 						break;
 					}
-
+					
 				}
-				if(done)
+				if(done==1)
 				{
 					break;
 				}
 			}
-			if(done)
+			if(done==1)
 			{
 				KI_State = 20;
+				break;
 			}
 			else
 			{
-				KI_State = 20;//gehört raus
-				//KI_State = 500;
+				KI_State = 20;
+				break;
+				
 			}
 		}
 		
@@ -978,7 +1008,7 @@ uint8_t KiTask(void)
 			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
 			
 			/* if the distance to drive is smaller as 300 mm -> drive direct to the goal */
-			if (s > 700.0)
+			if (s > 500.0)
 			{
 				// Middle Point to move correctly to the plant from the correct Quadrant
 				ziel = AddDifferencePerQuadrant(start,plants);
@@ -990,7 +1020,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>700.0)
+				if(s>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
 					wp_KI[wpNbr].Xpos = plants.Xpos;
@@ -1002,7 +1032,7 @@ uint8_t KiTask(void)
 			}
 			else
 			{
-				KI_State = 1020;
+				KI_State = 1030;
 			}
 			
 			break;
@@ -1027,7 +1057,7 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
@@ -1045,15 +1075,15 @@ uint8_t KiTask(void)
 		
 		case 1020:
 		{
-			uint8_t motionFailureCount = 0;
-			
 			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<2 && KI_Task[1].Status != DONE)
+			if(motionFailureCount<3 && KI_Task[1].Status != DONE)
 			{
 				//Drive Back
-				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				DriveBack(50,200);
 				KI_State = 1000;
+				break;
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
@@ -1067,6 +1097,12 @@ uint8_t KiTask(void)
 
 			break;
 		}
+		case 1030:
+		{
+			KI_State = 1020;
+			break;
+		}
+
 
 		
 		
@@ -1094,7 +1130,7 @@ uint8_t KiTask(void)
 			
 			/* calculate the distance to drive */
 			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 700.0)
+			if (s > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
@@ -1107,7 +1143,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>700.0)
+				if(s>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
 					wp_KI[wpNbr].Xpos = plants.Xpos;
@@ -1119,11 +1155,12 @@ uint8_t KiTask(void)
 			}
 			else
 			{
-				KI_State = 2020;
+				KI_State = 2030;
 			}
 			
 			break;
 		}
+
 		
 		case 2010:
 		{
@@ -1134,7 +1171,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					//Set Task to Done
-					KI_Task[1].Status = DONE;
+					KI_Task[2].Status = DONE;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1143,7 +1180,7 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
@@ -1161,15 +1198,15 @@ uint8_t KiTask(void)
 		
 		case 2020:
 		{
-			uint8_t motionFailureCount = 0;
-			
 			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<2 && KI_Task[2].Status != DONE)
+			if(motionFailureCount<3 && KI_Task[2].Status != DONE)
 			{
 				//Drive Back
-				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				DriveBack(50,200);
 				KI_State = 2000;
+				break;
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
@@ -1183,6 +1220,12 @@ uint8_t KiTask(void)
 
 			break;
 		}
+		case 2030:
+		{
+			KI_State = 2020;
+			break;
+		}
+
 		
 
 		// ********************************************************************
@@ -1207,7 +1250,7 @@ uint8_t KiTask(void)
 			
 			/* calculate the distance to drive */
 			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 700.0)
+			if (s > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
@@ -1220,7 +1263,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>700.0)
+				if(s>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
 					wp_KI[wpNbr].Xpos = plants.Xpos;
@@ -1232,11 +1275,12 @@ uint8_t KiTask(void)
 			}
 			else
 			{
-				KI_State = 3020;
+				KI_State = 3030;
 			}
 			
 			break;
 		}
+
 		
 		case 3010:
 		{
@@ -1247,7 +1291,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					//Set Task to Done
-					KI_Task[1].Status = DONE;
+					KI_Task[3].Status = DONE;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1256,7 +1300,7 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
@@ -1274,15 +1318,15 @@ uint8_t KiTask(void)
 		
 		case 3020:
 		{
-			uint8_t motionFailureCount = 0;
-			
 			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<1 && KI_Task[3].Status != DONE)
+			if(motionFailureCount<3 && KI_Task[3].Status != DONE)
 			{
 				//Drive Back
-				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				DriveBack(50,200);
 				KI_State = 3000;
+				break;
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
@@ -1296,6 +1340,12 @@ uint8_t KiTask(void)
 
 			break;
 		}
+		case 3030:
+		{
+			KI_State = 3020;
+			break;
+		}
+
 		
 		
 		// ********************************************************************
@@ -1320,7 +1370,7 @@ uint8_t KiTask(void)
 			
 			/* calculate the distance to drive */
 			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 700.0)
+			if (s > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
@@ -1333,7 +1383,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>700.0)
+				if(s>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
 					wp_KI[wpNbr].Xpos = plants.Xpos;
@@ -1345,11 +1395,12 @@ uint8_t KiTask(void)
 			}
 			else
 			{
-				KI_State = 4020;
+				KI_State = 4030;
 			}
 			
 			break;
 		}
+
 		
 		case 4010:
 		{
@@ -1360,7 +1411,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					//Set Task to Done
-					KI_Task[1].Status = DONE;
+					KI_Task[4].Status = DONE;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1369,7 +1420,7 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
@@ -1387,15 +1438,15 @@ uint8_t KiTask(void)
 		
 		case 4020:
 		{
-			uint8_t motionFailureCount = 0;
-			
 			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<2 && KI_Task[4].Status != DONE)
+			if(motionFailureCount<3 && KI_Task[4].Status != DONE)
 			{
 				//Drive Back
-				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				DriveBack(50,200);
 				KI_State = 4000;
+				break;
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
@@ -1409,6 +1460,13 @@ uint8_t KiTask(void)
 
 			break;
 		}
+		case 4030:
+		{
+			KI_State = 4020;
+			break;
+		}
+
+
 		
 		
 		// ********************************************************************
@@ -1433,7 +1491,7 @@ uint8_t KiTask(void)
 			
 			/* calculate the distance to drive */
 			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 700.0)
+			if (s > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
@@ -1446,7 +1504,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>700.0)
+				if(s>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
 					wp_KI[wpNbr].Xpos = plants.Xpos;
@@ -1458,11 +1516,12 @@ uint8_t KiTask(void)
 			}
 			else
 			{
-				KI_State = 5020;
+				KI_State = 5030;
 			}
 			
 			break;
 		}
+
 		
 		case 5010:
 		{
@@ -1473,7 +1532,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					//Set Task to Done
-					KI_Task[1].Status = DONE;
+					KI_Task[5].Status = DONE;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1482,7 +1541,7 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
@@ -1500,15 +1559,15 @@ uint8_t KiTask(void)
 		
 		case 5020:
 		{
-			uint8_t motionFailureCount = 0;
-			
 			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<2 && KI_Task[5].Status != DONE)
+			if(motionFailureCount<3 && KI_Task[5].Status != DONE)
 			{
 				//Drive Back
-				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				DriveBack(50,200);
 				KI_State = 5000;
+				break;
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
@@ -1522,6 +1581,12 @@ uint8_t KiTask(void)
 
 			break;
 		}
+		case 5030:
+		{
+			KI_State = 5020;
+			break;
+		}
+
 		
 		
 		// ********************************************************************
@@ -1546,7 +1611,7 @@ uint8_t KiTask(void)
 			
 			/* calculate the distance to drive */
 			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 700.0)
+			if (s > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
@@ -1559,7 +1624,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>700.0)
+				if(s>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
 					wp_KI[wpNbr].Xpos = plants.Xpos;
@@ -1571,12 +1636,12 @@ uint8_t KiTask(void)
 			}
 			else
 			{
-				KI_State = 6020;
+				KI_State = 6030;
 			}
-			
 			
 			break;
 		}
+
 		
 		case 6010:
 		{
@@ -1587,7 +1652,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					//Set Task to Done
-					KI_Task[1].Status = DONE;
+					KI_Task[6].Status = DONE;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1596,7 +1661,7 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
@@ -1614,15 +1679,15 @@ uint8_t KiTask(void)
 		
 		case 6020:
 		{
-			uint8_t motionFailureCount = 0;
-			
 			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<2 && KI_Task[6].Status != DONE)
+			if(motionFailureCount<3 && KI_Task[6].Status != DONE)
 			{
 				//Drive Back
-				cmd_Drive(0,0,-500,0,0,0,0,100,POS_REL,ON,NULL,NULL);
+				DriveBack(50,200);
 				KI_State = 6000;
+				break;
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
@@ -1636,6 +1701,12 @@ uint8_t KiTask(void)
 
 			break;
 		}
+		case 6030:
+		{
+			KI_State = 6020;
+			break;
+		}
+
 
 
 		// ********************************************************************
