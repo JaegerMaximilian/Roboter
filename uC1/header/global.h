@@ -127,12 +127,16 @@ _GLOBAL_EXTERN uint8_t PlantsInRobot;
 _GLOBAL_EXTERN uint8_t ParkedPlants;
 _GLOBAL_EXTERN uint8_t OpenPlants;
 _GLOBAL_EXTERN uint8_t motionFailureCount;
+_GLOBAL_EXTERN uint8_t planedPlants;
+
+
 
 _GLOBAL_EXTERN uint8_t StateOfGame;
 
 _GLOBAL_EXTERN uint16_t sysTime;
 _GLOBAL_EXTERN uint8_t gegnerErkennung;
 
+_GLOBAL_EXTERN uint8_t SpielFarbe_Nextion, Strategie, Page, ConfigPlanter_Nextion, ConfigStehlen_Nextion;
 _GLOBAL_EXTERN uint8_t SpielFarbe, Strategie, Page, ConfigPlanter, ConfigStehlen;
 
 //_GLOBAL_EXTERN point_t startPos;

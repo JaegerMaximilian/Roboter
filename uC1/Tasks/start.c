@@ -86,27 +86,27 @@ unsigned char StartTask(void)
 	{
 		// Nullposition für die Spielfarbe setzen
 		
-		if(SpielFarbe == BLUE_L1)			// Spielfeld BLUE L1
+		if(SpielFarbe_Nextion == BLUE_L1)			// Spielfeld BLUE L1
 		{
 			setPosition_RRTLAN(X0_POS_BLUE_L1_ZONE, Y0_POS_BLUE_L1_ZONE, PHI0_BLUE_L1_ZONE);
 		}
-		else if (SpielFarbe == Yellow_L2) // Spielfeld Yellow L2
+		else if (SpielFarbe_Nextion == Yellow_L2) // Spielfeld Yellow L2
 		{
 			setPosition_RRTLAN(X0_POS_Yellow_L2_ZONE, Y0_POS_Yellow_L2_ZONE, PHI0_Yellow_L2_ZONE);
 		}
-		else if (SpielFarbe == BLUE_L3)// Spielfeld BLUE L3
+		else if (SpielFarbe_Nextion == BLUE_L3)// Spielfeld BLUE L3
 		{
 			setPosition_RRTLAN(X0_POS_BLUE_L3_ZONE, Y0_POS_BLUE_L3_ZONE, PHI0_BLUE_L3_ZONE);
 		}
-		else if (SpielFarbe == Yellow_R1)// Spielfeld Yellow R1
+		else if (SpielFarbe_Nextion == Yellow_R1)// Spielfeld Yellow R1
 		{
 			setPosition_RRTLAN(X0_POS_Yellow_R1_ZONE, Y0_POS_Yellow_R1_ZONE, PHI0_Yellow_R1_ZONE);
 		}
-		else if (SpielFarbe == BLUE_R2)// Spielfeld BLUE R2
+		else if (SpielFarbe_Nextion == BLUE_R2)// Spielfeld BLUE R2
 		{
 			setPosition_RRTLAN(X0_POS_BLUE_R2_ZONE, Y0_POS_BLUE_R2_ZONE, PHI0_BLUE_R2_ZONE);
 		}
-		else if (SpielFarbe == Yellow_R3)// Spielfeld Yellow R3
+		else if (SpielFarbe_Nextion == Yellow_R3)// Spielfeld Yellow R3
 		{
 			setPosition_RRTLAN(X0_POS_Yellow_R3_ZONE, Y0_POS_Yellow_R3_ZONE, PHI0_Yellow_R3_ZONE);
 		}

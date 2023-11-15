@@ -183,5 +183,6 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B);
 void PATH_ShortenPath(matrixpoint_t start, matrixpoint_t goal);
 uint8_t PATH_StoreRealPoints(matrixpoint_t goal, point_t realGoal);
 void PATH_SetStaticObstacle(uint8_t nbr, int16_t x, int16_t y, int16_t X, int16_t Y);
+uint8_t Path_IsInArea(int16_t x, int16_t y, int16_t X, int16_t Y);
 
 #endif /* PFADPLANUNG_H */

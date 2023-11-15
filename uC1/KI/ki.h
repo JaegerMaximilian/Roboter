@@ -106,7 +106,7 @@ typedef struct
 _KI_EXTERN task_t KI_Task[MAX_KI_TASKS];												// Aufgabenliste
 						// Roboter
 _KI_EXTERN int16_t speedSign, enemySign;												// Geschwindigkeitsumkehr
-_KI_EXTERN uint16_t KI_State, KI_StateNext, KI_StateOld, KI_StateError, KI_StateOldPath, KI_StateNextPath;		// Zustände der Statemachine
+_KI_EXTERN uint16_t KI_State,OldKI_State, KI_StateNext, KI_StateOld, KI_StateError, KI_StateOldPath, KI_StateNextPath;		// Zustände der Statemachine
 _KI_EXTERN uint8_t KI_maxPriority;														// Maximal ausgewählte Priorität
 _KI_EXTERN uint8_t Status2SmallRobot;													// Statusmeldung für Nebenroboter
 

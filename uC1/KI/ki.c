@@ -106,19 +106,23 @@ void InitKI(void)
 	
 	
 	KI_State = 0;
+	OldKI_State = 0;
 	StateOfGame = GetPlants;
 	HomePositionReached=0;
 	PlantsInRobot = 0;
 	ParkedPlants = 0;
 	OpenPlants = 6;
 	motionFailureCount = 0;
+	planedPlants = 0;
+	ConfigPlanter = ConfigPlanter_Nextion;
+	ConfigStehlen = ConfigStehlen_Nextion;
 	
 	
-	if(SpielFarbe == BLUE_L1 || SpielFarbe == BLUE_L3 || SpielFarbe == BLUE_R2)
+	if(SpielFarbe_Nextion == BLUE_L1 || SpielFarbe_Nextion == BLUE_L3 || SpielFarbe_Nextion == BLUE_R2)
 	{
 		SpielFarbe = BLUE;
 	}
-	if(SpielFarbe == Yellow_L2 || SpielFarbe == Yellow_R1 || SpielFarbe == Yellow_R3)
+	if(SpielFarbe_Nextion == Yellow_L2 || SpielFarbe_Nextion == Yellow_R1 || SpielFarbe_Nextion == Yellow_R3)
 	{
 		SpielFarbe = Yellow;
 	}
@@ -186,6 +190,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 
+				ConfigPlanter = 1;
 				break;
 			}
 			//Strategy M1 ==> M2 ==> R2  bzw. M1 ==> M2 ==> L2
@@ -199,6 +204,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
 			//Strategy L1 ==> R1 ==> R2  bzw. R1 ==> L1 ==> L2
@@ -212,6 +218,7 @@ void InitKI(void)
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
 			//Strategy L1 ==> M1 ==> R1  bzw. R1 ==> M1 ==> L1
@@ -225,6 +232,7 @@ void InitKI(void)
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
 			//Strategy L1 ==> M1 ==> R2  bzw. R1 ==> M1 ==> L2
@@ -238,6 +246,7 @@ void InitKI(void)
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
 			//Strategy L1 ==> M2 ==> R2  bzw. R1 ==> M2 ==> L2
@@ -251,6 +260,7 @@ void InitKI(void)
 				KI_Task[2].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
 			//Strategy L1 ==> L2  bzw. R1 ==> R2
@@ -436,7 +446,7 @@ void InitKI(void)
 				
 				break;
 			}
-			//Strategy R1 ==> R2
+			//Strategy R1 ==> R2 bzw. L1 ==> L2
 			case NEXTION_STRATEGY_R2_L2_P1:  case NEXTION_STRATEGY_L2_R2_P1:
 			{
 				KI_Task[2].Priority = 100;
@@ -447,9 +457,10 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
-			//Strategy R2 ==> R1
+			//Strategy R2 ==> R1 bzw. L2 ==> L1
 			case NEXTION_STRATEGY_R2_L2_P2:  case NEXTION_STRATEGY_L2_R2_P2:
 			{
 				KI_Task[3].Priority = 100;
@@ -460,6 +471,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
 			//Strategy R2 ==> R1 ==> M1
@@ -514,7 +526,7 @@ void InitKI(void)
 			}
 			else
 			{
-				KI_Task[15].Status = LOCKED;
+				KI_Task[15].Status = PENDING;
 			}
 			
 			//Solar Panels
@@ -537,7 +549,6 @@ void InitKI(void)
 			KI_Task[13].Status = OPEN;
 			KI_Task[16].Status = OPEN;
 			KI_Task[24].Status = LOCKED;
-			KI_Task[25].Status = OPEN;
 			
 			if(ConfigPlanter == 1)
 			{
@@ -545,7 +556,7 @@ void InitKI(void)
 			}
 			else
 			{
-				KI_Task[25].Status = LOCKED;
+				KI_Task[25].Status = PENDING;
 			}
 			
 			//Solar Panels
@@ -593,7 +604,12 @@ void InitKI(void)
 		{
 			KI_Task[i].Status = PENDING;
 		}
+		if (KI_Task[i].Priority > 90)
+		{
+			planedPlants++;
+		}
 	}
+	
 	
 	// *******************************************
 	// Set Plant as Obstacle if not used
@@ -723,23 +739,11 @@ void ActivatePlantAsObstacle()
 }
 
 /**************************************************************************
-***   FUNKTIONNAME: PrioritiseParkingPosition                           ***
-***   FUNKTION: Prioritise Parking Positions of Plants					***
+***   FUNKTIONNAME: Drive Back										    ***
+***   FUNKTION: Drives a defined Way Back								***
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-void PrioritiseParkingPositionsOfPlants()
-{
-	if(PlantsInRobot == 3 && ConfigPlanter)
-	{
-		KI_Task[15].Priority = 89;
-		KI_Task[11].Priority = 88;
-		KI_Task[13].Priority = 87;
-		KI_Task[12].Priority = 86;
-		KI_Task[16].Priority = 85;
-	}
-
-}
 void DriveBack(uint8_t distance, uint8_t speed)
 {
 	if((xPos>(200+distance))&&(xPos<(2800-distance))&&(yPos>(200+distance))&&(yPos<(1800-distance)))
@@ -829,15 +833,23 @@ uint8_t KiTask(void)
 	// 		KI_State = 48000;
 	// 	}
 	
-	sprintf(text1, "%ld;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n", (uint32_t)KI_State, enemyRobot[0].Xpos, enemyRobot[0].Ypos,
-	enemyRobot[1].Xpos, enemyRobot[1].Ypos,
-	enemyRobot[2].Xpos, enemyRobot[2].Ypos,
-	enemyRobot[3].Xpos, enemyRobot[3].Ypos,
-	enemyRobot[4].Xpos, enemyRobot[4].Ypos);
+	if(KI_State != OldKI_State)
+	{
+		sprintf(text1, "%ld;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n", (uint32_t)KI_State, enemyRobot[0].Xpos, enemyRobot[0].Ypos,
+		enemyRobot[1].Xpos, enemyRobot[1].Ypos,
+		enemyRobot[2].Xpos, enemyRobot[2].Ypos,
+		enemyRobot[3].Xpos, enemyRobot[3].Ypos,
+		enemyRobot[4].Xpos, enemyRobot[4].Ypos);
+		SendDebugMessage(text1,1);
+	}
 	
-	uint8_t index = 1;
-	SendDebugMessage(text1,1);
-	SendPlaygroundPositionMessage(&index, &(enemyRobot[0].Xpos),&(enemyRobot[0].Ypos),1);
+	uint8_t index [] = {1,2,3,4,5,6};
+	uint16_t XPosition[] = { xPos, enemyRobot[0].Xpos,enemyRobot[1].Xpos,enemyRobot[2].Xpos,enemyRobot[3].Xpos,enemyRobot[4].Xpos};
+	uint16_t YPosition[] = {yPos, enemyRobot[0].Ypos,enemyRobot[1].Ypos,enemyRobot[2].Ypos,enemyRobot[3].Ypos,enemyRobot[4].Ypos};
+	
+	
+	SendPlaygroundPositionMessage(index, XPosition,YPosition,6);
+
 	
 	// ********************************************************************
 	// ********************************************************************
@@ -1057,10 +1069,19 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<=planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
+					else if(((PlantsInRobot == planedPlants) && (ParkedPlants == 0))||OpenPlants == 0 || PlantsInRobot == 3)
+					{
+						KI_State = 10000;
+					}
+					else
+					{
+						//KI_State = 500;
+					}
+					
 					break;
 				}
 				/* error happened during the motion */
@@ -1180,9 +1201,17 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<=planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
+					}
+					else if(((PlantsInRobot == planedPlants) && (ParkedPlants == 0))||OpenPlants == 0 || PlantsInRobot == 3)
+					{
+						KI_State = 10000;
+					}
+					else
+					{
+						//KI_State = 500;
 					}
 					break;
 				}
@@ -1300,9 +1329,17 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<=planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
+					}
+					else if(((PlantsInRobot == planedPlants) && (ParkedPlants == 0))||OpenPlants == 0 || PlantsInRobot == 3)
+					{
+						KI_State = 10000;
+					}
+					else
+					{
+						//KI_State = 500;
 					}
 					break;
 				}
@@ -1420,9 +1457,17 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<=planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
+					}
+					else if(((PlantsInRobot == planedPlants) && (ParkedPlants == 0))||OpenPlants == 0 || PlantsInRobot == 3)
+					{
+						KI_State = 10000;
+					}
+					else
+					{
+						//KI_State = 500;
 					}
 					break;
 				}
@@ -1541,9 +1586,17 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<=planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
+					}
+					else if(((PlantsInRobot == planedPlants) && (ParkedPlants == 0))||OpenPlants == 0 || PlantsInRobot == 3)
+					{
+						KI_State = 10000;
+					}
+					else
+					{
+						//KI_State = 500;
 					}
 					break;
 				}
@@ -1661,9 +1714,17 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					
-					if(PlantsInRobot<3 && ParkedPlants == 0 && OpenPlants > 0)
+					if(PlantsInRobot<=planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
+					}
+					else if(((PlantsInRobot == planedPlants) && (ParkedPlants == 0))||OpenPlants == 0 || PlantsInRobot == 3)
+					{
+						KI_State = 10000;
+					}
+					else
+					{
+						//KI_State = 500;
 					}
 					break;
 				}
@@ -1765,7 +1826,104 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 10000:
 		{
-			KI_State = 10000;
+			//Prio 89 = Planter 2  Task 15/25  ==> Changeable
+			//Prio 88 = Planter Midle Task 11/21
+			//Prio 87 = Field 1 Side Task 12/22 ==> Changeable
+			//Prio 86 = Planter 1 Task 13/23
+			//Prio 85 = Field 1 Task 12/22 or Field 3 Task 16/26 ==> Changeable
+			//Prio 84 = Field 1 Task 12/22 or Field 3 Task 16/26 ==> Changeable
+			//Prio 83 = Planter 2 Task 15/25  ==> Changeable
+			
+			point_t PlanterMidle, Planter2, field1, field3, aktPos;
+			float s_PlanterMidle;
+			float s_Planter2;
+			float s_Field1;
+			float s_Field3;
+			uint8_t enemyRobotInPlanter2;
+			
+			// Start Position to begin movement from
+			aktPos.Xpos = xPos;
+			aktPos.Ypos = yPos;
+			
+			//Blue
+			if(SpielFarbe == BLUE )
+			{
+				// Position of Planter Midle
+				PlanterMidle.Xpos = 1562.5;
+				PlanterMidle.Ypos = 200;
+				//Position of Planter 2
+				Planter2.Xpos = 200;
+				Planter2.Ypos = 1387.5;
+				//Position of Field 1
+				field1.Xpos = 2700;
+				field1.Ypos = 300;
+				//Position of Field 3
+				field3.Xpos = 2700;
+				field3.Ypos = 1700;
+			}
+			if(SpielFarbe == Yellow )
+			{
+				// Position of Planter Midle
+				PlanterMidle.Xpos = 762.5;
+				PlanterMidle.Ypos = 200;
+				//Position of Planter 2
+				Planter2.Xpos = 2800;
+				Planter2.Ypos = 1387.5;
+				//Position of Field 1
+				field1.Xpos = 300;
+				field1.Ypos = 300;
+				//Position of Field 3
+				field3.Xpos = 300;
+				field3.Ypos = 1700;
+			}
+			
+			//Distance to Planter Midle
+			s_PlanterMidle = sqrtf(pow(((float)aktPos.Xpos - (float)PlanterMidle.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)PlanterMidle.Ypos), 2.));
+			//Distance to Planter2
+			s_Planter2 = sqrtf(pow(((float)aktPos.Xpos - (float)Planter2.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)Planter2.Ypos), 2.));
+			//Distance to Field1
+			s_Field1 = sqrtf(pow(((float)aktPos.Xpos - (float)field1.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)field1.Ypos), 2.));
+			//Distance to Field3
+			s_Field3 = sqrtf(pow(((float)aktPos.Xpos - (float)field3.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)field3.Ypos), 2.));
+			
+			//Default Prios
+			KI_Task[12].Priority = 80;
+			KI_Task[22].Priority = 80;
+			
+			//Priority for fixed Tasks
+			KI_Task[11].Priority = 88;
+			KI_Task[21].Priority = 88;
+			KI_Task[13].Priority = 86;
+			KI_Task[23].Priority = 86;
+			
+			//Detect if Enemie is in Area Planter 2
+			if(SpielFarbe == BLUE)
+			{
+				enemyRobotInPlanter2 = Path_IsInArea(0,1000,600,2000);
+			}
+			if(SpielFarbe == Yellow)
+			{
+				enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
+			}
+			
+			//Planter 2
+			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN) && s_Planter2 < s_PlanterMidle &&!(enemyRobotInPlanter2)) ///And And And
+			{
+				KI_Task[15].Priority = 89;
+				KI_Task[25].Priority = 89;
+			}
+			else
+			{
+				KI_Task[15].Priority = 86;
+				KI_Task[25].Priority = 86;
+			}
+			//Task Feld 1 als Prio 87
+			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && PlantsInRobot > 1) && (KI_Task[13].Status == OPEN || KI_Task[23].Status == OPEN))
+			{
+				KI_Task[12].Priority = 87;
+				KI_Task[22].Priority = 87;
+			}
+			
 
 			break;
 		}
@@ -2596,7 +2754,7 @@ uint8_t KiTask(void)
 			break;
 		}
 	}
-
+	OldKI_State = KI_State;
 	return(CYCLE);
 }
 

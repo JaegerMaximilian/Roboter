@@ -200,9 +200,9 @@ uint8_t NextionTask(void)
 				/* readout playing colour and strategy */
 				Page = NextionArray[0];
 				Strategie = NextionArray[1];
-				SpielFarbe = NextionArray[2];
-				ConfigPlanter = NextionArray[3];
-				ConfigStehlen = NextionArray[4];
+				SpielFarbe_Nextion = NextionArray[2];
+				ConfigPlanter_Nextion = NextionArray[3];
+				ConfigStehlen_Nextion = NextionArray[4];
 			}
 			/* store received data */
 			else if ((receiveEnable == TRUE) && (NextionIndex < sizeof(NextionArray)))

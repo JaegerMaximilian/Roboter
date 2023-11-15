@@ -70,7 +70,7 @@ uint8_t PATH_DriveToAbsPos(point_t start, point_t ziel, point_t *pointList, uint
 				robot = PATH_Get_ObstacleLimits(enemyRobot[i]);
 				PATH_AddItemToObstacleList(i, robot.xy.Xpos, robot.xy.Ypos, robot.XY.Xpos, robot.XY.Ypos);
 			}
-		}		
+		}
 		
 		// Statische Hindernisse werden hinzugefügt
 		PATH_AddItemListToObstacleList(StaticObsticalList);
@@ -938,6 +938,19 @@ void PATH_SetStaticObstacle(uint8_t nbr, int16_t x, int16_t y, int16_t X, int16_
 	/* set obstacle */
 	PATH_SET_OBSTICAL(nbr,xInGrid,yInGrid,XInGrid,YInGrid);
 
+}
+
+uint8_t Path_IsInArea(int16_t x, int16_t y, int16_t X, int16_t Y)
+{
+	for (int i = 0; i<5; i++)
+	{
+		if (enemyRobot[i].Xpos > x && enemyRobot[i].Xpos < X && enemyRobot[i].Ypos > y && enemyRobot[i].Ypos < Y)
+		{
+			return(1);
+			break;
+		}
+		
+	}
 }
 
 ///**********************************************************

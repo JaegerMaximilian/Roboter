@@ -96,6 +96,7 @@ uint8_t punkte_Kirschen_Zusatz =0;
 
 extern uint16_t KI_State;
 
+
 /* ************************************************************** */
 /*! \brief Initialize debug-task.
 *
