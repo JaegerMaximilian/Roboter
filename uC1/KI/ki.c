@@ -636,50 +636,21 @@ void SetNextStepKI(unsigned int Current, unsigned int Next, unsigned int Error)
 }
 
 /**************************************************************************
-***   FUNKTIONNAME: AddDifferencePerQuadrant                            ***
-***   FUNKTION: ?ndern der Prios f?r Blau                               ***
+***   FUNKTIONNAME: AddMiddlePoint                                      ***
+***   FUNKTION: Add a middle Point before Goal-Point                    ***
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-point_t AddDifferencePerQuadrant(point_t start, point_t ziel )
+point_t AddMiddlePoint(point_t start, point_t ziel )
 {
 	point_t middlePoint;
+	int16_t StreckeX = ziel.Xpos-start.Xpos;
+	int16_t StreckeY = ziel.Ypos-start.Ypos;
+	int16_t HypotenuseC = sqrt(StreckeX^2 + StreckeY^2);
 	
-	/* Declare the relative distance you want to the Plants for the Middle Point manually below*/
-	middlePoint.Xpos = 200;
-	middlePoint.Ypos = 200;
+	middlePoint.Xpos = (((HypotenuseC-100)/HypotenuseC)*StreckeX)+start.Xpos;
+	middlePoint.Ypos = (((HypotenuseC-100)/HypotenuseC)*StreckeY)+start.Ypos;
 	
-	if(ziel.Xpos >start.Xpos && ziel.Ypos > start.Ypos)
-	/*Quadrant 1*/
-	{
-		middlePoint.Xpos = ziel.Xpos - middlePoint.Xpos;
-		middlePoint.Ypos = ziel.Ypos - middlePoint.Ypos;
-	}
-	else if(ziel.Xpos < start.Xpos && ziel.Ypos > start.Ypos)
-	/*Quadrant 2*/
-	{
-		middlePoint.Xpos = ziel.Xpos + middlePoint.Xpos;
-		middlePoint.Ypos = ziel.Ypos - middlePoint.Ypos;
-	}
-	else if(ziel.Xpos < start.Xpos && ziel.Ypos < start.Ypos)
-	/*Quadrant 3*/
-	{
-		middlePoint.Xpos = ziel.Xpos + middlePoint.Xpos;
-		middlePoint.Ypos = ziel.Ypos + middlePoint.Ypos;
-	}
-	else if(ziel.Xpos > start.Xpos && ziel.Ypos < start.Ypos)
-	/*Quadrant 4*/
-	{
-		middlePoint.Xpos = ziel.Xpos - middlePoint.Xpos;
-		middlePoint.Ypos = ziel.Ypos + middlePoint.Ypos;
-	}
-	else
-	/* Error Handling: if start and ziel are equal, return ziel as middlePoint */
-	{
-		middlePoint.Xpos = ziel.Xpos;
-		middlePoint.Ypos = ziel.Ypos;
-		return middlePoint;
-	}
 	return middlePoint;
 }
 
@@ -1023,7 +994,7 @@ uint8_t KiTask(void)
 			if (s > 500.0)
 			{
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddDifferencePerQuadrant(start,plants);
+				ziel = AddMiddlePoint(start,plants);
 			}
 			else
 			{
@@ -1155,7 +1126,7 @@ uint8_t KiTask(void)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddDifferencePerQuadrant(start,plants);
+				ziel = AddMiddlePoint(start,plants);
 			}
 			else
 			{
@@ -1283,7 +1254,7 @@ uint8_t KiTask(void)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddDifferencePerQuadrant(start,plants);
+				ziel = AddMiddlePoint(start,plants);
 			}
 			else
 			{
@@ -1411,7 +1382,7 @@ uint8_t KiTask(void)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddDifferencePerQuadrant(start,plants);
+				ziel = AddMiddlePoint(start,plants);
 			}
 			else
 			{
@@ -1540,7 +1511,7 @@ uint8_t KiTask(void)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddDifferencePerQuadrant(start,plants);
+				ziel = AddMiddlePoint(start,plants);
 			}
 			else
 			{
@@ -1668,7 +1639,7 @@ uint8_t KiTask(void)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddDifferencePerQuadrant(start,plants);
+				ziel = AddMiddlePoint(start,plants);
 			}
 			else
 			{
