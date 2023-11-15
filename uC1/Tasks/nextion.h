@@ -201,6 +201,9 @@
 #define NEXTION_STRATEGY_L2_R2_R3	0xC2
 //#define NEXTION_STRATEGY_L2_R2_R4	0xC3
 
+
+#define  NEXTION_STRATEGY_HOMOLOGATION		0x250
+
 /* ******************************** */
 /* ********   prototypes   ******** */
 /* ******************************** */

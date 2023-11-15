@@ -77,21 +77,6 @@
 #define X_KOR			0
 #define Y_KOR			1
 
-#define STATUS_LED	
-
-#define AUTOMATIK 2
-
-
-#define STRATEGY_PASSIVE		50
-#define STRATEGY_ACTIVE		51
-#define STRATEGY_SPECIAL1		52
-#define STRATEGY_SPECIAL2		53
-#define STRATEGY_ENEMY		54
-#define STRATEGY_HOMOLOGATION	55
-#define STRATEGY_PERIMETER	56
-
-
-
 /* ************ */
 /* task numbers */
 /* ************ */
@@ -180,11 +165,11 @@
 #define ARC							4
 #define MOTION_INTERRUPT			5
 
-#define MOTION_OK						1
+#define MOTION_OK					1
 #define MOTION_ENEMY_ERROR			2
 #define MOTION_SCHLEPP_ERROR		3
 
-#define GEGNER_ON						1
+#define GEGNER_ON					1
 #define GEGNER_OFF					2
 
 
@@ -263,13 +248,5 @@
 #define X0_POS_Yellow_R3_ZONE			203
 #define Y0_POS_Yellow_R3_ZONE			1775
 #define PHI0_Yellow_R3_ZONE				0
-
-
-
-
-
-
-#define PURPLE							345
-#define YELLOW							346
 
 #endif

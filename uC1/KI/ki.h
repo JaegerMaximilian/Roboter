@@ -41,9 +41,6 @@ Data Stack size     : 1024
 #define _KI_EXTERN extern
 #endif
 
-
-
-
 /**************************************************************************
 ***                        Variablen-Definition                         ***
 **************************************************************************/
@@ -76,9 +73,6 @@ Data Stack size     : 1024
 #define Cherry_VELOCITY				80		//[m/s]
 #define MAX_VELOCITY				800		//[m/s]
 
-
-
-
 // Struktur der Roboter (Position)
 typedef point_t robot_t;
 
@@ -99,12 +93,7 @@ typedef struct
 
 
 
-
-
-
-
 _KI_EXTERN task_t KI_Task[MAX_KI_TASKS];												// Aufgabenliste
-						// Roboter
 _KI_EXTERN int16_t speedSign, enemySign;												// Geschwindigkeitsumkehr
 _KI_EXTERN uint16_t KI_State,OldKI_State, KI_StateNext, KI_StateOld, KI_StateError, KI_StateOldPath, KI_StateNextPath;		// Zustände der Statemachine
 _KI_EXTERN uint8_t KI_maxPriority;														// Maximal ausgewählte Priorität
@@ -112,12 +101,7 @@ _KI_EXTERN uint8_t Status2SmallRobot;													// Statusmeldung für Nebenrobo
 
 
 _KI_EXTERN point_t targetposition;
-
-
-
 _KI_EXTERN uint16_t DecisionPathplanner;
-
-
 _KI_EXTERN uint8_t HomePositionReached;  //0-> home position not reached; 1-> home postion reached
 
 
@@ -125,27 +109,9 @@ _KI_EXTERN uint8_t HomePositionReached;  //0-> home position not reached; 1-> ho
 ***                        Prototypen-Definition                        ***
 **************************************************************************/
 void InitKI(void);
-void ChangePrioToYellow(void);
-void ActivatePlantAsObstacle(void);
-
 void SetNextStepKI(unsigned int Current, unsigned int Next, unsigned int Error);
-void DriveBack(uint8_t distance, uint8_t speed);
 uint8_t KiTask(void);
-uint8_t KiWatchTask(void);
 uint8_t KiWatchRobotPositionTask(void);
-
-// ****************************************************
-// Dot2D, Norm2D, AngleToXAxis2D from path_math.c (µC2)
-// ****************************************************
-float Dot2D(float* vectorA, float* vectorB);
-float Norm2D(float* vector);
-float AngleToXAxis2D(float* vector);
-
-// ****************************************************
-// GetPx, GetPy for shooting the mammoth
-// ****************************************************
-int16_t GetPx(int16_t Mx, int16_t My);
-int16_t GetPy(int16_t Mx, int16_t My);
 
 #endif
 

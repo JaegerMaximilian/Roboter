@@ -112,6 +112,7 @@ unsigned char StartTask(void)
 		}
 		
 		InitKI();
+		InitKiWatch();
 		
 		return(DISABLE);
 	}
