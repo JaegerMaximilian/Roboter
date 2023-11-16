@@ -917,7 +917,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot++;
 					
-					
+					CalcOpenPlants();
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
@@ -1073,7 +1073,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot++;
 					
-					
+					CalcOpenPlants();
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
@@ -1224,7 +1224,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot++;
 					
-					
+					CalcOpenPlants();
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
@@ -1378,7 +1378,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot++;
 					
-					
+					CalcOpenPlants();
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
@@ -1530,7 +1530,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot++;
 					
-					
+					CalcOpenPlants();
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
@@ -1681,7 +1681,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot++;
 					
-					
+					CalcOpenPlants();
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
