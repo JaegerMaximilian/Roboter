@@ -799,6 +799,11 @@ uint8_t KiTask(void)
 				KI_State = 20;
 				StateOfGame = GetPlants;
 			}
+			else
+			{
+				KI_State = 20;
+				StateOfGame = SolarPanels;
+			}
 			break;
 		}
 		
