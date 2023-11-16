@@ -12,11 +12,15 @@
 #include <stdint.h>
 #include "global.h"
 #include "Pfadplanung.h"
+#include "ki.h"
 
 point_t AddMiddlePoint(point_t start, point_t ziel);
 void ChangePrioToYellow(void);
 void ActivatePlantAsObstacle(void);
 uint8_t DriveBack(uint8_t distance, uint8_t speed);
+uint8_t CalcDistance(point_t firstPoint, point_t secondPoint);
+void RePrioritisePlantTasks(void);
+uint8_t CalcOpenPlants(void);
 
 // ****************************************************
 // Dot2D, Norm2D, AngleToXAxis2D from path_math.c (µC2)

@@ -105,6 +105,43 @@ void InitKI(void)
 	ConfigPlanter = ConfigPlanter_Nextion;
 	ConfigStehlen = ConfigStehlen_Nextion;
 	
+	//Set Plant Positions
+	Plant1000.Xpos = 1500;
+	Plant1000.Ypos = 500;
+	Plant2000.Xpos = 1000;
+	Plant2000.Ypos = 700;
+	Plant3000.Xpos = 1000;
+	Plant3000.Ypos = 1300;
+	Plant4000.Xpos = 1500;
+	Plant4000.Ypos = 1500;
+	Plant5000.Xpos = 2000;
+	Plant5000.Ypos = 1300;
+	Plant6000.Xpos = 2000;
+	Plant6000.Ypos = 700;
+	
+	//Set Park Positions
+	PlanterL1.Xpos = 2700;
+	PlanterL1.Ypos = 612.5;
+	PlanterL2.Xpos = 2700;
+	PlanterL2.Ypos = 1387.5;
+	FieldL1.Xpos = 2700;
+	FieldL1.Ypos = 300;
+	FieldL3.Xpos = 2700;
+	FieldL3.Ypos = 1700;
+	PlanterMidleBlue.Xpos = 2237.5;
+	PlanterMidleBlue.Ypos = 300;
+	
+	PlanterR1.Xpos = 300;
+	PlanterR1.Ypos = 612.5;
+	PlanterR2.Xpos = 300;
+	PlanterR2.Ypos = 1387.5;
+	FieldR1.Xpos = 300;
+	FieldR1.Ypos = 300;
+	FieldR3.Xpos = 300;
+	FieldR3.Ypos = 1700;
+	PlanterMidleYellow.Xpos = 762.5;
+	PlanterMidleYellow.Ypos = 300;
+
 	//Set Gamecolors
 	if(SpielFarbe_Nextion == BLUE_L1 || SpielFarbe_Nextion == BLUE_L3 || SpielFarbe_Nextion == BLUE_R2)
 	{
@@ -743,6 +780,29 @@ uint8_t KiTask(void)
 			break;
 		}
 		// *****************************************
+		// Check Plants
+		// *****************************************
+		case 500:
+		{
+			RePrioritisePlantTasks();
+			//Solar Panels Priorisieren
+			//Zeit Berechnen Abstellen
+			//Zeit Berechnen Solar Panels
+			CalcOpenPlants();	
+			if(OpenPlants == 0 && PlantsInRobot > 0)
+			{
+				KI_State = 10000;
+				StateOfGame = ParkPlants;
+			}
+			else if(OpenPlants > 0)
+			{
+				KI_State = 20;
+				StateOfGame = GetPlants;
+			}
+			break;
+		}
+		
+		// *****************************************
 		// Enable Next Plant
 		// *****************************************
 		case 550:
@@ -796,40 +856,36 @@ uint8_t KiTask(void)
 		
 		case 1000:
 		{
-			point_t start, ziel, plants;
+			point_t start, ziel;
 			
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			// Position where the plants stand
-			plants.Xpos = 1500;
-			plants.Ypos = 500;
-			
 
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
+			distance = CalcDistance(start,Plant1000);
 			
 			/* if the distance to drive is smaller as 300 mm -> drive direct to the goal */
-			if (s > 500.0)
+			if (distance > 500.0)
 			{
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,plants);
+				ziel = AddMiddlePoint(start,Plant1000);
 			}
 			else
 			{
-				ziel = plants;
+				ziel = Plant1000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>500.0)
+				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = plants.Xpos;
-					wp_KI[wpNbr].Ypos = plants.Ypos;
+					wp_KI[wpNbr].Xpos = Plant1000.Xpos;
+					wp_KI[wpNbr].Ypos = Plant1000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
@@ -873,7 +929,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						//KI_State = 500;
+						KI_State = 500;
 					}
 					
 					break;
@@ -909,10 +965,9 @@ uint8_t KiTask(void)
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				// Jump to Case 500
-				//KI_State = 500;
-				KI_Task[1].Status = DONE; //==> gehört Raus
-				KI_State = 550; //==> gehört Raus
+				KI_State = 500;
+				//KI_Task[1].Status = DONE; //==> gehört Raus
+				//KI_State = 550; //==> gehört Raus
 			}
 			
 			break;
@@ -959,37 +1014,34 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 2000:
 		{
-			point_t start, ziel, plants;
+			point_t start, ziel;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			// Position where the plants stand
-			plants.Xpos = 1000;
-			plants.Ypos = 700;
 			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 500.0)
+			distance = CalcDistance(start,Plant2000);
+			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,plants);
+				ziel = AddMiddlePoint(start,Plant2000);
 			}
 			else
 			{
-				ziel = plants;
+				ziel = Plant2000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>500.0)
+				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = plants.Xpos;
-					wp_KI[wpNbr].Ypos = plants.Ypos;
+					wp_KI[wpNbr].Xpos = Plant2000.Xpos;
+					wp_KI[wpNbr].Ypos = Plant2000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
@@ -1033,7 +1085,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						//KI_State = 500;
+						KI_State = 500;
 					}
 					break;
 				}
@@ -1068,10 +1120,9 @@ uint8_t KiTask(void)
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				// Jump to Case 500
-				//KI_State = 500;
-				KI_Task[2].Status = DONE; //==> gehört Raus
-				KI_State = 550; //==> gehört Raus
+				KI_State = 500;
+				//KI_Task[2].Status = DONE; //==> gehört Raus
+				//KI_State = 550; //==> gehört Raus
 			}
 			
 			break;
@@ -1114,37 +1165,34 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 3000:
 		{
-			point_t start, ziel, plants;
+			point_t start, ziel;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			// Position where the plants stand
-			plants.Xpos = 1000;
-			plants.Ypos = 1300;
 			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 500.0)
+			distance = CalcDistance(start,Plant3000);
+			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,plants);
+				ziel = AddMiddlePoint(start,Plant3000);
 			}
 			else
 			{
-				ziel = plants;
+				ziel = Plant3000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>500.0)
+				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = plants.Xpos;
-					wp_KI[wpNbr].Ypos = plants.Ypos;
+					wp_KI[wpNbr].Xpos = Plant3000.Xpos;
+					wp_KI[wpNbr].Ypos = Plant3000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
@@ -1188,7 +1236,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						//KI_State = 500;
+						KI_State = 500;
 					}
 					break;
 				}
@@ -1223,10 +1271,9 @@ uint8_t KiTask(void)
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				// Jump to Case 500
-				//KI_State = 500;
-				KI_Task[3].Status = DONE; //==> gehört Raus
-				KI_State = 550; //==> gehört Raus
+				KI_State = 500;
+				//KI_Task[3].Status = DONE; //==> gehört Raus
+				//KI_State = 550; //==> gehört Raus
 			}
 			
 			break;
@@ -1269,37 +1316,37 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 4000:
 		{
-			point_t start, ziel, plants;
+			point_t start, ziel;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			// Position where the plants stand
-			plants.Xpos = 1500;
-			plants.Ypos = 1500;
+			Plant4000.Xpos = 1500;
+			Plant4000.Ypos = 1500;
 			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 500.0)
+			distance = CalcDistance(start,Plant4000);
+			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,plants);
+				ziel = AddMiddlePoint(start,Plant4000);
 			}
 			else
 			{
-				ziel = plants;
+				ziel = Plant4000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>500.0)
+				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = plants.Xpos;
-					wp_KI[wpNbr].Ypos = plants.Ypos;
+					wp_KI[wpNbr].Xpos = Plant4000.Xpos;
+					wp_KI[wpNbr].Ypos = Plant4000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
@@ -1343,7 +1390,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						//KI_State = 500;
+						KI_State = 500;
 					}
 					break;
 				}
@@ -1378,10 +1425,9 @@ uint8_t KiTask(void)
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				// Jump to Case 500
-				//KI_State = 500;
-				KI_Task[4].Status = DONE; //==> gehört Raus
-				KI_State = 550; //==> gehört Raus
+				KI_State = 500;
+				//KI_Task[4].Status = DONE; //==> gehört Raus
+				//KI_State = 550; //==> gehört Raus
 			}
 			
 			break;
@@ -1425,37 +1471,34 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 5000:
 		{
-			point_t start, ziel, plants;
+			point_t start, ziel;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			// Position where the plants stand
-			plants.Xpos = 2000;
-			plants.Ypos = 1300;
 			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 500.0)
+			distance = CalcDistance(start,Plant5000);
+			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,plants);
+				ziel = AddMiddlePoint(start,Plant5000);
 			}
 			else
 			{
-				ziel = plants;
+				ziel = Plant5000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>500.0)
+				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = plants.Xpos;
-					wp_KI[wpNbr].Ypos = plants.Ypos;
+					wp_KI[wpNbr].Xpos = Plant5000.Xpos;
+					wp_KI[wpNbr].Ypos = Plant5000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
@@ -1499,7 +1542,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						//KI_State = 500;
+						KI_State = 500;
 					}
 					break;
 				}
@@ -1534,10 +1577,9 @@ uint8_t KiTask(void)
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				// Jump to Case 500
-				//KI_State = 500;
-				KI_Task[5].Status = DONE; //==> gehört Raus
-				KI_State = 550; //==> gehört Raus
+				KI_State = 500;
+				//KI_Task[5].Status = DONE; //==> gehört Raus
+				//KI_State = 550; //==> gehört Raus
 			}
 			
 			break;
@@ -1580,37 +1622,34 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 6000:
 		{
-			point_t start, ziel, plants;
+			point_t start, ziel;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			// Position where the plants stand
-			plants.Xpos = 2000;
-			plants.Ypos = 700;
 			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)plants.Xpos), 2.0) + pow(((float)start.Ypos - (float)plants.Ypos), 2.));
-			if (s > 500.0)
+			distance = CalcDistance(start,Plant6000);
+			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,plants);
+				ziel = AddMiddlePoint(start,Plant6000);
 			}
 			else
 			{
-				ziel = plants;
+				ziel = Plant6000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
 			{
-				if(s>500.0)
+				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = plants.Xpos;
-					wp_KI[wpNbr].Ypos = plants.Ypos;
+					wp_KI[wpNbr].Xpos = Plant6000.Xpos;
+					wp_KI[wpNbr].Ypos = Plant6000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
@@ -1654,7 +1693,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						//KI_State = 500;
+						KI_State = 500;
 					}
 					break;
 				}
@@ -1689,10 +1728,9 @@ uint8_t KiTask(void)
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				// Jump to Case 500
-				//KI_State = 500;
-				KI_Task[1].Status = DONE; //==> gehört Raus
-				KI_State = 550; //==> gehört Raus
+				KI_State = 500;
+				//KI_Task[6].Status = DONE; //==> gehört Raus
+				//KI_State = 550; //==> gehört Raus
 			}
 			
 			break;
@@ -1790,11 +1828,11 @@ uint8_t KiTask(void)
 			//Prio 84 = Field 1 Task 12/22 or Field 3 Task 16/26 ==> Changeable
 			//Prio 83 = Planter 2 Task 15/25  ==> Changeable
 			
-			point_t PlanterMidle, Planter2, field1, field3, aktPos;
-			float s_PlanterMidle;
-			float s_Planter2;
-			float s_Field1;
-			float s_Field3;
+			point_t PlanterMidlePos, Planter2Pos, field1Pos, field3Pos, aktPos;
+			float distance_PlanterMidle;
+			float distance_Planter2;
+			float distance_Field1;
+			float distance_Field3;
 			uint8_t enemyRobotInPlanter2;
 			
 			motionFailureCount = 0;
@@ -1807,42 +1845,34 @@ uint8_t KiTask(void)
 			if(SpielFarbe == BLUE )
 			{
 				// Position of Planter Midle
-				PlanterMidle.Xpos = 2237.5;
-				PlanterMidle.Ypos = 300;
+				PlanterMidlePos = PlanterMidleBlue;
 				//Position of Planter 2
-				Planter2.Xpos = 300;
-				Planter2.Ypos = 1387.5;
+				Planter2Pos = PlanterR2;
 				//Position of Field 1
-				field1.Xpos = 2700;
-				field1.Ypos = 300;
+				field1Pos = FieldL1;
 				//Position of Field 3
-				field3.Xpos = 2700;
-				field3.Ypos = 1700;
+				field1Pos = FieldL3;
 			}
 			if(SpielFarbe == Yellow )
 			{
 				// Position of Planter Midle
-				PlanterMidle.Xpos = 762.5;
-				PlanterMidle.Ypos = 300;
+				PlanterMidlePos = PlanterMidleYellow;
 				//Position of Planter 2
-				Planter2.Xpos = 2700;
-				Planter2.Ypos = 1387.5;
+				Planter2Pos = PlanterL2;
 				//Position of Field 1
-				field1.Xpos = 300;
-				field1.Ypos = 300;
+				field1Pos = FieldR1;
 				//Position of Field 3
-				field3.Xpos = 300;
-				field3.Ypos = 1700;
+				field1Pos = FieldR3;
 			}
 			
 			//Distance to Planter Midle
-			s_PlanterMidle = sqrtf(pow(((float)aktPos.Xpos - (float)PlanterMidle.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)PlanterMidle.Ypos), 2.));
+			distance_PlanterMidle = CalcDistance(aktPos,PlanterMidlePos);
 			//Distance to Planter2
-			s_Planter2 = sqrtf(pow(((float)aktPos.Xpos - (float)Planter2.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)Planter2.Ypos), 2.));
+			distance_Planter2 = CalcDistance(aktPos,Planter2Pos);
 			//Distance to Field1
-			s_Field1 = sqrtf(pow(((float)aktPos.Xpos - (float)field1.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)field1.Ypos), 2.));
+			distance_Field1 = CalcDistance(aktPos,field1Pos);;
 			//Distance to Field3
-			s_Field3 = sqrtf(pow(((float)aktPos.Xpos - (float)field3.Xpos), 2.0) + pow(((float)aktPos.Ypos - (float)field3.Ypos), 2.));
+			distance_Field3 = CalcDistance(aktPos,field3Pos);;
 			
 			//Default Prios
 			KI_Task[12].Priority = 80;
@@ -1865,7 +1895,7 @@ uint8_t KiTask(void)
 			}
 			
 			//Planter 2
-			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN) && (s_Planter2 < s_PlanterMidle) && (enemyRobotInPlanter2 == 0)) ///And And And
+			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN) && (distance_Planter2 < distance_PlanterMidle) && (enemyRobotInPlanter2 == 0)) ///And And And
 			{
 				KI_Task[15].Priority = 89;
 				KI_Task[25].Priority = 89;
@@ -1885,7 +1915,7 @@ uint8_t KiTask(void)
 			//Task field1 and field4 as Prio 84/85
 			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && KI_Task[12].Status != OPEN && KI_Task[22].Status != OPEN))
 			{
-				if(s_Field1<s_Field3)
+				if(distance_Field1<distance_Field3)
 				{
 					KI_Task[12].Priority = 85;
 					KI_Task[22].Priority = 85;
@@ -1917,21 +1947,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 11000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 2237.5;
-			ziel.Ypos = 300;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,PlanterMidleBlue);;
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PlanterMidleBlue, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 11010;
@@ -1964,9 +1991,7 @@ uint8_t KiTask(void)
 					
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -2021,21 +2046,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 12000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 2700;
-			ziel.Ypos = 300;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,FieldL1);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, FieldL1, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 12010;
@@ -2093,9 +2115,7 @@ uint8_t KiTask(void)
 				{
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -2150,21 +2170,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 13000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 2700;
-			ziel.Ypos = 612.5;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,PlanterL1);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PlanterL1, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 13010;
@@ -2197,9 +2214,7 @@ uint8_t KiTask(void)
 					
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -2268,21 +2283,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 15000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 2700;
-			ziel.Ypos = 1387.5;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,PlanterL2);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PlanterL2, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 15010;
@@ -2313,10 +2325,9 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0)
+					if(PlantsInRobot < 3)
 					{
-						//KI_State = 500;
-						KI_State = 20;
+						KI_State = 500;
 						StateOfGame = SolarPanels; // gehört raus
 					}
 					else
@@ -2372,21 +2383,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 16000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 2700;
-			ziel.Ypos = 1700;
-			
 			float s;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			s = CalcDistance(start,FieldL3);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, FieldL3, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 16010;
@@ -2443,9 +2451,7 @@ uint8_t KiTask(void)
 				{
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -2557,21 +2563,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 21000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 762.5;
-			ziel.Ypos = 300;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,PlanterMidleYellow);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PlanterMidleYellow, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 21010;
@@ -2604,9 +2607,7 @@ uint8_t KiTask(void)
 					
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -2661,21 +2662,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 22000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 300;
-			ziel.Ypos = 300;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,FieldR1);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, FieldR1, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 22010;
@@ -2733,9 +2731,7 @@ uint8_t KiTask(void)
 				{
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -2790,21 +2786,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 23000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			
-			ziel.Xpos = 300;
-			ziel.Ypos = 612.5;
-			
-			float s;
+
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,PlanterR1);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PlanterR1, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 23010;
@@ -2837,9 +2830,7 @@ uint8_t KiTask(void)
 					
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -2908,21 +2899,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 25000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 300;
-			ziel.Ypos = 1387.5;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,PlanterR2);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PlanterR2, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 25010;
@@ -2953,10 +2941,9 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0)
+					if(PlantsInRobot < 3)
 					{
-						//KI_State = 500;
-						KI_State = 20;
+						KI_State = 500;
 						StateOfGame = SolarPanels; // gehört raus
 					}
 					else
@@ -3012,21 +2999,18 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 26000:
 		{
-			point_t start, ziel;
+			point_t start;
 			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			ziel.Xpos = 300;
-			ziel.Ypos = 1700;
-			
-			float s;
+			float distance;
 			
 			/* calculate the distance to drive */
-			s = sqrtf(pow(((float)start.Xpos - (float)ziel.Xpos), 2.0) + pow(((float)start.Ypos - (float)ziel.Ypos), 2.0));
+			distance = CalcDistance(start,FieldR3);
 			
-			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, FieldR3, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 26010;
@@ -3084,9 +3068,7 @@ uint8_t KiTask(void)
 				{
 					if(PlantsInRobot==0)
 					{
-						//KI_State = 500;
-						KI_State = 20;
-						StateOfGame = SolarPanels; // gehört raus
+						KI_State = 500;
 					}
 					else
 					{
@@ -3097,7 +3079,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					KI_State = 22016;
+					KI_State = 26012;
 					SET_CYCLE(KI_TASKNBR, 1000);
 					break;
 				}

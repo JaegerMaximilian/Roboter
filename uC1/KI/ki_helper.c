@@ -1,9 +1,9 @@
 /*
- * ki_helper.c
- *
- * Created: 15.11.2023 19:14:22
- *  Author: marku
- */ 
+* ki_helper.c
+*
+* Created: 15.11.2023 19:14:22
+*  Author: marku
+*/
 #include <avr/io.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -11,12 +11,13 @@
 #include <math.h>
 #include <util/delay.h>
 
-#include "ki_helper.h"
 #include "ki.h"
+#include "ki_helper.h"
 #include "define.h"
 #include "global.h"
 #include "command.h"
 #include "Pfadplanung.h"
+#include "observation.h"
 
 /**************************************************************************
 ***   FUNKTIONNAME: AddMiddlePoint                                      ***
@@ -29,7 +30,7 @@ point_t AddMiddlePoint(point_t start, point_t ziel )
 	point_t middlePoint;
 	float StreckeX = (float)ziel.Xpos-(float)start.Xpos;
 	float StreckeY = (float)ziel.Ypos-(float)start.Ypos;
-	float HypotenuseC = sqrt(StreckeX*StreckeX + StreckeY*StreckeY);
+	float HypotenuseC = CalcDistance(start,ziel);
 	
 	middlePoint.Xpos = (int16_t)((((HypotenuseC-250)/HypotenuseC)*StreckeX)+start.Xpos);
 	middlePoint.Ypos = (int16_t)((((HypotenuseC-250)/HypotenuseC)*StreckeY)+start.Ypos);
@@ -42,7 +43,7 @@ point_t AddMiddlePoint(point_t start, point_t ziel )
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-void ChangePrioToYellow()
+void ChangePrioToYellow(void)
 {
 	int prio2 = KI_Task[2].Priority;
 	int prio3 = KI_Task[3].Priority;
@@ -62,7 +63,7 @@ void ChangePrioToYellow()
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-void ActivatePlantAsObstacle()
+void ActivatePlantAsObstacle(void)
 {
 	//Plant 1000
 	PATH_SetStaticObstacle(3, 1250, 250, 1750, 750);
@@ -76,7 +77,6 @@ void ActivatePlantAsObstacle()
 	PATH_SetStaticObstacle(7, 1750, 1050, 2250, 1550);
 	//Plant 6000
 	PATH_SetStaticObstacle(8, 1750, 450, 2250, 950);
-
 	
 	for (int i = 1; i<7; i++)
 	{
@@ -107,12 +107,163 @@ uint8_t DriveBack(uint8_t distance, uint8_t speed)
 	}
 	return(0);
 }
+/**************************************************************************
+***   FUNKTIONNAME: CalcDistance										***
+***   FUNKTION: Calculates distance from one point to another			***
+***	  position is inside field											***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+uint8_t CalcDistance(point_t firstPoint, point_t secondPoint)
+{
+	uint8_t distance;
+	
+	distance = sqrtf(pow(((float)firstPoint.Xpos - (float)secondPoint.Xpos), 2.0) + pow(((float)firstPoint.Ypos - (float)secondPoint.Ypos), 2.));
+	
+	return(distance);
+}
 
+/**************************************************************************
+***   FUNKTIONNAME: RePrioritise Plants									***
+***   FUNKTION: RePrioritise Plants										***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+void RePrioritisePlantTasks(void)
+{
+	//Set Pending Plants to Open
+	for (int i = 1; i<7; i++)
+	{
+		if(KI_Task[i].Status == PENDING)
+		{
+			KI_Task[i].Status = OPEN;
+		}
+	}
+	
+	//Distance to Plants and Enemy
+	point_t aktpos;
+	aktpos.Xpos = xPos;
+	aktpos.Ypos = yPos;
+	
+	float distance_1000 = CalcDistance(aktpos,Plant1000);
+	float distance_2000 = CalcDistance(aktpos,Plant2000);
+	float distance_3000 = CalcDistance(aktpos,Plant3000);
+	float distance_4000 = CalcDistance(aktpos,Plant4000);
+	float distance_5000 = CalcDistance(aktpos,Plant5000);
+	float distance_6000 = CalcDistance(aktpos,Plant6000);
+	float distanceEnemy_1000 = 3000;
+	float distanceEnemy_2000 = 3000;
+	float distanceEnemy_3000 = 3000;
+	float distanceEnemy_4000 = 3000;
+	float distanceEnemy_5000 = 3000;
+	float distanceEnemy_6000 = 3000;
+	
+	//Distance to enemy
+	for (int i = 0;i<5;i++)
+	{
+		if (enemyRobot[i].Xpos != 10000 && enemyRobot[i].Ypos != 10000)
+		{
+			if(CalcDistance(Plant1000,enemyRobot[i])<distanceEnemy_1000)
+			{
+				distanceEnemy_1000 = CalcDistance(Plant1000,enemyRobot[i]);
+			}
+			if(CalcDistance(Plant2000,enemyRobot[i])<distanceEnemy_2000)
+			{
+				distanceEnemy_2000 = CalcDistance(Plant2000,enemyRobot[i]);
+			}
+			if(CalcDistance(Plant3000,enemyRobot[i])<distanceEnemy_3000)
+			{
+				distanceEnemy_3000 = CalcDistance(Plant3000,enemyRobot[i]);
+			}
+			if(CalcDistance(Plant4000,enemyRobot[i])<distanceEnemy_4000)
+			{
+				distanceEnemy_4000 = CalcDistance(Plant4000,enemyRobot[i]);
+			}
+			if(CalcDistance(Plant5000,enemyRobot[i])<distanceEnemy_5000)
+			{
+				distanceEnemy_5000 = CalcDistance(Plant5000,enemyRobot[i]);
+			}
+			if(CalcDistance(Plant6000,enemyRobot[i])<distanceEnemy_6000)
+			{
+				distanceEnemy_6000 = CalcDistance(Plant6000,enemyRobot[i]);
+			}
+		}
+	}
+	
+	//Whole Distance
+	float quantifierEnemy = 1.0;
+	
+	float wholeDistance_1000 = distance_1000 + 0.5*(3000 - distanceEnemy_1000);
+	float wholeDistance_2000 = distance_2000 + 0.5*(3000 - distanceEnemy_2000);
+	float wholeDistance_3000 = distance_3000 + 0.5*(3000 - distanceEnemy_3000);
+	float wholeDistance_4000 = distance_4000 + 0.5*(3000 - distanceEnemy_4000);
+	float wholeDistance_5000 = distance_5000 + 0.5*(3000 - distanceEnemy_5000);
+	float wholeDistance_6000 = distance_6000 + 0.5*(3000 - distanceEnemy_6000);
+	
+	//Sort values
+	uint8_t a = 0;
+	uint8_t distances[] =  {wholeDistance_1000,wholeDistance_2000,wholeDistance_3000,wholeDistance_4000,wholeDistance_5000,wholeDistance_6000 };
 
-
-
-
-
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = i + 1; j < 6; j++)
+		{
+			if (distances[i] > distances[j])
+			{
+				a = distances[i];
+				distances[i] = distances[j];
+				distances[j] = a;
+			}
+		}
+	}
+	
+	//Prioritis to Task
+	for (int i = 0; i < 6; i++)
+	{
+		if(distances[i] == wholeDistance_1000)
+		{
+			KI_Task[1].Priority = 97-i;
+		}
+		if(distances[i] == wholeDistance_2000)
+		{
+			KI_Task[2].Priority = 97-i;
+		}
+		if(distances[i] == wholeDistance_3000)
+		{
+			KI_Task[3].Priority = 97-i;
+		}
+		if(distances[i] == wholeDistance_4000)
+		{
+			KI_Task[4].Priority = 97-i;
+		}
+		if(distances[i] == wholeDistance_5000)
+		{
+			KI_Task[5].Priority = 97-i;
+		}
+		if(distances[i] == wholeDistance_6000)
+		{
+			KI_Task[6].Priority = 97-i;
+		}
+	}
+}
+/**************************************************************************
+***   FUNKTIONNAME: OpenPlants											***
+***   FUNKTION: OpenPlants												***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+uint8_t CalcOpenPlants(void)
+{
+	OpenPlants = 0;
+	for (int i = 1; i < 7; i++)
+	{
+		if(KI_Task[i].Status == OPEN)
+		{
+			OpenPlants++;
+		}
+	}
+	
+}
 
 
 

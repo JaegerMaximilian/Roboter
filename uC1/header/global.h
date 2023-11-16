@@ -58,7 +58,7 @@
 
 #include <math.h>
 #include <stdint.h>
-//#include "Pfadplanung.h"
+#include "Pfadplanung.h"
 
 /* intern/extern switch */
 #ifndef _GLOBAL_EXTERN
@@ -138,6 +138,8 @@ _GLOBAL_EXTERN uint8_t gegnerErkennung;
 
 _GLOBAL_EXTERN uint8_t SpielFarbe_Nextion, Strategie, Page, ConfigPlanter_Nextion, ConfigStehlen_Nextion;
 _GLOBAL_EXTERN uint8_t SpielFarbe, Strategie, Page, ConfigPlanter, ConfigStehlen;
+_GLOBAL_EXTERN point_t Plant1000,Plant2000,Plant3000,Plant4000,Plant5000,Plant6000;
+_GLOBAL_EXTERN point_t PlanterL1,PlanterR1,PlanterL2,PlanterR2,FieldL1,FieldR1,FieldL3,FieldR3,PlanterMidleBlue,PlanterMidleYellow;
 
 //_GLOBAL_EXTERN point_t startPos;
 
