@@ -18,7 +18,7 @@ point_t AddMiddlePoint(point_t start, point_t ziel);
 void ChangePrioToYellow(void);
 void ActivatePlantAsObstacle(void);
 uint8_t DriveBack(uint8_t distance, uint8_t speed);
-uint8_t CalcDistance(point_t firstPoint, point_t secondPoint);
+float CalcDistance(point_t firstPoint, point_t secondPoint);
 void RePrioritisePlantTasks(void);
 uint8_t CalcOpenPlants(void);
 

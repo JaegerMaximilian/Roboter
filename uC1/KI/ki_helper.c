@@ -18,6 +18,7 @@
 #include "command.h"
 #include "Pfadplanung.h"
 #include "observation.h"
+#include "logger.h"
 
 /**************************************************************************
 ***   FUNKTIONNAME: AddMiddlePoint                                      ***
@@ -114,11 +115,11 @@ uint8_t DriveBack(uint8_t distance, uint8_t speed)
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-uint8_t CalcDistance(point_t firstPoint, point_t secondPoint)
+float CalcDistance(point_t firstPoint, point_t secondPoint)
 {
-	uint8_t distance;
+	float distance;
 	
-	distance = sqrtf(pow(((float)firstPoint.Xpos - (float)secondPoint.Xpos), 2.0) + pow(((float)firstPoint.Ypos - (float)secondPoint.Ypos), 2.));
+	distance = sqrtf(pow(((float)firstPoint.Xpos - (float)secondPoint.Xpos), 2.0) + pow(((float)firstPoint.Ypos - (float)secondPoint.Ypos), 2.0));
 	
 	return(distance);
 }
@@ -131,15 +132,6 @@ uint8_t CalcDistance(point_t firstPoint, point_t secondPoint)
 **************************************************************************/
 void RePrioritisePlantTasks(void)
 {
-	//Set Pending Plants to Open
-	for (int i = 1; i<7; i++)
-	{
-		if(KI_Task[i].Status == PENDING)
-		{
-			KI_Task[i].Status = OPEN;
-		}
-	}
-	
 	//Distance to Plants and Enemy
 	point_t aktpos;
 	aktpos.Xpos = xPos;
@@ -201,8 +193,8 @@ void RePrioritisePlantTasks(void)
 	float wholeDistance_6000 = distance_6000 + 0.5*(3000 - distanceEnemy_6000);
 	
 	//Sort values
-	uint8_t a = 0;
-	uint8_t distances[] =  {wholeDistance_1000,wholeDistance_2000,wholeDistance_3000,wholeDistance_4000,wholeDistance_5000,wholeDistance_6000 };
+	float a = 0;
+	float distances[] =  {wholeDistance_1000,wholeDistance_2000,wholeDistance_3000,wholeDistance_4000,wholeDistance_5000,wholeDistance_6000 };
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -257,12 +249,12 @@ uint8_t CalcOpenPlants(void)
 	OpenPlants = 0;
 	for (int i = 1; i < 7; i++)
 	{
-		if(KI_Task[i].Status == OPEN)
+		if(KI_Task[i].Status == OPEN || KI_Task[i].Status == PENDING)
 		{
 			OpenPlants++;
 		}
 	}
-	
+	return(OpenPlants);
 }
 
 

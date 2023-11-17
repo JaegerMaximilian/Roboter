@@ -784,11 +784,36 @@ uint8_t KiTask(void)
 		// *****************************************
 		case 500:
 		{
+			uint8_t done = 0;
 			RePrioritisePlantTasks();
 			//Solar Panels Priorisieren
 			//Zeit Berechnen Abstellen
 			//Zeit Berechnen Solar Panels
-			CalcOpenPlants();	
+			CalcOpenPlants();
+			
+			if(OpenPlants > 0)
+			{
+				//Nächste Pflanze von PENDING to OPEN
+				for (int prio = 99;prio>90; prio--)
+				{
+					for (int i = 1;i<7; i++)
+					{
+						if((KI_Task[i].Priority == prio) && (KI_Task[i].Status == PENDING))
+						{
+							KI_Task[i].Status = OPEN;
+							ActivatePlantAsObstacle();
+							done = 1;
+							break;
+						}
+						
+					}
+					if(done==1)
+					{
+						break;
+					}
+				}
+			}
+			
 			if(OpenPlants == 0 && PlantsInRobot > 0)
 			{
 				KI_State = 10000;
@@ -815,9 +840,7 @@ uint8_t KiTask(void)
 			uint8_t done = 0;
 			motionFailureCount = 0;
 			
-			//KI_State = 20;
-			//break;
-			for (int prio = 99;prio>96; prio--)
+			for (int prio = 99;prio>90; prio--)
 			{
 				for (int i = 1;i<7; i++)
 				{
@@ -842,7 +865,7 @@ uint8_t KiTask(void)
 			}
 			else
 			{
-				KI_State = 20;
+				KI_State = 500;
 				break;
 				
 			}
@@ -971,7 +994,7 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				//KI_Task[1].Status = DONE; //==> gehört Raus
+				KI_Task[1].Status = DONE; //==> gehört Raus
 				//KI_State = 550; //==> gehört Raus
 			}
 			
@@ -1126,7 +1149,7 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				//KI_Task[2].Status = DONE; //==> gehört Raus
+				KI_Task[2].Status = DONE; //==> gehört Raus
 				//KI_State = 550; //==> gehört Raus
 			}
 			
@@ -1277,7 +1300,7 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				//KI_Task[3].Status = DONE; //==> gehört Raus
+				KI_Task[3].Status = DONE; //==> gehört Raus
 				//KI_State = 550; //==> gehört Raus
 			}
 			
@@ -1431,7 +1454,7 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				//KI_Task[4].Status = DONE; //==> gehört Raus
+				KI_Task[4].Status = DONE; //==> gehört Raus
 				//KI_State = 550; //==> gehört Raus
 			}
 			
@@ -1583,7 +1606,7 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				//KI_Task[5].Status = DONE; //==> gehört Raus
+				KI_Task[5].Status = DONE; //==> gehört Raus
 				//KI_State = 550; //==> gehört Raus
 			}
 			
@@ -1734,7 +1757,7 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				//KI_Task[6].Status = DONE; //==> gehört Raus
+				KI_Task[6].Status = DONE; //==> gehört Raus
 				//KI_State = 550; //==> gehört Raus
 			}
 			
@@ -1872,6 +1895,7 @@ uint8_t KiTask(void)
 			
 			//Distance to Planter Midle
 			distance_PlanterMidle = CalcDistance(aktPos,PlanterMidlePos);
+
 			//Distance to Planter2
 			distance_Planter2 = CalcDistance(aktPos,Planter2Pos);
 			//Distance to Field1
@@ -1889,7 +1913,7 @@ uint8_t KiTask(void)
 			KI_Task[13].Priority = 86;
 			KI_Task[23].Priority = 86;
 			
-			//Detect if Enemie is in Area Planter 2
+			//Detect if Enemy is in Area Planter 2
 			if(SpielFarbe == BLUE)
 			{
 				enemyRobotInPlanter2 = Path_IsInArea(0,1000,600,2000);
@@ -1900,7 +1924,7 @@ uint8_t KiTask(void)
 			}
 			
 			//Planter 2
-			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN) && (distance_Planter2 < distance_PlanterMidle) && (enemyRobotInPlanter2 == 0)) ///And And And
+			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN) && (distance_Planter2 < distance_PlanterMidle)  && (enemyRobotInPlanter2 == 0)) ///And And And
 			{
 				KI_Task[15].Priority = 89;
 				KI_Task[25].Priority = 89;
@@ -1917,7 +1941,7 @@ uint8_t KiTask(void)
 				KI_Task[22].Priority = 87;
 			}
 			
-			//Task field1 and field4 as Prio 84/85
+			//Task field1 and field3 as Prio 84/85
 			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && KI_Task[12].Status != OPEN && KI_Task[22].Status != OPEN))
 			{
 				if(distance_Field1<distance_Field3)
@@ -2333,7 +2357,7 @@ uint8_t KiTask(void)
 					if(PlantsInRobot < 3)
 					{
 						KI_State = 500;
-						StateOfGame = SolarPanels; // gehört raus
+						StateOfGame = GetPlants; // gehört raus
 					}
 					else
 					{
@@ -2949,7 +2973,7 @@ uint8_t KiTask(void)
 					if(PlantsInRobot < 3)
 					{
 						KI_State = 500;
-						StateOfGame = SolarPanels; // gehört raus
+						StateOfGame = GetPlants; // gehört raus
 					}
 					else
 					{
@@ -3706,7 +3730,7 @@ uint8_t KiTask(void)
 	//Write Message to Logger
 	if(KI_State != OldKI_State)
 	{
-		sprintf(text1, "State: %6d PIR: %d PP: %d\r\n", (uint32_t)KI_State, (uint32_t)PlantsInRobot,(uint32_t)ParkedPlants);
+		sprintf(text1, "State: %6d PIR: %d", KI_State, PlantsInRobot);
 		SendDebugMessage(text1,1);
 	}
 	OldKI_State = KI_State;
