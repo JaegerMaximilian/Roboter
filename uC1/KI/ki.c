@@ -1856,9 +1856,10 @@ uint8_t KiTask(void)
 			//Prio 84 = Field 1 Task 12/22 or Field 3 Task 16/26 ==> Changeable
 			//Prio 83 = Planter 2 Task 15/25  ==> Changeable
 			
-			point_t PlanterMidlePos, Planter2Pos, field1Pos, field3Pos, aktPos;
+			point_t PlanterMidlePos, Planter2Pos, field1Pos, field3Pos, aktPos, Planter1Pos;
 			float distance_PlanterMidle;
 			float distance_Planter2;
+			float distance_Planter1;
 			float distance_Field1;
 			float distance_Field3;
 			uint8_t enemyRobotInPlanter2;
@@ -1874,28 +1875,33 @@ uint8_t KiTask(void)
 			{
 				// Position of Planter Midle
 				PlanterMidlePos = PlanterMidleBlue;
+				//Position of Planter 1
+				Planter1Pos = PlanterL1;
 				//Position of Planter 2
 				Planter2Pos = PlanterR2;
 				//Position of Field 1
 				field1Pos = FieldL1;
 				//Position of Field 3
-				field1Pos = FieldL3;
+				field3Pos = FieldL3;
 			}
 			if(SpielFarbe == Yellow )
 			{
 				// Position of Planter Midle
 				PlanterMidlePos = PlanterMidleYellow;
+				//Position of Planter 1
+				Planter1Pos = PlanterR1;
 				//Position of Planter 2
 				Planter2Pos = PlanterL2;
 				//Position of Field 1
 				field1Pos = FieldR1;
 				//Position of Field 3
-				field1Pos = FieldR3;
+				field3Pos = FieldR3;
 			}
 			
 			//Distance to Planter Midle
 			distance_PlanterMidle = CalcDistance(aktPos,PlanterMidlePos);
-
+			//Distance to Planter 1
+			distance_Planter1 = CalcDistance(aktPos,Planter1Pos);
 			//Distance to Planter2
 			distance_Planter2 = CalcDistance(aktPos,Planter2Pos);
 			//Distance to Field1
@@ -1922,9 +1928,11 @@ uint8_t KiTask(void)
 			{
 				enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
 			}
-			
 			//Planter 2
-			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN) && (distance_Planter2 < distance_PlanterMidle)  && (enemyRobotInPlanter2 == 0)) ///And And And
+			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN)
+			&& ((distance_Planter2 < distance_PlanterMidle)||(KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN))
+			&& ((distance_Planter2 < distance_Planter1)||(KI_Task[13].Status != OPEN && KI_Task[23].Status != OPEN))
+			&& (enemyRobotInPlanter2 == 0))
 			{
 				KI_Task[15].Priority = 89;
 				KI_Task[25].Priority = 89;
@@ -1934,6 +1942,8 @@ uint8_t KiTask(void)
 				KI_Task[15].Priority = 83;
 				KI_Task[25].Priority = 83;
 			}
+			sprintf(text1, "P1: %6.2f P2: %6.2f,M1: %6.2f,Prio: %d,enemy: %d", distance_Planter1, distance_Planter2, distance_PlanterMidle,KI_Task[15].Priority,enemyRobotInPlanter2);
+			SendDebugMessage(text1,1);
 			//Task field 1 as Prio 87
 			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && PlantsInRobot > 1) && (KI_Task[13].Status == OPEN || KI_Task[23].Status == OPEN))
 			{
@@ -2081,11 +2091,6 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			float distance;
-			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,FieldL1);
-			
 			if (PATH_DriveToAbsPos(start, FieldL1, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
@@ -2095,7 +2100,8 @@ uint8_t KiTask(void)
 			{
 				KI_State = 12030;
 			}
-			
+			sprintf(text1, "State: %6d PIR: %d", KI_State, PlantsInRobot);
+			SendDebugMessage(text1,1);
 			break;
 		}
 
@@ -2172,6 +2178,7 @@ uint8_t KiTask(void)
 				//Drive Back
 				DriveBack(50,200);
 				KI_State = 12000;
+				SendDebugMessage("12020 failure",1);
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************

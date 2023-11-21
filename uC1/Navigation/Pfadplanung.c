@@ -777,7 +777,7 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B)
 	/* system of equations to calculate an intersection */
 	/* Ax*Alpha - Dx*Beta = Cx */
 	/* Ay*Alpha - Dy*Beta = Cy */
-	detK = (int16_t)(A.v.x * B.v.y) - (int16_t)(A.v.y * B.v.x);
+	detK = (int16_t)(A.v.y * B.v.x) - (int16_t)(A.v.x * B.v.y);
 	
 	/* if detK == 0 -> vector A and B are parallel */
 	if (detK != 0)
@@ -949,8 +949,8 @@ uint8_t Path_IsInArea(int16_t x, int16_t y, int16_t X, int16_t Y)
 			return(1);
 			break;
 		}
-		
 	}
+	return(0);
 }
 
 ///**********************************************************
