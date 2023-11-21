@@ -647,11 +647,22 @@ uint8_t KiTask(void)
 	
 	char text1[200];
 	
+	//Position of enemy and my own robot
 	uint8_t index [] = {1,2,3,4,5,6};
 	uint16_t XPosition[] = { xPos, enemyRobot[0].Xpos,enemyRobot[1].Xpos,enemyRobot[2].Xpos,enemyRobot[3].Xpos,enemyRobot[4].Xpos};
 	uint16_t YPosition[] = {yPos, enemyRobot[0].Ypos,enemyRobot[1].Ypos,enemyRobot[2].Ypos,enemyRobot[3].Ypos,enemyRobot[4].Ypos};
 	SendPlaygroundPositionMessage(index, XPosition,YPosition,6);
 	
+	//State and Priority of Tasks
+	uint8_t index1 [] = {1,2,3,4,5,6,11,12,13,15,16,21,22,23,25,26};
+	uint8_t state[] = {	KI_Task[1].Status,KI_Task[2].Status,KI_Task[3].Status,KI_Task[4].Status,KI_Task[5].Status,KI_Task[6].Status,
+		KI_Task[11].Status,KI_Task[12].Status,KI_Task[13].Status,KI_Task[15].Status,KI_Task[16].Status,
+	KI_Task[21].Status,KI_Task[22].Status,KI_Task[23].Status,KI_Task[25].Status,KI_Task[26].Status};
+	
+	uint8_t priority[] = {	KI_Task[1].Priority,KI_Task[2].Priority,KI_Task[3].Priority,KI_Task[4].Priority,KI_Task[5].Priority,KI_Task[6].Priority,
+		KI_Task[11].Priority,KI_Task[12].Priority,KI_Task[13].Priority,KI_Task[15].Priority,KI_Task[16].Priority,
+	KI_Task[21].Priority,KI_Task[22].Priority,KI_Task[23].Priority,KI_Task[25].Priority,KI_Task[26].Priority};
+	SendTaskInfo(index1,state,priority);
 
 
 	

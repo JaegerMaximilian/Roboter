@@ -36,6 +36,6 @@ void SendTraceMessage(char *labels[], uint32_t values[], uint8_t length);
 void SendLidarMessage(uint8_t uid[], uint16_t radius[], uint16_t angle[], uint8_t length);
 void SendPathPlanerMessage(uint16_t xCoords[],uint16_t yCoords[], uint8_t length);
 void SendPlaygroundPositionMessage(uint8_t uid[], uint16_t xCoords[],uint16_t yCoords[], uint8_t length);
-
+void SendTaskInfo(uint8_t index[], uint8_t state[], uint8_t priority[]);
 
 #endif /* LOGGER_H_ */

@@ -1,9 +1,9 @@
 /*
- * KiWatch.c
- *
- * Created: 15.11.2023 20:09:49
- *  Author: marku
- */ 
+* KiWatch.c
+*
+* Created: 15.11.2023 20:09:49
+*  Author: marku
+*/
 
 #include <avr/io.h>
 #include <stdio.h>
@@ -19,12 +19,13 @@
 #include "command.h"
 #include "Pfadplanung.h"
 #include "multitask.h"
+#include "logger.h"
 
 void InitKiWatch(void)
 {
 	// zyklischer Task - Zykluszeit: 100 ms
 	SET_TASK(KI_WATCH_TASKNBR, CYCLE);
-	SET_CYCLE(KI_WATCH_TASKNBR, 100);
+	SET_CYCLE(KI_WATCH_TASKNBR, 200);
 	SET_TASK_HANDLE(KI_WATCH_TASKNBR, KiWatchTask);
 }
 
@@ -38,8 +39,5 @@ uint8_t KiWatchTask(void)
 {
 	// zyklischer Task - Zykluszeit: 100 ms
 	SET_CYCLE(KI_WATCH_TASKNBR, 100);
-
-
 	
-	return (CYCLE);
 }

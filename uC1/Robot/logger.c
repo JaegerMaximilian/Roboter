@@ -1,9 +1,9 @@
 /*
- * logger.c
- *
- * Created: 27.10.2023 08:58:28
- *  Author: chri1999
- */ 
+* logger.c
+*
+* Created: 27.10.2023 08:58:28
+*  Author: chri1999
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -125,4 +125,32 @@ void SendPlaygroundPositionMessage(uint8_t uid[], uint16_t xCoords[],uint16_t yC
 	}
 	strcat(message, "*");
 	writeString_usart(USART_EUROBOTLOGGER, message);
+}
+
+/* ************************************************************** */
+/*! \brief Send Priority and State of Tasks
+*
+*  Function sends label with values to Logger to display a Chart
+*
+*/
+/* ************************************************************** */
+void SendTaskInfo(uint8_t index[], uint8_t state[], uint8_t priority[])
+{
+	char message[LOGGER_MESSAGE_SIZE];
+	char text[5];
+	uint8_t length = sizeof(index);
+	sprintf(message, "#1TA");
+	if(sizeof(index) == sizeof(state) && sizeof(state) == sizeof(priority))
+	{
+		for (uint8_t i = 0; i < length; ++i)
+		{
+			sprintf(text, "%02d%01d%02d", index[i], state[i], priority[i]);
+			strcat(message, text);
+			if (i+1 < length) {
+				strcat(message, "|");
+			}
+			strcat(message, "*");
+			writeString_usart(USART_EUROBOTLOGGER, message);
+		}
+	}
 }
