@@ -201,9 +201,9 @@ void InitKI(void)
 			case NEXTION_STRATEGY_L1_L2_P1: case NEXTION_STRATEGY_R1_R2_P1:
 			{
 				
-				KI_Task[1].Priority = 100;
-				KI_Task[2].Priority = 99;
-				KI_Task[3].Priority = 98;
+				KI_Task[1].Priority = 99;
+				KI_Task[2].Priority = 98;
+				KI_Task[3].Priority = 97;
 				
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
@@ -215,9 +215,9 @@ void InitKI(void)
 			//Strategy M1 ==> M2 ==> R2  bzw. M1 ==> M2 ==> L2
 			case NEXTION_STRATEGY_L1_L2_A1: case NEXTION_STRATEGY_R1_R2_A1:
 			{
-				KI_Task[1].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[3].Priority = 98;
+				KI_Task[1].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[3].Priority = 97;
 				
 				KI_Task[2].Priority = 90;
 				KI_Task[5].Priority = 90;
@@ -229,9 +229,9 @@ void InitKI(void)
 			//Strategy L1 ==> R1 ==> R2  bzw. R1 ==> L1 ==> L2
 			case NEXTION_STRATEGY_L1_L2_R1: case NEXTION_STRATEGY_R1_R2_R1:
 			{
-				KI_Task[6].Priority = 100;
-				KI_Task[2].Priority = 99;
-				KI_Task[3].Priority = 98;
+				KI_Task[6].Priority = 99;
+				KI_Task[2].Priority = 98;
+				KI_Task[3].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[4].Priority = 90;
@@ -243,9 +243,9 @@ void InitKI(void)
 			//Strategy L1 ==> M1 ==> R1  bzw. R1 ==> M1 ==> L1
 			case NEXTION_STRATEGY_L1_L2_R2: case NEXTION_STRATEGY_L1_R3_R2: case NEXTION_STRATEGY_R1_R2_R2: case NEXTION_STRATEGY_R1_L3_R2:
 			{
-				KI_Task[6].Priority = 100;
-				KI_Task[1].Priority = 99;
-				KI_Task[2].Priority = 98;
+				KI_Task[6].Priority = 99;
+				KI_Task[1].Priority = 98;
+				KI_Task[2].Priority = 97;
 				
 				KI_Task[3].Priority = 90;
 				KI_Task[4].Priority = 90;
@@ -257,9 +257,9 @@ void InitKI(void)
 			//Strategy L1 ==> M1 ==> R2  bzw. R1 ==> M1 ==> L2
 			case NEXTION_STRATEGY_L1_L2_R3: case NEXTION_STRATEGY_L1_R1_R2: case NEXTION_STRATEGY_R1_R2_R3: case NEXTION_STRATEGY_R1_L1_R2:
 			{
-				KI_Task[6].Priority = 100;
-				KI_Task[1].Priority = 99;
-				KI_Task[3].Priority = 98;
+				KI_Task[6].Priority = 99;
+				KI_Task[1].Priority = 98;
+				KI_Task[3].Priority = 97;
 				
 				KI_Task[2].Priority = 90;
 				KI_Task[4].Priority = 90;
@@ -271,9 +271,9 @@ void InitKI(void)
 			//Strategy L1 ==> M2 ==> R2  bzw. R1 ==> M2 ==> L2
 			case NEXTION_STRATEGY_L1_L2_R4: case NEXTION_STRATEGY_L1_R1_R1: case NEXTION_STRATEGY_R1_R2_R4: case NEXTION_STRATEGY_R1_L1_R1:
 			{
-				KI_Task[6].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[3].Priority = 98;
+				KI_Task[6].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[3].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[2].Priority = 90;
@@ -285,8 +285,8 @@ void InitKI(void)
 			//Strategy L1 ==> L2  bzw. R1 ==> R2
 			case NEXTION_STRATEGY_L1_R1_P1: case NEXTION_STRATEGY_L1_R3_P1: case NEXTION_STRATEGY_R1_L1_P1: case NEXTION_STRATEGY_R1_L3_P1:
 			{
-				KI_Task[6].Priority = 100;
-				KI_Task[5].Priority = 99;
+				KI_Task[6].Priority = 99;
+				KI_Task[5].Priority = 98;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[2].Priority = 90;
@@ -298,9 +298,9 @@ void InitKI(void)
 			//Strategy L1 ==> M2 ==> L2  bzw. R1 ==> M2 ==> R2
 			case NEXTION_STRATEGY_L1_R1_P2: case NEXTION_STRATEGY_R1_L1_P2:
 			{
-				KI_Task[6].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[5].Priority = 98;
+				KI_Task[6].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[5].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[2].Priority = 90;
@@ -311,9 +311,9 @@ void InitKI(void)
 			//Strategy L1 ==> L2 ==> M2  bzw. R1 ==> R2 ==> M2
 			case NEXTION_STRATEGY_L1_R1_P3: case NEXTION_STRATEGY_L1_R3_R1: case NEXTION_STRATEGY_R1_L1_P3: case NEXTION_STRATEGY_R1_L3_R1:
 			{
-				KI_Task[6].Priority = 100;
-				KI_Task[5].Priority = 99;
-				KI_Task[4].Priority = 98;
+				KI_Task[6].Priority = 99;
+				KI_Task[5].Priority = 98;
+				KI_Task[4].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[2].Priority = 90;
@@ -324,9 +324,9 @@ void InitKI(void)
 			//Strategy M1 ==> M2 ==> L2  bzw. M1 ==> M2 ==> R2
 			case NEXTION_STRATEGY_L1_R1_A1: case NEXTION_STRATEGY_L1_R3_A2: case NEXTION_STRATEGY_R1_L1_A1: case NEXTION_STRATEGY_R1_L3_A2:
 			{
-				KI_Task[1].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[5].Priority = 98;
+				KI_Task[1].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[5].Priority = 97;
 				
 				KI_Task[2].Priority = 90;
 				KI_Task[3].Priority = 90;
@@ -337,9 +337,9 @@ void InitKI(void)
 			//Strategy M1 ==> M2 ==> L1  bzw. M1 ==> M2 ==> R1
 			case NEXTION_STRATEGY_L1_R1_A2: case NEXTION_STRATEGY_L1_R3_A1: case NEXTION_STRATEGY_R1_L1_A2: case NEXTION_STRATEGY_R1_L3_A1:
 			{
-				KI_Task[1].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[6].Priority = 98;
+				KI_Task[1].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[6].Priority = 97;
 				
 				KI_Task[2].Priority = 90;
 				KI_Task[3].Priority = 90;
@@ -350,9 +350,9 @@ void InitKI(void)
 			//Strategy M1 ==> L2 ==> L1  bzw. M1 ==> R2 ==> R1
 			case NEXTION_STRATEGY_L1_R3_P2: case NEXTION_STRATEGY_R1_L3_P2:
 			{
-				KI_Task[1].Priority = 100;
-				KI_Task[5].Priority = 99;
-				KI_Task[6].Priority = 98;
+				KI_Task[1].Priority = 99;
+				KI_Task[5].Priority = 98;
+				KI_Task[6].Priority = 97;
 				
 				KI_Task[2].Priority = 90;
 				KI_Task[3].Priority = 90;
@@ -363,9 +363,9 @@ void InitKI(void)
 			//Strategy R2 ==> M2 ==> L1  bzw. L2 ==> M2 ==> R1
 			case NEXTION_STRATEGY_R2_R1_P1: case NEXTION_STRATEGY_R2_L2_R3: case NEXTION_STRATEGY_L2_L1_P1: case NEXTION_STRATEGY_L2_R2_R3:
 			{
-				KI_Task[3].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[6].Priority = 98;
+				KI_Task[3].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[6].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[2].Priority = 90;
@@ -376,9 +376,9 @@ void InitKI(void)
 			//Strategy R2 ==> M2 ==> L2  bzw. L2 ==> M2 ==> R2
 			case NEXTION_STRATEGY_R2_R1_P2: case NEXTION_STRATEGY_L2_L1_P2:
 			{
-				KI_Task[3].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[5].Priority = 98;
+				KI_Task[3].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[5].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[2].Priority = 90;
@@ -389,9 +389,9 @@ void InitKI(void)
 			//Strategy R2 ==> M1 ==> L1  bzw. L2 ==> M1 ==> R1
 			case NEXTION_STRATEGY_R2_R1_A1: case NEXTION_STRATEGY_R2_L2_R2: case NEXTION_STRATEGY_L2_L1_A1: case NEXTION_STRATEGY_L2_R2_R2:
 			{
-				KI_Task[3].Priority = 100;
-				KI_Task[1].Priority = 99;
-				KI_Task[6].Priority = 98;
+				KI_Task[3].Priority = 99;
+				KI_Task[1].Priority = 98;
+				KI_Task[6].Priority = 97;
 				
 				KI_Task[2].Priority = 90;
 				KI_Task[4].Priority = 90;
@@ -402,9 +402,9 @@ void InitKI(void)
 			//Strategy R2 ==> M2 ==> M1  bzw. L2 ==> M2 ==> M1
 			case NEXTION_STRATEGY_R2_R1_A2: case NEXTION_STRATEGY_R2_L2_A2: case NEXTION_STRATEGY_L2_L1_A2: case NEXTION_STRATEGY_L2_R2_A2:
 			{
-				KI_Task[3].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[1].Priority = 98;
+				KI_Task[3].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[1].Priority = 97;
 				
 				KI_Task[2].Priority = 90;
 				KI_Task[5].Priority = 90;
@@ -415,9 +415,9 @@ void InitKI(void)
 			//Strategy R1 ==> M1 ==> L1  bzw. L1 ==> M1 ==> R1
 			case NEXTION_STRATEGY_R2_R3_P1: case NEXTION_STRATEGY_R2_L2_R1: case NEXTION_STRATEGY_L2_L3_P1: case NEXTION_STRATEGY_L2_R2_R1:
 			{
-				KI_Task[2].Priority = 100;
-				KI_Task[1].Priority = 99;
-				KI_Task[6].Priority = 98;
+				KI_Task[2].Priority = 99;
+				KI_Task[1].Priority = 98;
+				KI_Task[6].Priority = 97;
 				
 				KI_Task[3].Priority = 90;
 				KI_Task[4].Priority = 90;
@@ -428,9 +428,9 @@ void InitKI(void)
 			//Strategy R1 ==> M1 ==> M2  bzw. L1 ==> M1 ==> M2
 			case NEXTION_STRATEGY_R2_R3_A1:  case NEXTION_STRATEGY_L2_L3_A1:
 			{
-				KI_Task[2].Priority = 100;
-				KI_Task[1].Priority = 99;
-				KI_Task[4].Priority = 98;
+				KI_Task[2].Priority = 99;
+				KI_Task[1].Priority = 98;
+				KI_Task[4].Priority = 97;
 				
 				KI_Task[3].Priority = 90;
 				KI_Task[5].Priority = 90;
@@ -441,9 +441,9 @@ void InitKI(void)
 			//Strategy R1 ==> M2 ==> L2  bzw. L1 ==> M2 ==> R2
 			case NEXTION_STRATEGY_R2_R3_R1:  case NEXTION_STRATEGY_L2_L3_R1:
 			{
-				KI_Task[2].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[5].Priority = 98;
+				KI_Task[2].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[5].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[3].Priority = 90;
@@ -454,9 +454,9 @@ void InitKI(void)
 			//Strategy R1 ==> M2 ==> L1  bzw. L1 ==> M2 ==> R1
 			case NEXTION_STRATEGY_R2_R3_R2:  case NEXTION_STRATEGY_L2_L3_R2:
 			{
-				KI_Task[2].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[6].Priority = 98;
+				KI_Task[2].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[6].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[3].Priority = 90;
@@ -467,8 +467,8 @@ void InitKI(void)
 			//Strategy R1 ==> R2 bzw. L1 ==> L2
 			case NEXTION_STRATEGY_R2_L2_P1:  case NEXTION_STRATEGY_L2_R2_P1:
 			{
-				KI_Task[2].Priority = 100;
-				KI_Task[3].Priority = 99;
+				KI_Task[2].Priority = 99;
+				KI_Task[3].Priority = 98;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[4].Priority = 90;
@@ -481,8 +481,8 @@ void InitKI(void)
 			//Strategy R2 ==> R1 bzw. L2 ==> L1
 			case NEXTION_STRATEGY_R2_L2_P2:  case NEXTION_STRATEGY_L2_R2_P2:
 			{
-				KI_Task[3].Priority = 100;
-				KI_Task[2].Priority = 99;
+				KI_Task[3].Priority = 99;
+				KI_Task[2].Priority = 98;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[4].Priority = 90;
@@ -495,9 +495,9 @@ void InitKI(void)
 			//Strategy R2 ==> R1 ==> M1
 			case NEXTION_STRATEGY_R2_L2_A1:  case NEXTION_STRATEGY_L2_R2_A1:
 			{
-				KI_Task[3].Priority = 100;
-				KI_Task[2].Priority = 99;
-				KI_Task[1].Priority = 98;
+				KI_Task[3].Priority = 99;
+				KI_Task[2].Priority = 98;
+				KI_Task[1].Priority = 97;
 				
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
@@ -508,9 +508,9 @@ void InitKI(void)
 			//Strategy R1 ==> M2 ==> R2
 			case NEXTION_STRATEGY_R2_L2_A3:  case NEXTION_STRATEGY_L2_R2_A3:
 			{
-				KI_Task[2].Priority = 100;
-				KI_Task[4].Priority = 99;
-				KI_Task[3].Priority = 98;
+				KI_Task[2].Priority = 99;
+				KI_Task[4].Priority = 98;
+				KI_Task[3].Priority = 97;
 				
 				KI_Task[1].Priority = 90;
 				KI_Task[5].Priority = 90;
@@ -597,7 +597,7 @@ void InitKI(void)
 	// *******************************************
 	for (int i=1; i<7; i++)
 	{
-		if(KI_Task[i].Priority == 100)
+		if(KI_Task[i].Priority == 99)
 		{
 			KI_Task[i].Status = OPEN;
 		}
@@ -805,7 +805,7 @@ uint8_t KiTask(void)
 			if(OpenPlants > 0)
 			{
 				//Nächste Pflanze von PENDING to OPEN
-				for (int prio = 99;prio>90; prio--)
+				for (int prio = 98;prio>90; prio--)
 				{
 					for (int i = 1;i<7; i++)
 					{

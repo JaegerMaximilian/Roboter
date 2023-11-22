@@ -137,20 +137,22 @@ void SendPlaygroundPositionMessage(uint8_t uid[], uint16_t xCoords[],uint16_t yC
 void SendTaskInfo(uint8_t index[], uint8_t state[], uint8_t priority[])
 {
 	char message[LOGGER_MESSAGE_SIZE];
-	char text[5];
+	char text[10];
 	uint8_t length = sizeof(index);
 	sprintf(message, "#1TA");
-	if(sizeof(index) == sizeof(state) && sizeof(state) == sizeof(priority))
-	{
-		for (uint8_t i = 0; i < length; ++i)
+	//if(sizeof(index) == sizeof(state) && sizeof(state) == sizeof(priority))
+	//{
+		for (uint8_t i = 0; i < 16; ++i)
 		{
-			sprintf(text, "%02d%01d%02d", index[i], state[i], priority[i]);
+			sprintf(text, "%02d%1d%02d", index[i], state[i], priority[i]);
 			strcat(message, text);
-			if (i+1 < length) {
+			if (i+1 <16)
+			{
 				strcat(message, "|");
 			}
-			strcat(message, "*");
-			writeString_usart(USART_EUROBOTLOGGER, message);
+
 		}
-	}
+		strcat(message, "*");
+		writeString_usart(USART_EUROBOTLOGGER, message);
+	//}
 }

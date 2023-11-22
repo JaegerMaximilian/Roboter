@@ -214,27 +214,27 @@ void RePrioritisePlantTasks(void)
 	{
 		if(distances[i] == wholeDistance_1000)
 		{
-			KI_Task[1].Priority = 97-i;
+			KI_Task[1].Priority = 96-i;
 		}
 		if(distances[i] == wholeDistance_2000)
 		{
-			KI_Task[2].Priority = 97-i;
+			KI_Task[2].Priority = 96-i;
 		}
 		if(distances[i] == wholeDistance_3000)
 		{
-			KI_Task[3].Priority = 97-i;
+			KI_Task[3].Priority = 96-i;
 		}
 		if(distances[i] == wholeDistance_4000)
 		{
-			KI_Task[4].Priority = 97-i;
+			KI_Task[4].Priority = 96-i;
 		}
 		if(distances[i] == wholeDistance_5000)
 		{
-			KI_Task[5].Priority = 97-i;
+			KI_Task[5].Priority = 96-i;
 		}
 		if(distances[i] == wholeDistance_6000)
 		{
-			KI_Task[6].Priority = 97-i;
+			KI_Task[6].Priority = 96-i;
 		}
 	}
 }

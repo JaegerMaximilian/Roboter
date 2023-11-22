@@ -20,7 +20,7 @@
 /* ***      prototypes      *** */
 /* **************************** */
 
-#define LOGGER_MESSAGE_SIZE 100
+#define LOGGER_MESSAGE_SIZE 200
 #define LOGGER_MEMBER_ROBOT1 1
 #define LOGGER_MEMBER_ROBOT2 2
 #define USART_EUROBOTLOGGER &WIFI_IF 
