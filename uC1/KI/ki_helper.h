@@ -21,6 +21,8 @@ uint8_t DriveBack(uint8_t distance, uint8_t speed);
 float CalcDistance(point_t firstPoint, point_t secondPoint);
 void RePrioritisePlantTasks(void);
 uint8_t CalcOpenPlants(void);
+uint8_t CalcOpenParkPositions(void);
+
 
 // ****************************************************
 // Dot2D, Norm2D, AngleToXAxis2D from path_math.c (µC2)

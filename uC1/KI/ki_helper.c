@@ -66,19 +66,6 @@ void ChangePrioToYellow(void)
 **************************************************************************/
 void ActivatePlantAsObstacle(void)
 {
-	//Plant 1000
-	PATH_SetStaticObstacle(3, 1250, 250, 1750, 750);
-	//Plant 2000
-	PATH_SetStaticObstacle(4, 750, 450, 1250, 950);
-	//Plant 3000
-	PATH_SetStaticObstacle(5, 750, 1050, 1250, 1550);
-	//Plant 4000
-	PATH_SetStaticObstacle(6, 1250, 1250, 1750, 1750);
-	//Plant 5000
-	PATH_SetStaticObstacle(7, 1750, 1050, 2250, 1550);
-	//Plant 6000
-	PATH_SetStaticObstacle(8, 1750, 450, 2250, 950);
-	
 	for (int i = 1; i<7; i++)
 	{
 		if(KI_Task[i].Status == PENDING)
@@ -257,6 +244,24 @@ uint8_t CalcOpenPlants(void)
 	return(OpenPlants);
 }
 
+/**************************************************************************
+***   FUNKTIONNAME: CalcOpen Park-Positions 							***
+***   FUNKTION: OpenPlants												***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+uint8_t CalcOpenParkPositions(void)
+{
+	OpenParkPos = 0;
+	for (int i = 11; i < 27; i++)
+	{
+		if(KI_Task[i].Status == OPEN )
+		{
+			OpenParkPos++;
+		}
+	}
+	return(OpenParkPos);
+}
 
 
 

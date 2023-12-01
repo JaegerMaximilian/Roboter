@@ -84,10 +84,10 @@ void enemyPosMsg()
 	
 	sendArray[0] = (j-1) / 4;
 	
-	if (j > 1)
-	{
+// 	if (j > 1)
+// 	{
 		Send_Application_Data(&MCU1, POS_MSG_GEGNER_PORTNBR, sendArray, j);
-	}
+//	}
 	
 
 }

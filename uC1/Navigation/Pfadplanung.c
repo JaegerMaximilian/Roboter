@@ -88,7 +88,7 @@ uint8_t PATH_DriveToAbsPos(point_t start, point_t ziel, point_t *pointList, uint
 			/* make a list of all segments of the objects (vectors between the edges) */
 			PATH_SetSegmentList();
 			/* shorten the path - delete unnecessary corners */
-			PATH_ShortenPath(startMP, zielMP);
+			PATH_ShortenPath(startMP, zielMP); 
 			/* recalculate the real coordinates of the matrix-points */
 			path.dimP = PATH_StoreRealPoints(zielMP, ziel);
 			/* execute path */
@@ -766,7 +766,7 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B)
 	vector_t C;
 	/*  */
 	int16_t detK, zAlpha, zBeta;
-	
+	float Alpha, Beta;
 	/* set vector A */
 	A.v.x = A2.Xpos - A1.Xpos;
 	A.v.y = A2.Ypos - A1.Ypos;
@@ -777,7 +777,7 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B)
 	/* system of equations to calculate an intersection */
 	/* Ax*Alpha - Dx*Beta = Cx */
 	/* Ay*Alpha - Dy*Beta = Cy */
-	detK = (int16_t)(A.v.y * B.v.x) - (int16_t)(A.v.x * B.v.y);
+	detK = (int16_t)A.v.y * (int16_t)B.v.x - (int16_t)A.v.x * (int16_t)B.v.y;
 	
 	/* if detK == 0 -> vector A and B are parallel */
 	if (detK != 0)
@@ -787,23 +787,35 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B)
 		C.y = B.o.Ypos - A.o.Ypos;
 		
 		/* calcualte the numerator of Alpha and Beta */
-		zAlpha =  (int16_t)(C.x * B.v.y) - (int16_t)(C.y * B.v.x);
-		zBeta =  (int16_t)(C.x * A.v.y) - (int16_t)(C.y * A.v.x);
+		zAlpha = (int16_t)C.y * (int16_t)B.v.x - (int16_t)C.x * (int16_t)B.v.y;
+		zBeta = (int16_t)C.y * (int16_t)A.v.x - (int16_t)C.x * (int16_t)A.v.y;
+		
+		Alpha = (float)zAlpha / (float)detK;
+		Beta = (float)zBeta / (float)detK;
 		
 		/* intersection only at: (0 < Alpha < 1) and (0 < Beta < 1) - Alpha = zAlpha/detK and Beta = zBeta/detK */
 		/*  -> zAlpha, detK and zBeta must have the same sign */
 		/*  -> |zAlpha| < |detK| and |zBeta| < |detK| */
 		/* otherwise there is no intersection -> return 0 */
 		//		if (((sign(detK) != sign(zAlpha)) && (zAlpha != 0)) || ((sign(detK) != sign(zBeta)) && (zBeta != 0)) || (abs(detK) < abs(zAlpha)) || (abs(detK) < abs(zBeta)) && (zAlpha != 0) && (zBeta != 0))
-		if (((sign(detK) != sign(zAlpha)) && (zAlpha != 0)) || ((sign(detK) != sign(zBeta)) && (zBeta != 0)) || (((abs(detK) < abs(zAlpha)) || (abs(detK) < abs(zBeta))) && (zAlpha != 0) && (zBeta != 0)))
+// 		if (((sign(detK) != sign(zAlpha)) && (zAlpha != 0)) || ((sign(detK) != sign(zBeta)) && (zBeta != 0)) || (((abs(detK) < abs(zAlpha)) || (abs(detK) < abs(zBeta))) && (zAlpha != 0) && (zBeta != 0)))
+// 		{
+// 			return(0);
+// 		}
+// 		/* intersection has been detected -> return 1 */
+// 		else
+// 		{
+// 			return(1);
+// 		}
+		if ((Alpha >= 0.0) && (Alpha <= 1.0) && (Beta >= 0.0) && (Beta <= 1.0))
+		{
+			return(1);
+		} 
+		else
 		{
 			return(0);
 		}
-		/* intersection has been detected -> return 1 */
-		else
-		{
-			return(1);
-		}
+
 	}
 	
 	/* no intersection */

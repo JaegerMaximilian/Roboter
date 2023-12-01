@@ -169,6 +169,18 @@ void InitKI(void)
 		PATH_ENABLE_OBSTACLE(1);
 	}
 
+	//Plant 1000
+	PATH_SetStaticObstacle(3, 1250, 250, 1750, 750);
+	//Plant 2000
+	PATH_SetStaticObstacle(4, 750, 450, 1250, 950);
+	//Plant 3000
+	PATH_SetStaticObstacle(5, 750, 1050, 1250, 1550);
+	//Plant 4000
+	PATH_SetStaticObstacle(6, 1250, 1250, 1750, 1750);
+	//Plant 5000
+	PATH_SetStaticObstacle(7, 1750, 1050, 2250, 1550);
+	//Plant 6000
+	PATH_SetStaticObstacle(8, 1750, 450, 2250, 950);
 	///* geschützte Start-Zone gelber Roboter */
 	if(SpielFarbe == BLUE)
 	{
@@ -305,7 +317,6 @@ void InitKI(void)
 				KI_Task[1].Priority = 90;
 				KI_Task[2].Priority = 90;
 				KI_Task[3].Priority = 90;
-				
 				break;
 			}
 			//Strategy L1 ==> L2 ==> M2  bzw. R1 ==> R2 ==> M2
@@ -516,6 +527,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
+				ConfigPlanter = 1;
 				break;
 			}
 		}
@@ -659,8 +671,8 @@ uint8_t KiTask(void)
 	uint16_t YPosition[] = {yPos, enemySend[0].Ypos,enemySend[1].Ypos,enemySend[2].Ypos,enemySend[3].Ypos,enemySend[4].Ypos};
 	SendPlaygroundPositionMessage(index, XPosition,YPosition,6);
 	
-	sprintf(text1, "PosX: %d PosY: %d", enemySend[0].Xpos, enemySend[0].Ypos);
-	SendDebugMessage(text1,1);
+	//sprintf(text1, "PosX: %d PosY: %d", enemySend[0].Xpos, enemySend[0].Ypos);
+	//SendDebugMessage(text1,1);
 	
 	//State and Priority of Tasks
 	uint8_t index1 [] = {1,2,3,4,5,6,11,12,13,15,16,21,22,23,25,26};
@@ -821,7 +833,6 @@ uint8_t KiTask(void)
 						if((KI_Task[i].Priority == prio) && (KI_Task[i].Status == PENDING))
 						{
 							KI_Task[i].Status = OPEN;
-							ActivatePlantAsObstacle();
 							done = 1;
 							break;
 						}
@@ -833,6 +844,7 @@ uint8_t KiTask(void)
 					}
 				}
 			}
+			ActivatePlantAsObstacle();
 			
 			if(OpenPlants == 0 && PlantsInRobot > 0)
 			{
@@ -1962,8 +1974,7 @@ uint8_t KiTask(void)
 				KI_Task[15].Priority = 83;
 				KI_Task[25].Priority = 83;
 			}
-			sprintf(text1, "P1: %6.2f P2: %6.2f,M1: %6.2f,Prio: %d,enemy: %d", distance_Planter1, distance_Planter2, distance_PlanterMidle,KI_Task[15].Priority,enemyRobotInPlanter2);
-			SendDebugMessage(text1,1);
+
 			//Task field 1 as Prio 87
 			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && PlantsInRobot > 1) && (KI_Task[13].Status == OPEN || KI_Task[23].Status == OPEN))
 			{
@@ -2040,7 +2051,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[11].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 3000);
 					
@@ -2048,7 +2059,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -2084,7 +2095,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[11].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2135,7 +2154,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[12].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 500);
 					
@@ -2168,7 +2187,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -2205,7 +2224,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[12].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2260,7 +2287,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[13].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 3000);
 					
@@ -2268,7 +2295,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -2304,7 +2331,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[13].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2373,7 +2408,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[15].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 3000);
 					
@@ -2381,7 +2416,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot < 3)
+					if(PlantsInRobot < 3 || OpenParkPos == 0)
 					{
 						KI_State = 500;
 						StateOfGame = GetPlants; // gehört raus
@@ -2418,7 +2453,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[15].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2472,7 +2515,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[16].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 500);
 					
@@ -2505,7 +2548,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -2541,7 +2584,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[16].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2653,7 +2704,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[21].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 3000);
 					
@@ -2661,7 +2712,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -2697,7 +2748,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[21].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2752,7 +2811,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[22].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 500);
 					
@@ -2785,7 +2844,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -2821,7 +2880,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[22].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2876,7 +2943,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[23].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 3000);
 					
@@ -2884,7 +2951,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -2920,7 +2987,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[23].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -2989,7 +3064,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[25].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 3000);
 					
@@ -2997,7 +3072,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot < 3)
+					if(PlantsInRobot < 3 || OpenParkPos == 0)
 					{
 						KI_State = 500;
 						StateOfGame = GetPlants; // gehört raus
@@ -3034,7 +3109,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[25].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -3089,7 +3172,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[26].Status = DONE;
-					
+					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 500);
 					
@@ -3122,7 +3205,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0)
+					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -3159,7 +3242,15 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_Task[26].Status = DONE; //==> gehört Raus
-				KI_State = 10000; //==> gehört Raus
+				CalcOpenParkPositions();
+				if(OpenParkPos > 0)
+				{
+					KI_State = 10000;
+				}
+				else
+				{
+					KI_State = 500;
+				}
 			}
 
 			break;
@@ -3757,7 +3848,7 @@ uint8_t KiTask(void)
 	//Write Message to Logger
 	if(KI_State != OldKI_State)
 	{
-		sprintf(text1, "State: %6d PIR: %d", KI_State, PlantsInRobot);
+		sprintf(text1, "State: %6d PIR: %d OPP: %d", KI_State, PlantsInRobot , OpenParkPos);
 		SendDebugMessage(text1,1);
 	}
 	OldKI_State = KI_State;

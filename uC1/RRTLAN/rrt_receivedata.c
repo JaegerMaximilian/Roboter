@@ -49,6 +49,7 @@ All Rights Reserved.
 #include "command.h"
 #include "wifi.h"
 #include "observation.h"
+#include "logger.h"
 
 /**************************************************************************
 ***   FUNKTIONNAME: InitDebug                                           ***
@@ -180,8 +181,10 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 		}
 
 
+		sprintf(text1, "Gegner %d, (%d/%d), (%d/%d), (%d/%d)", receiveArray[0], enemyRobot[0].Xpos, enemyRobot[0].Ypos, enemyRobot[1].Xpos, enemyRobot[1].Ypos, enemyRobot[2].Xpos, enemyRobot[2].Ypos);
+		SendDebugMessage(text1, 2);
 
-		//sprintf(text1, "# Gegner1 ;x; %d; y;  %d  \r\n *", x[1].uint16[0], y[1].uint16[0]);
+//		sprintf(text1, "# Gegner1 ;x; %d; y;  %d  \r\n *", x[1].uint16[0], y[1].uint16[0]);
 		//writeString_usart(&usartC0, text1);
 		//
 		//sprintf(text1, "# Gegner2 ;x; %d; y;  %d  \r\n *", x[2].uint16[0], y[2].uint16[0]);

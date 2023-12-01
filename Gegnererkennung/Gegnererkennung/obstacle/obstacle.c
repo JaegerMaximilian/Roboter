@@ -73,6 +73,7 @@ uint8_t OBSTACLE_DetectionTask()
 	{
 		/* set the point-counter of each obstacle to zero */
 		obstacleList[i].nbr = 0;
+		obstacleList[i].nbrObstacle = 0;
 	}
 	
 	/* ********************************************************************* */
@@ -199,7 +200,7 @@ void OBSTACLE_Scan2Pos(rpLidar_Scan_t* scan)
 	
 	/* check if an overrun in scan happend -> angle turns from 360° to 0° */
 	/* scan is complete -> wakeup OBSTACLE_DetectionTask                  */
-	if ((scan->angle < lastAngle) && (nbr > 0))
+	if ((scan->angle < lastAngle))// && (nbr > 0))
 	//	if (nbr > 50)
 	{
 		//for (uint8_t i = 0; i < nbr; i++)
