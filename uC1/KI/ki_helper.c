@@ -267,6 +267,192 @@ uint8_t CalcOpenParkPositions(void)
 
 
 
+/**************************************************************************
+***   FUNKTIONNAME: CalcTimeRemainingPlants								***
+***   FUNKTION: Calculates Time it probably takes to Grab and Park      ***
+                Remaining Free Plants									***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+uint8_t CalcTimeRemainingPlants(void)
+{
+	float totalDistance = 0.0;
+	
+	task_t MaxPriorityKI_Tasks[3];
+	uint8_t MaxPriorityKI_TaskNumbers[3]; 
+	
+	
+	// Filter Array (this first 6) to only OPEN or PENDING Tasks
+	for (int i = 0; i < 3; i++)
+	{
+		if(KI_Task[i].Status == OPEN || KI_Task[i].Status == PENDING )
+		{
+			MaxPriorityKI_Tasks[i] = KI_Task[i];
+			MaxPriorityKI_TaskNumbers[i] = i;
+		}
+		
+	}
+	
+	// Sort Task Array according to the Priorities
+	uint8_t a = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = i + 1; j < 3; j++)
+		{
+			if (MaxPriorityKI_Tasks[i].Priority < MaxPriorityKI_Tasks[j].Priority)
+			{
+				a = MaxPriorityKI_TaskNumbers[i];
+				MaxPriorityKI_Tasks[i] = MaxPriorityKI_Tasks[j];
+				MaxPriorityKI_TaskNumbers[i] = MaxPriorityKI_TaskNumbers[j];
+				MaxPriorityKI_TaskNumbers[j] = a;
+			}
+		}
+	}
+	
+	 // Get current Position and Calculate the way from this Position to the first Plant
+	 // and then to the next Plant and to the next (max 3 Plants)
+	
+	// get Position of Last Plant 
+	point_t aktpos;
+	aktpos.Xpos = xPos;
+	aktpos.Ypos = yPos;
+	point_t OldPlantPosition;
+	
+	point_t LastPlantPosition;
+	
+	for (int i =0; i<3; i++)
+	{
+		point_t PlantPosition;
+			if(MaxPriorityKI_TaskNumbers[i] == 1){
+				PlantPosition  = Plant1000;
+				//check if it either the last element in array or if array is not full with all 3, use the last one that
+				// is filled out as LastPlantPosition
+				if (i==3){
+					LastPlantPosition = Plant1000;
+					} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
+					LastPlantPosition = Plant1000;
+				}
+			} else if (MaxPriorityKI_TaskNumbers[i] == 2){
+				PlantPosition = Plant2000;
+				if (i==3){
+					LastPlantPosition = Plant2000;
+				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
+					LastPlantPosition = Plant2000;
+				}
+			} else if (MaxPriorityKI_TaskNumbers[i] == 3){
+				PlantPosition = Plant3000;
+				if (i==3){
+					LastPlantPosition = Plant3000;
+				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
+					LastPlantPosition = Plant3000;
+				}	
+			} else if (MaxPriorityKI_TaskNumbers[i] == 4){
+				PlantPosition = Plant4000;
+				if (i==3){
+					LastPlantPosition = Plant4000;
+				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
+					LastPlantPosition = Plant4000;
+				}
+			} else if (MaxPriorityKI_TaskNumbers[i] == 5){
+				PlantPosition = Plant5000;
+				if (i==3){
+					LastPlantPosition = Plant5000;
+				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
+					LastPlantPosition = Plant5000;
+				}
+			} else if (MaxPriorityKI_TaskNumbers[i] == 6){
+				PlantPosition = Plant6000;
+				if (i==3){
+					LastPlantPosition = Plant5000;
+				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
+					LastPlantPosition = Plant5000;
+				}
+		}
+		if(i==0) // add distance from current-pos to first plant-pos
+		{
+			totalDistance = totalDistance + CalcDistance(aktpos, PlantPosition);
+						
+		} else // add distance from old plant-pos to next (new) plant-pos
+		{
+			totalDistance = totalDistance + CalcDistance(OldPlantPosition, PlantPosition);
+		}
+		OldPlantPosition = PlantPosition;
+	}
+	 
+	 
+	
+	 // Calculate the way from the last Plant  to the Nearest Parking-Station that has free
+	 // space (KI_Task.Status == OPEN), according to the Color we are
+	 
+	float MinDistance = 3000.0;
+	//task_t MaxPriorityPlanter;
+	uint8_t MaxPriorityPlanterNumber;
+	point_t PlanterOrFieldPos;
+	
+	
+	
+	for(int i= 11; i<=26;i++)
+	{
+		if((i<=16 || i>=21) && KI_Task[i].Status == OPEN  ) // KI_Tasks der Ablagen werden je nachdem ob sie voll sind oder welche Farbe wir sind gefiltert mit OPEN
+		{
+			if (i==11){
+				PlanterOrFieldPos = PlanterMidleBlue;
+			} else if (i == 12){
+				PlanterOrFieldPos = FieldL1;
+			} else if (i == 13){
+				PlanterOrFieldPos = PlanterL1;
+			
+			} else if (i == 15){
+				PlanterOrFieldPos = PlanterL2;
+			} else if (i == 16){
+				PlanterOrFieldPos = FieldL3;
+			} else if (i == 21){
+				PlanterOrFieldPos = PlanterMidleYellow;
+			} else if (i == 22){
+				PlanterOrFieldPos = FieldR1;
+			} else if (i == 23){
+				PlanterOrFieldPos = PlanterR1;
+			
+			} else if (i == 25){
+				PlanterOrFieldPos = PlanterR2;
+			} else if (i == 26){
+				PlanterOrFieldPos = FieldR3;
+			}
+			
+			
+			 float distance = CalcDistance(LastPlantPosition,PlanterOrFieldPos);
+			
+			if(distance < MinDistance)
+			{
+				MinDistance = distance;
+				//MaxPriorityPlanter = KI_Task[i];
+				MaxPriorityPlanterNumber = i;
+			}
+			
+		}
+	}
+	
+	// add distance from the last Plant-Pos to the nearest Planter-Pos to the total_distance
+	totalDistance = totalDistance + MinDistance;
+	
+	
+	
+	
+	// Solution 1: devide a fixed Velocity by the total Distance
+	
+	uint8_t fixedVelocity = 0.3; // in [m/s]
+	uint8_t timeToDrive = fixedVelocity / totalDistance;
+	
+	for(int i=0; i<3; i++){
+		char text1[200];
+		sprintf(text1, "State: %6d PIR: %d OPP: %d", MaxPriorityKI_TaskNumbers[i], MaxPriorityPlanterNumber );
+		SendDebugMessage(text1,1);
+	}
+	
+	
+	
+	return(timeToDrive);
+}
 
 
 

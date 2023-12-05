@@ -22,6 +22,7 @@ float CalcDistance(point_t firstPoint, point_t secondPoint);
 void RePrioritisePlantTasks(void);
 uint8_t CalcOpenPlants(void);
 uint8_t CalcOpenParkPositions(void);
+uint8_t CalcTimeRemainingPlants(void);
 
 
 // ****************************************************
