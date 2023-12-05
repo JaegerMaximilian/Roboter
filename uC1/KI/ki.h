@@ -70,7 +70,7 @@ Data Stack size     : 1024
 #define STANDARD_VELOCITY			600		//[m/s]
 #define START_VELOCITY				310		//[m/s]
 #define MIN_VELOCITY				170		//[m/s]
-#define Cherry_VELOCITY				80		//[m/s]
+#define ENEMY_VELOCITY				80		//[m/s]
 #define MAX_VELOCITY				800		//[m/s]
 
 // Struktur der Roboter (Position)

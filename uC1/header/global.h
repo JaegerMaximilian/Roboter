@@ -130,7 +130,7 @@ _GLOBAL_EXTERN uint8_t OpenPlants;
 _GLOBAL_EXTERN uint8_t motionFailureCount;
 _GLOBAL_EXTERN uint8_t planedPlants;
 
-
+_GLOBAL_EXTERN uint16_t velocity;
 
 _GLOBAL_EXTERN uint8_t StateOfGame;
 

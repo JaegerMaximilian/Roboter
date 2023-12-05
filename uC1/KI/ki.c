@@ -104,6 +104,7 @@ void InitKI(void)
 	planedPlants = 0;
 	ConfigPlanter = ConfigPlanter_Nextion;
 	ConfigStehlen = ConfigStehlen_Nextion;
+	velocity = STANDARD_VELOCITY;
 	
 	//Set Plant Positions
 	Plant1000.Xpos = 1500;
@@ -2019,25 +2020,20 @@ uint8_t KiTask(void)
 		{
 			point_t start;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			
-			float distance;
-			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,PlanterMidleBlue);;
-			
+					
 			if (PATH_DriveToAbsPos(start, PlanterMidleBlue, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 11010;
 			}
 			else
 			{
 				KI_State = 11030;
 			}
-			
+			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2088,6 +2084,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 11000;
 			}
 			
@@ -2126,21 +2123,20 @@ uint8_t KiTask(void)
 		{
 			point_t start;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
 			if (PATH_DriveToAbsPos(start, FieldL1, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 12010;
 			}
 			else
 			{
 				KI_State = 12030;
 			}
-			sprintf(text1, "State: %6d PIR: %d", KI_State, PlantsInRobot);
-			SendDebugMessage(text1,1);
+			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2216,8 +2212,8 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 12000;
-				SendDebugMessage("12020 failure",1);
 			}
 			
 			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
@@ -2253,27 +2249,32 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 13000:
 		{
-			point_t start;
+			point_t start , goal;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
+						
+			//Check if Enemy Robot is in Area Next to Planter
+			goal.Xpos = PlanterL1.Xpos;
+			goal.Ypos = PlanterL1.Ypos;
 			
-			float distance;
-			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,PlanterL1);
-			
-			if (PATH_DriveToAbsPos(start, PlanterL1, wp_KI, &wpNbr))
+			if(Path_IsInArea(2550,775,3000,1225))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				goal.Ypos = 562.5;
+				velocity = ENEMY_VELOCITY;
+			}
+			
+			if (PATH_DriveToAbsPos(start,goal, wp_KI, &wpNbr))
+			{
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 13010;
 			}
 			else
 			{
 				KI_State = 13030;
 			}
-			
+			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2324,6 +2325,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 13000;
 			}
 			
@@ -2374,27 +2376,32 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 15000:
 		{
-			point_t start;
+			point_t start, goal;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			float distance;
+			//Check if Enemy Robot is in Area Next to Planter
+			goal.Xpos = PlanterL2.Xpos;
+			goal.Ypos = PlanterL2.Ypos;
 			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,PlanterL2);
+			if(Path_IsInArea(2550,1550,3000,2000))
+			{
+				goal.Ypos = 1337.5;
+				velocity = ENEMY_VELOCITY;
+			}
 			
 			if (PATH_DriveToAbsPos(start, PlanterL2, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 15010;
 			}
 			else
 			{
 				KI_State = 15030;
 			}
-			
+			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2446,6 +2453,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 15000;
 			}
 			
@@ -2484,24 +2492,20 @@ uint8_t KiTask(void)
 		{
 			point_t start;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			float s;
-			
-			/* calculate the distance to drive */
-			s = CalcDistance(start,FieldL3);
-			
 			if (PATH_DriveToAbsPos(start, FieldL3, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 16010;
 			}
 			else
 			{
 				KI_State = 16030;
 			}
+			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2577,6 +2581,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 16000;
 			}
 			
@@ -2672,18 +2677,13 @@ uint8_t KiTask(void)
 		{
 			point_t start;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			float distance;
-			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,PlanterMidleYellow);
-			
 			if (PATH_DriveToAbsPos(start, PlanterMidleYellow, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 21010;
 			}
 			else
@@ -2691,6 +2691,7 @@ uint8_t KiTask(void)
 				KI_State = 21030;
 			}
 			
+			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2741,6 +2742,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 21000;
 			}
 			
@@ -2779,24 +2781,21 @@ uint8_t KiTask(void)
 		{
 			point_t start;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			float distance;
-			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,FieldR1);
-			
 			if (PATH_DriveToAbsPos(start, FieldR1, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 22010;
 			}
 			else
 			{
 				KI_State = 22030;
 			}
+			
+			velocity = STANDARD_VELOCITY;
 			
 			break;
 		}
@@ -2873,6 +2872,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 22000;
 			}
 			
@@ -2909,26 +2909,33 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 23000:
 		{
-			point_t start;
+			point_t start, goal;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement 
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-
-			float distance;
+	
+			//Check if Enemy Robot is in Area Next to Planter
+			goal.Xpos = PlanterR1.Xpos;
+			goal.Ypos = PlanterR1.Ypos;
 			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,PlanterR1);
-			
-			if (PATH_DriveToAbsPos(start, PlanterR1, wp_KI, &wpNbr))
+			if(Path_IsInArea(0,775,450,1225))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				goal.Ypos = 562.5;
+				velocity = ENEMY_VELOCITY;
+			}
+			
+			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
+			{
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 23010;
 			}
 			else
 			{
 				KI_State = 23030;
 			}
+			
+			velocity = STANDARD_VELOCITY;
 			
 			break;
 		}
@@ -2980,6 +2987,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 23000;
 			}
 			
@@ -3030,20 +3038,25 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 25000:
 		{
-			point_t start;
+			point_t start, goal;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			float distance;
+			//Check if Enemy Robot is in Area Next to Planter
+			goal.Xpos = PlanterR2.Xpos;
+			goal.Ypos = PlanterR2.Ypos;
 			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,PlanterR2);
-			
-			if (PATH_DriveToAbsPos(start, PlanterR2, wp_KI, &wpNbr))
+			if(Path_IsInArea(0,1550,450,2000))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				goal.Ypos = 562.5;
+				velocity = ENEMY_VELOCITY;
+			}
+						
+			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
+			{
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 25010;
 			}
 			else
@@ -3102,6 +3115,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 25000;
 			}
 			
@@ -3140,18 +3154,13 @@ uint8_t KiTask(void)
 		{
 			point_t start;
 			
-			// Start Position to begin movement from
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-			
-			float distance;
-			
-			/* calculate the distance to drive */
-			distance = CalcDistance(start,FieldR3);
-			
+					
 			if (PATH_DriveToAbsPos(start, FieldR3, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
 				KI_State = 26010;
 			}
 			else
@@ -3159,6 +3168,7 @@ uint8_t KiTask(void)
 				KI_State = 26030;
 			}
 			
+			velocity = START_VELOCITY;
 			break;
 		}
 
@@ -3235,6 +3245,7 @@ uint8_t KiTask(void)
 			{
 				//Drive Back
 				DriveBack(50,200);
+				velocity = ENEMY_VELOCITY;
 				KI_State = 26000;
 			}
 			
