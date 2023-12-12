@@ -122,25 +122,25 @@ void InitKI(void)
 	
 	//Set Park Positions
 	PlanterL1.Xpos = 2700;
-	PlanterL1.Ypos = 612.5;
+	PlanterL1.Ypos = 612;
 	PlanterL2.Xpos = 2700;
-	PlanterL2.Ypos = 1387.5;
+	PlanterL2.Ypos = 1387;
 	FieldL1.Xpos = 2700;
 	FieldL1.Ypos = 300;
 	FieldL3.Xpos = 2700;
 	FieldL3.Ypos = 1700;
-	PlanterMidleBlue.Xpos = 2237.5;
+	PlanterMidleBlue.Xpos = 2237;
 	PlanterMidleBlue.Ypos = 300;
 	
 	PlanterR1.Xpos = 300;
-	PlanterR1.Ypos = 612.5;
+	PlanterR1.Ypos = 612;
 	PlanterR2.Xpos = 300;
-	PlanterR2.Ypos = 1387.5;
+	PlanterR2.Ypos = 1387;
 	FieldR1.Xpos = 300;
 	FieldR1.Ypos = 300;
 	FieldR3.Xpos = 300;
 	FieldR3.Ypos = 1700;
-	PlanterMidleYellow.Xpos = 762.5;
+	PlanterMidleYellow.Xpos = 762;
 	PlanterMidleYellow.Ypos = 300;
 
 	//Set Gamecolors
@@ -823,6 +823,7 @@ uint8_t KiTask(void)
 			//Zeit Berechnen Abstellen
 			//Zeit Berechnen Solar Panels
 			CalcOpenPlants();
+			CalcTimeRemainingPlants();
 			
 			if(OpenPlants > 0)
 			{
@@ -949,14 +950,13 @@ uint8_t KiTask(void)
 					wp_KI[wpNbr].Ypos = Plant1000.Ypos;
 					wpNbr++;
 				}
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
 				KI_State = 1010;
 			}
 			else
 			{
 				KI_State = 1030;
 			}
-			
 			break;
 		}
 
@@ -971,7 +971,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[1].Status = DONE;
-					
+					velocity = STANDARD_VELOCITY;
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
 					
@@ -999,6 +999,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 1020;
+					velocity = ENEMY_VELOCITY;
 					break;
 				}
 			}
@@ -1012,7 +1013,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[1].Status != DONE)
 			{
 				//Drive Back
-				if(DriveBack(50,200))
+				if(DriveBack(100,200))
 				{
 					KI_State = 1025;
 				}
@@ -1027,8 +1028,8 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				KI_Task[1].Status = DONE; //==> gehört Raus
-				//KI_State = 550; //==> gehört Raus
+				//KI_Task[1].Status = DONE; //==> gehört Raus
+				velocity = STANDARD_VELOCITY;
 			}
 			
 			break;
@@ -1105,14 +1106,13 @@ uint8_t KiTask(void)
 					wp_KI[wpNbr].Ypos = Plant2000.Ypos;
 					wpNbr++;
 				}
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
 				KI_State = 2010;
 			}
 			else
 			{
 				KI_State = 2030;
 			}
-			
 			break;
 		}
 
@@ -1127,6 +1127,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[2].Status = DONE;
+					velocity = STANDARD_VELOCITY;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1154,6 +1155,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 2020;
+					velocity = ENEMY_VELOCITY;
 					break;
 				}
 			}
@@ -1167,7 +1169,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[2].Status != DONE)
 			{
 				//Drive Back
-				if(DriveBack(50,200))
+				if(DriveBack(100,200))
 				{
 					KI_State = 2025;
 				}
@@ -1182,8 +1184,8 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				KI_Task[2].Status = DONE; //==> gehört Raus
-				//KI_State = 550; //==> gehört Raus
+				//KI_Task[2].Status = DONE; //==> gehört Raus
+				velocity = STANDARD_VELOCITY;
 			}
 			
 			break;
@@ -1256,14 +1258,13 @@ uint8_t KiTask(void)
 					wp_KI[wpNbr].Ypos = Plant3000.Ypos;
 					wpNbr++;
 				}
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
 				KI_State = 3010;
 			}
 			else
 			{
 				KI_State = 3030;
 			}
-			
 			break;
 		}
 
@@ -1278,6 +1279,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[3].Status = DONE;
+					velocity = STANDARD_VELOCITY;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1305,6 +1307,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 3020;
+					velocity = ENEMY_VELOCITY;
 					break;
 				}
 			}
@@ -1318,7 +1321,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[3].Status != DONE)
 			{
 				//Drive Back
-				if(DriveBack(50,200))
+				if(DriveBack(100,200))
 				{
 					KI_State = 3025;
 				}
@@ -1333,8 +1336,8 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				KI_Task[3].Status = DONE; //==> gehört Raus
-				//KI_State = 550; //==> gehört Raus
+				//KI_Task[3].Status = DONE; //==> gehört Raus
+				velocity = STANDARD_VELOCITY;
 			}
 			
 			break;
@@ -1410,14 +1413,13 @@ uint8_t KiTask(void)
 					wp_KI[wpNbr].Ypos = Plant4000.Ypos;
 					wpNbr++;
 				}
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
 				KI_State = 4010;
 			}
 			else
 			{
 				KI_State = 4030;
 			}
-			
 			break;
 		}
 
@@ -1430,6 +1432,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[4].Status = DONE;
 					
@@ -1459,6 +1462,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 4020;
+					velocity = ENEMY_VELOCITY;
 					break;
 				}
 			}
@@ -1472,7 +1476,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[4].Status != DONE)
 			{
 				//Drive Back
-				if(DriveBack(50,200))
+				if(DriveBack(100,200))
 				{
 					KI_State = 4025;
 				}
@@ -1487,8 +1491,8 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				KI_Task[4].Status = DONE; //==> gehört Raus
-				//KI_State = 550; //==> gehört Raus
+				//KI_Task[4].Status = DONE; //==> gehört Raus
+				velocity = STANDARD_VELOCITY;
 			}
 			
 			break;
@@ -1562,14 +1566,13 @@ uint8_t KiTask(void)
 					wp_KI[wpNbr].Ypos = Plant5000.Ypos;
 					wpNbr++;
 				}
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
 				KI_State = 5010;
 			}
 			else
 			{
 				KI_State = 5030;
 			}
-			
 			break;
 		}
 
@@ -1584,7 +1587,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[5].Status = DONE;
-					
+					velocity = STANDARD_VELOCITY;
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
 					
@@ -1611,6 +1614,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 5020;
+					velocity = ENEMY_VELOCITY;
 					break;
 				}
 			}
@@ -1624,7 +1628,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[5].Status != DONE)
 			{
 				//Drive Back
-				if(DriveBack(50,200))
+				if(DriveBack(100,200))
 				{
 					KI_State = 5025;
 				}
@@ -1639,8 +1643,8 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				KI_Task[5].Status = DONE; //==> gehört Raus
-				//KI_State = 550; //==> gehört Raus
+			//	KI_Task[5].Status = DONE; //==> gehört Raus
+				velocity = STANDARD_VELOCITY;
 			}
 			
 			break;
@@ -1713,14 +1717,13 @@ uint8_t KiTask(void)
 					wp_KI[wpNbr].Ypos = Plant6000.Ypos;
 					wpNbr++;
 				}
-				cmd_Drive(0,0,500,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
 				KI_State = 6010;
 			}
 			else
 			{
 				KI_State = 6030;
 			}
-			
 			break;
 		}
 
@@ -1735,6 +1738,7 @@ uint8_t KiTask(void)
 				{
 					//Set Task to Done
 					KI_Task[6].Status = DONE;
+					velocity = STANDARD_VELOCITY;
 					
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 2000);
@@ -1762,6 +1766,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 6020;
+					velocity = ENEMY_VELOCITY;
 					break;
 				}
 			}
@@ -1775,7 +1780,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[6].Status != DONE)
 			{
 				//Drive Back
-				if(DriveBack(50,200))
+				if(DriveBack(100,200))
 				{
 					KI_State = 6025;
 				}
@@ -1790,8 +1795,8 @@ uint8_t KiTask(void)
 			else
 			{
 				KI_State = 500;
-				KI_Task[6].Status = DONE; //==> gehört Raus
-				//KI_State = 550; //==> gehört Raus
+				velocity = STANDARD_VELOCITY;
+				//KI_Task[6].Status = DONE; //==> gehört Raus
 			}
 			
 			break;
@@ -2023,17 +2028,16 @@ uint8_t KiTask(void)
 			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-					
+			
 			if (PATH_DriveToAbsPos(start, PlanterMidleBlue, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 11010;
 			}
 			else
 			{
 				KI_State = 11030;
 			}
-			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2083,8 +2087,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[11].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 11000;
 			}
 			
@@ -2129,14 +2132,13 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, FieldL1, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 12010;
 			}
 			else
 			{
 				KI_State = 12030;
 			}
-			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2172,7 +2174,7 @@ uint8_t KiTask(void)
 		}
 		case 12012:
 		{
-			cmd_Drive(0,0,-200,0,0,2500,yPos,0,POS_ABS,ON,NULL,NULL);
+			cmd_Drive(0,0,-200,0,0,2500,yPos,0,POS_ABS,ON,NULL,NULL,STANDARD_ACC,STANDARD_ACC);
 			KI_State=12015;
 			break;
 		}
@@ -2211,8 +2213,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[12].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 12000;
 			}
 			
@@ -2254,7 +2255,7 @@ uint8_t KiTask(void)
 			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-						
+			
 			//Check if Enemy Robot is in Area Next to Planter
 			goal.Xpos = PlanterL1.Xpos;
 			goal.Ypos = PlanterL1.Ypos;
@@ -2267,7 +2268,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start,goal, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 13010;
 			}
 			else
@@ -2324,8 +2325,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[13].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 13000;
 			}
 			
@@ -2394,7 +2394,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, PlanterL2, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 15010;
 			}
 			else
@@ -2452,8 +2452,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[15].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 15000;
 			}
 			
@@ -2498,14 +2497,13 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, FieldL3, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 16010;
 			}
 			else
 			{
 				KI_State = 16030;
 			}
-			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2541,7 +2539,7 @@ uint8_t KiTask(void)
 		}
 		case 16012:
 		{
-			cmd_Drive(0,0,-200,0,0,2500,yPos,0,POS_ABS,ON,NULL,NULL);
+			cmd_Drive(0,0,-200,0,0,2500,yPos,0,POS_ABS,ON,NULL,NULL,STANDARD_ACC,STANDARD_ACC);
 			KI_State=16015;
 			break;
 		}
@@ -2580,8 +2578,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[16].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 16000;
 			}
 			
@@ -2683,7 +2680,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, PlanterMidleYellow, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 21010;
 			}
 			else
@@ -2691,7 +2688,6 @@ uint8_t KiTask(void)
 				KI_State = 21030;
 			}
 			
-			velocity = STANDARD_VELOCITY;
 			break;
 		}
 
@@ -2741,8 +2737,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[21].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 21000;
 			}
 			
@@ -2787,15 +2782,13 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, FieldR1, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 22010;
 			}
 			else
 			{
 				KI_State = 22030;
 			}
-			
-			velocity = STANDARD_VELOCITY;
 			
 			break;
 		}
@@ -2832,7 +2825,7 @@ uint8_t KiTask(void)
 		}
 		case 22012:
 		{
-			cmd_Drive(0,0,-200,0,0,500,yPos,0,POS_ABS,ON,NULL,NULL);
+			cmd_Drive(0,0,-200,0,0,500,yPos,0,POS_ABS,ON,NULL,NULL,STANDARD_ACC,STANDARD_ACC);
 			KI_State=22015;
 			break;
 		}
@@ -2871,8 +2864,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[22].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 22000;
 			}
 			
@@ -2911,10 +2903,10 @@ uint8_t KiTask(void)
 		{
 			point_t start, goal;
 			
-			// Start Position to begin from movement 
+			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-	
+			
 			//Check if Enemy Robot is in Area Next to Planter
 			goal.Xpos = PlanterR1.Xpos;
 			goal.Ypos = PlanterR1.Ypos;
@@ -2927,7 +2919,7 @@ uint8_t KiTask(void)
 			
 			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 23010;
 			}
 			else
@@ -2986,8 +2978,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[23].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 23000;
 			}
 			
@@ -3053,10 +3044,10 @@ uint8_t KiTask(void)
 				goal.Ypos = 562.5;
 				velocity = ENEMY_VELOCITY;
 			}
-						
+			
 			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 25010;
 			}
 			else
@@ -3114,8 +3105,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[25].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 25000;
 			}
 			
@@ -3157,18 +3147,16 @@ uint8_t KiTask(void)
 			// Start Position to begin from movement
 			start.Xpos = xPos;
 			start.Ypos = yPos;
-					
+			
 			if (PATH_DriveToAbsPos(start, FieldR3, wp_KI, &wpNbr))
 			{
-				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr);
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 26010;
 			}
 			else
 			{
 				KI_State = 26030;
 			}
-			
-			velocity = START_VELOCITY;
 			break;
 		}
 
@@ -3204,7 +3192,7 @@ uint8_t KiTask(void)
 		}
 		case 26012:
 		{
-			cmd_Drive(0,0,-200,0,0,500,yPos,0,POS_ABS,ON,NULL,NULL);
+			cmd_Drive(0,0,-200,0,0,500,yPos,0,POS_ABS,ON,NULL,NULL,STANDARD_ACC,STANDARD_ACC);
 			KI_State=22015;
 			break;
 		}
@@ -3244,8 +3232,7 @@ uint8_t KiTask(void)
 			if(motionFailureCount<3 && KI_Task[26].Status != DONE)
 			{
 				//Drive Back
-				DriveBack(50,200);
-				velocity = ENEMY_VELOCITY;
+				DriveBack(100,200);
 				KI_State = 26000;
 			}
 			
@@ -3862,6 +3849,10 @@ uint8_t KiTask(void)
 		sprintf(text1, "State: %6d PIR: %d OPP: %d", KI_State, PlantsInRobot , OpenParkPos);
 		SendDebugMessage(text1,1);
 	}
+	
+	//sprintf(text1, "Side: %d Front: %d", observationDisSide , observationDisFront);
+	//SendDebugMessage(text1,1);
+	
 	OldKI_State = KI_State;
 	return(CYCLE);
 }

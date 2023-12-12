@@ -69,6 +69,7 @@ void InitReceiveData(void)
 	Port_App_allocation(DIGIOUT_PORTNBR, RRTLAN_DIGOUT_TASKNBR);
 	Port_App_allocation(MOT_POS_PORTNBR, RRTLAN_MOT_POS_TASKNBR);
 	Port_App_allocation(SET_SCHLEPP_PORTNBR, RRTLAN_SET_SCHLEPPFEHLER_TASKNBR);
+	Port_App_allocation(SET_ACC_PORTNBR, RRTLAN_SET_ACC_TASKNBR);
 
 	SET_TASK_HANDLE(RRTLAN_SERVO_TASKNBR, rrtlanServo_Task);
 	SET_TASK_HANDLE(RRTLAN_ANTRIEB_TASKNBR, rrtlanAntrieb_Task);
@@ -77,6 +78,7 @@ void InitReceiveData(void)
 	SET_TASK_HANDLE(RRTLAN_DIGOUT_TASKNBR, rrtlanDigiOut_Task);
 	SET_TASK_HANDLE(RRTLAN_MOT_POS_TASKNBR, rrtlanMotorPosition_Task);
 	SET_TASK_HANDLE(RRTLAN_SET_SCHLEPPFEHLER_TASKNBR, rrtlanSetSchleppfehler_Task);
+	SET_TASK_HANDLE(RRTLAN_SET_ACC_TASKNBR, rrtlanSetACC_Task);
 }
 
 /**************************************************************************
@@ -520,6 +522,27 @@ unsigned char rrtlanSetSchleppfehler_Task(void)
 	{
 		Receive_Application_Data(&MCU1, SET_SCHLEPP_PORTNBR, receiveArray);
 		Schleppfehler = ((float)receiveArray[0])/100.0;
+	}
+	
+	return(DISABLE);
+}
+
+/**************************************************************************
+***   FUNCTIONNAME:        rrtlanPosition_Task                          ***
+***   FUNCTION:            empfängt Daten von uC1 -> Position           ***
+***   TRANSMIT-PARAMETER:  NO                                           ***
+***   RECEIVE-PARAMETER:   NO                                           ***
+**************************************************************************/
+unsigned char rrtlanSetACC_Task(void)
+{
+	uint8_t nbr_of_bytes = 0;
+	uint8_t receiveArray[18];
+
+	if(Received_AppData_Available(&MCU1, SET_ACC_PORTNBR, &nbr_of_bytes))
+	{
+		Receive_Application_Data(&MCU1, SET_ACC_PORTNBR, receiveArray);
+		paramComAntrieb.fAmaxUs = ((float)receiveArray[0])/100.0;
+		paramComAntrieb.fAmaxDs = ((float)receiveArray[1])/100.0;
 	}
 	
 	return(DISABLE);

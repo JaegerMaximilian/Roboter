@@ -50,6 +50,7 @@ All Rights Reserved.
 #include "wifi.h"
 #include "observation.h"
 #include "logger.h"
+#include "rrt_transmittingtask.h"
 
 /**************************************************************************
 ***   FUNKTIONNAME: InitDebug                                           ***
@@ -142,7 +143,7 @@ unsigned char rrtlanSensor_uC2Task(void)
 unsigned char rrtlanEnemyPos_GegnerTask(void)
 {
 	uint8_t nbr_of_bytes = 0;
-	uint8_t receiveArray[15];
+	uint8_t receiveArray[30];
 	char text1[100];
 	convData_t x[5], y[5];
 	uint8_t j = 1;

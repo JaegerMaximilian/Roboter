@@ -228,35 +228,40 @@ void OBSTACLE_Scan2Pos(rpLidar_Scan_t* scan)
 	/* store actual angle */
 	lastAngle = scan->angle;
 	
-	/* ************************************************************** */
-	/* transformation from polar coordinates to cartesian coordinates */
-	/* ************************************************************** */
-	/* 1. add offset between lidar and odometrie to the actual x/y-coordinates */
-	x = xPos + (int16_t)(OBSTACLE_LIDAR_OFFSET_X * cos(DEG2RAD((float)(phiPos)))) - (int16_t)(OBSTACLE_LIDAR_OFFSET_Y * sin(DEG2RAD((float)(phiPos))));
-	y = yPos + (int16_t)(OBSTACLE_LIDAR_OFFSET_Y * cos(DEG2RAD((float)(phiPos)))) + (int16_t)(OBSTACLE_LIDAR_OFFSET_X * sin(DEG2RAD((float)(phiPos))));
-	/* 2. add measured distance from lidar to the actual x/y-coordinates */
-	x += (int16_t)(cos(DEG2RAD(RPLIDAR_CONV_ANGLE(scan->angle) + (float)phiPos)) * scan->distance);
-	y += (int16_t)(sin(DEG2RAD(RPLIDAR_CONV_ANGLE(scan->angle) + (float)phiPos)) * scan->distance);
-
-	r = sqrtf(((float)x-(float)xPos)*((float)x-(float)xPos) + ((float)y-(float)yPos)*((float)y-(float)yPos));
-
-	/* check if the point is on playground */
-	if ((x > 100) && (x < OBSTACLE_DIM_PLAYGROUND_X) && (y > 100) && (y < OBSTACLE_DIM_PLAYGROUND_Y) && (r > 150.0) && (nbr < OBSTACLE_SCAN_ARRAY_LENGTH))
+	/* is scan in a valid range  */
+	if (scan->distance < 3600.0)
 	{
-		#ifdef _DEBUG_LASER
-		sprintf(text,"%d;%d;%d;%.0f;%.0f;\r\n",timeStamp,x,y,scan->angle,scan->distance);
-		debugMsg(text);
-		#endif
-		
-		/* store point to scan-array */
-		scanArray[scanArray_In].x = (uint16_t)x;
-		scanArray[scanArray_In].y = (uint16_t)y;
-		scanArray[scanArray_In].phi = (uint16_t)scan->angle;
-		scanArray[scanArray_In].r = (uint16_t)scan->distance;
-		
-		/* increment in-index */
-		scanArray_In = ((++scanArray_In >= OBSTACLE_SCAN_ARRAY_LENGTH) ? 0 : scanArray_In);
-		/* increment the number of valid scan-points */
-		nbr++;
+		/* ************************************************************** */
+		/* transformation from polar coordinates to cartesian coordinates */
+		/* ************************************************************** */
+		/* 1. add offset between lidar and odometrie to the actual x/y-coordinates */
+		x = xPos + (int16_t)(OBSTACLE_LIDAR_OFFSET_X * cos(DEG2RAD((float)(phiPos)))) - (int16_t)(OBSTACLE_LIDAR_OFFSET_Y * sin(DEG2RAD((float)(phiPos))));
+		y = yPos + (int16_t)(OBSTACLE_LIDAR_OFFSET_Y * cos(DEG2RAD((float)(phiPos)))) + (int16_t)(OBSTACLE_LIDAR_OFFSET_X * sin(DEG2RAD((float)(phiPos))));
+		/* 2. add measured distance from lidar to the actual x/y-coordinates */
+		x += (int16_t)(cos(DEG2RAD(RPLIDAR_CONV_ANGLE(scan->angle) + (float)phiPos)) * scan->distance);
+		y += (int16_t)(sin(DEG2RAD(RPLIDAR_CONV_ANGLE(scan->angle) + (float)phiPos)) * scan->distance);
+
+		r = sqrtf(((float)x-(float)xPos)*((float)x-(float)xPos) + ((float)y-(float)yPos)*((float)y-(float)yPos));
+
+		/* check if the point is on playground */
+		if ((x > 100) && (x < OBSTACLE_DIM_PLAYGROUND_X) && (y > 100) && (y < OBSTACLE_DIM_PLAYGROUND_Y) && (r > 150.0) && (nbr < OBSTACLE_SCAN_ARRAY_LENGTH))
+		{
+			#ifdef _DEBUG_LASER
+			sprintf(text,"%d;%d;%d;%.0f;%.0f;\r\n",timeStamp,x,y,scan->angle,scan->distance);
+			debugMsg(text);
+			#endif
+			
+			/* store point to scan-array */
+			scanArray[scanArray_In].x = (uint16_t)x;
+			scanArray[scanArray_In].y = (uint16_t)y;
+			scanArray[scanArray_In].phi = (uint16_t)scan->angle;
+			scanArray[scanArray_In].r = (uint16_t)scan->distance;
+			
+			/* increment in-index */
+			scanArray_In = ((++scanArray_In >= OBSTACLE_SCAN_ARRAY_LENGTH) ? 0 : scanArray_In);
+			/* increment the number of valid scan-points */
+			nbr++;
+		}
 	}
+	
 }

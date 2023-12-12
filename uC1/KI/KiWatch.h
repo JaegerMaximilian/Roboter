@@ -16,7 +16,7 @@
 void InitKiWatch(void);
 uint8_t KiWatchTask(void);
 
-#define MaxCountInArea 18
+#define MaxCountInArea 10
 
 
 #endif /* KIWATCH_H_ */

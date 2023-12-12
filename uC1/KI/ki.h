@@ -67,11 +67,14 @@ Data Stack size     : 1024
 #define MAX_WAY_POINTS		15
 
 // Settings für Roboter Verfahren
-#define STANDARD_VELOCITY			600		//[m/s]
+#define STANDARD_VELOCITY			500		//[m/s]
 #define START_VELOCITY				310		//[m/s]
 #define MIN_VELOCITY				170		//[m/s]
-#define ENEMY_VELOCITY				80		//[m/s]
+#define ENEMY_VELOCITY				200		//[m/s]
 #define MAX_VELOCITY				800		//[m/s]
+
+#define  STANDARD_ACC				120
+#define  PLANT_ACC					60
 
 // Struktur der Roboter (Position)
 typedef point_t robot_t;

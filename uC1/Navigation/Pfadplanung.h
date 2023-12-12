@@ -142,6 +142,8 @@ typedef struct
 	uint8_t segmentListLength;
 	/* in this list the real coordinates are stored */
 	point_t pointList[PATH_GRID_DIM_X]; 
+	/* robot is inside observation-array */
+	uint8_t isInObservationArea;
 } path_t;
 
 PFADPLANUNG_EXTERN path_t path;

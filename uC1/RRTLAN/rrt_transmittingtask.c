@@ -72,10 +72,10 @@ void startLiftInit_RRTLAN(USART_data_t *controller)
 	//uint8_t sendArray[5];
 	//
 	//sendArray[0] = 1;
-//
+	//
 	//if (controller == &MCU3)
 	//{
-		//Send_Application_Data(controller, START_LIFT_INIT_UC3_PORTNBR, sendArray, 1);
+	//Send_Application_Data(controller, START_LIFT_INIT_UC3_PORTNBR, sendArray, 1);
 	//}
 }
 
@@ -104,7 +104,7 @@ void setServo_RRTLAN(USART_data_t *controller, uint8_t nbrServo, int16_t winkelS
 	}
 	//else if (controller == &MCU3)
 	//{
-		//Send_Application_Data(controller, SERVO_UC3_PORTNBR, sendArray, 3);
+	//Send_Application_Data(controller, SERVO_UC3_PORTNBR, sendArray, 3);
 	//}
 }
 
@@ -129,7 +129,7 @@ void setDigitalOut_RRTLAN(USART_data_t *controller, uint8_t nbrDiOut, uint8_t va
 	}
 	//else if (controller == &MCU3)
 	//{
-		//Send_Application_Data(controller, DIGIOUT_UC3_PORTNBR, sendArray, 2);
+	//Send_Application_Data(controller, DIGIOUT_UC3_PORTNBR, sendArray, 2);
 	//}
 
 }
@@ -159,7 +159,7 @@ void VelocityCommand_RRTLAN(USART_data_t *controller, uint8_t nbr, float vel)
 	}
 	//else if (controller == &MCU3)
 	//{
-		//Send_Application_Data(controller, MOT_VEL_UC3_PORTNBR, sendArray, 3);
+	//Send_Application_Data(controller, MOT_VEL_UC3_PORTNBR, sendArray, 3);
 	//}
 }
 
@@ -311,6 +311,23 @@ void setAntriebClothoid_RRTLAN(int16_t vMax, element_t *wP, uint8_t nOP)
 }
 
 /**************************************************************************
+***   FUNCTIONNAME:        setACC Antrieb	                            ***
+***   FUNCTION:            Setzt Beschleunigung Antrieb                                ***
+***   TRANSMIT-PARAMETER:  NO                                           ***
+***   RECEIVE-PARAMETER:   AmaxUs .. Anfangsbeschleunigung             ***
+***                        AmaxDs ... Endbeschleunigung                  ***
+**************************************************************************/
+void setACCAntrieb_RRTLAN(uint8_t AmaxUs,uint8_t AmaxDs)
+{
+	uint8_t sendArray[2];
+	
+	sendArray[0] = AmaxUs;
+	sendArray[1] = AmaxDs;
+			
+	Send_Application_Data(&MCU2, SET_ACC_UC2_PORTNBR, sendArray, 2);
+}
+
+/**************************************************************************
 ***   FUNCTIONNAME:        setPosition                                  ***
 ***   FUNCTION:            Setzt Position des Antriebs                  ***
 ***   TRANSMIT-PARAMETER:  NO                                           ***
@@ -347,7 +364,7 @@ void setDataLCD_RRTLAN(uint8_t points, uint8_t time)
 	sendArray[0] = points;
 	sendArray[1] = time;
 	
-// 	Send_Application_Data(&LCD, VALUE_LCD_PORTNBR, sendArray, 2);
+	// 	Send_Application_Data(&LCD, VALUE_LCD_PORTNBR, sendArray, 2);
 }
 
 /**************************************************************************
@@ -440,15 +457,15 @@ void sendPos2EnemyDetection_RRLAN()
 	d.int16[0] = xPos;
 	sendArray[0] = d.uint8[0];
 	sendArray[1] = d.uint8[1];
-						   
-	d.int16[0] = yPos;		   
+	
+	d.int16[0] = yPos;
 	sendArray[2] = d.uint8[0];
-	sendArray[3] = d.uint8[1];	
+	sendArray[3] = d.uint8[1];
 
 	d.int16[0] = phi;
 	sendArray[4] = d.uint8[0];
 	sendArray[5] = d.uint8[1];
-		
+	
 	
 	Send_Application_Data(&GEGNER, ROBO_POS_MSG_GEGNER_PORTNBR, sendArray, 6);
 }

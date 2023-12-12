@@ -90,7 +90,7 @@ uint8_t DriveBack(uint8_t distance, uint8_t speed)
 {
 	if((xPos>(200+distance))&&(xPos<(2800-distance))&&(yPos>(200+distance))&&(yPos<(1800-distance)))
 	{
-		cmd_Drive(0,0,-speed,0,0,0,0,distance,POS_REL,ON,NULL,NULL);
+		cmd_Drive(0,0,-speed,0,0,0,0,distance,POS_REL,OFF,NULL,NULL,STANDARD_ACC,PLANT_ACC);
 		return(1);
 	}
 	return(0);
@@ -130,12 +130,12 @@ void RePrioritisePlantTasks(void)
 	float distance_4000 = CalcDistance(aktpos,Plant4000);
 	float distance_5000 = CalcDistance(aktpos,Plant5000);
 	float distance_6000 = CalcDistance(aktpos,Plant6000);
-	float distanceEnemy_1000 = 3000;
-	float distanceEnemy_2000 = 3000;
-	float distanceEnemy_3000 = 3000;
-	float distanceEnemy_4000 = 3000;
-	float distanceEnemy_5000 = 3000;
-	float distanceEnemy_6000 = 3000;
+	float distanceEnemy_1000 = 3000.0;
+	float distanceEnemy_2000 = 3000.0;
+	float distanceEnemy_3000 = 3000.0;
+	float distanceEnemy_4000 = 3000.0;
+	float distanceEnemy_5000 = 3000.0;
+	float distanceEnemy_6000 = 3000.0;
 	
 	//Distance to enemy
 	for (int i = 0;i<5;i++)
@@ -172,12 +172,12 @@ void RePrioritisePlantTasks(void)
 	//Whole Distance
 	float quantifierEnemy = 1.0;
 	
-	float wholeDistance_1000 = distance_1000 + 0.5*(3000 - distanceEnemy_1000);
-	float wholeDistance_2000 = distance_2000 + 0.5*(3000 - distanceEnemy_2000);
-	float wholeDistance_3000 = distance_3000 + 0.5*(3000 - distanceEnemy_3000);
-	float wholeDistance_4000 = distance_4000 + 0.5*(3000 - distanceEnemy_4000);
-	float wholeDistance_5000 = distance_5000 + 0.5*(3000 - distanceEnemy_5000);
-	float wholeDistance_6000 = distance_6000 + 0.5*(3000 - distanceEnemy_6000);
+	float wholeDistance_1000 = distance_1000 + 0.8*(3000.0 - distanceEnemy_1000);
+	float wholeDistance_2000 = distance_2000 + 0.8*(3000.0 - distanceEnemy_2000);
+	float wholeDistance_3000 = distance_3000 + 0.8*(3000.0 - distanceEnemy_3000);
+	float wholeDistance_4000 = distance_4000 + 0.8*(3000.0 - distanceEnemy_4000);
+	float wholeDistance_5000 = distance_5000 + 0.8*(3000.0 - distanceEnemy_5000);
+	float wholeDistance_6000 = distance_6000 + 0.8*(3000.0 - distanceEnemy_6000);
 	
 	//Sort values
 	float a = 0;
@@ -445,7 +445,7 @@ uint8_t CalcTimeRemainingPlants(void)
 	
 	for(int i=0; i<3; i++){
 		char text1[200];
-		sprintf(text1, "State: %6d PIR: %d OPP: %d", MaxPriorityKI_TaskNumbers[i], MaxPriorityPlanterNumber );
+		sprintf(text1, "PRIO: %6d Planter: %d", MaxPriorityKI_TaskNumbers[i], MaxPriorityPlanterNumber );
 		SendDebugMessage(text1,1);
 	}
 	
