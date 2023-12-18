@@ -206,7 +206,7 @@ void cmd_SetServo(uint8_t nbr, int16_t angle);
 void cmd_SetMotorPos(uint8_t nbr, float vel, float pos);
 void cmd_SetMotorVel(uint8_t nbr, float vel);
 void cmd_CtrlVacuum(uint8_t nbr, uint8_t val);
-void cmd_Drive(int16_t vStart, int16_t vEnd, int16_t vMax, int16_t phiSoll, uint16_t rSoll, uint16_t xSoll, uint16_t ySoll, uint16_t sSoll, uint8_t type, uint8_t gegnerErkennung, element_t *wP, uint8_t nOP);
+void cmd_Drive(int16_t vStart, int16_t vEnd, int16_t vMax, int16_t phiSoll, uint16_t rSoll, uint16_t xSoll, uint16_t ySoll, uint16_t sSoll, uint8_t type, uint8_t gegnerErkennung, element_t *wP, uint8_t nOP, uint8_t AmaxUs,uint8_t AmaxDs);
 void cmd_DriveToPoint_ABS(int16_t vStart, int16_t vEnd, int16_t vMax, uint16_t xSoll, uint16_t ySoll, uint8_t gegnerErkennung);
 void cmd_DriveToPos_REL(int16_t vStart, int16_t vEnd, int16_t vMax, uint16_t sSoll, uint8_t gegnerErkennung);
 void cmd_TurnAroundAngle_ABS(int16_t vStart, int16_t vEnd, int16_t vMax, int16_t phiSoll, uint8_t gegnerErkennung);

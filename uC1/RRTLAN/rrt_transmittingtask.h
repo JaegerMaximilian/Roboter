@@ -66,6 +66,7 @@ void sendPosDataEnemy_from_WIFI_RRLAN(uint16_t xPos, uint16_t yPos, uint16_t phi
 void startLiftInit_RRTLAN(USART_data_t *controller);
 void setSchleppfehler_RRLAN(uint8_t schleppdistance);
 void sendPos2EnemyDetection_RRLAN();
+void setACCAntrieb_RRTLAN(uint8_t AmaxUs,uint8_t AmaxDs);
  
 #endif
 

@@ -106,6 +106,7 @@
 #define RRTLAN_MOT_POS_TASKNBR				16
 #define CUPLIFT_TASKNBR						17
 #define RRTLAN_SET_SCHLEPPFEHLER_TASKNBR	18
+#define	RRTLAN_SET_ACC_TASKNBR				19
 
 /* ********************************** */
 /* port definitions  (must be unique) */
@@ -120,6 +121,6 @@
 #define DIGIOUT_PORTNBR					7
 #define MOT_POS_PORTNBR					8
 #define SET_SCHLEPP_PORTNBR				10
-
+#define SET_ACC_PORTNBR					11
 
 #endif

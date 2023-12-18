@@ -1,10 +1,10 @@
 
 /***************************************************************
-  
-              ************************************
-              ** FH OBEROESTERREICH CAMPUS WELS **
-              ************************************
-  
+
+************************************
+** FH OBEROESTERREICH CAMPUS WELS **
+************************************
+
 Project :  MODULARER ROBOTER FOR TOURNAMENTS
 Modul:     EVERYONE
 File:      DEBUG.c
@@ -12,29 +12,29 @@ Version :  V 1.0
 Date    :  28.02.2011
 Author  :  MUCKENHUMER BERNHARD
 
-Comments: 
+Comments:
 
-Last edit: 
-Programmchange: 
+Last edit:
+Programmchange:
 
-                *)....
-                *).....
+*)....
+*).....
 
 Chip type           : ATXmega256a3
 Program type        : Application
 Clock frequency     : 32,000000 MHz
 Memory model        : Small
 External SRAM size  : 0
-Data Stack size     : 1024                
+Data Stack size     : 1024
 
-               Copyright (c) 2008 by FH-Wels                       	
-                   All Rights Reserved.
+Copyright (c) 2008 by FH-Wels
+All Rights Reserved.
 ****************************************************************/
 
 #define RRTLAN_TRANSMITTINGTASK_EXTERN
 
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <math.h>
 #include "multitask.h"
 #include "rrt_transmittingtask.h"
@@ -53,13 +53,13 @@ Data Stack size     : 1024
 **************************************************************************/
 void InitTransmit(void)
 {
-   //SET_CYCLE(TRANSMITTING_TASKNBR_1, 50);
-   //SET_TASK(TRANSMITTING_TASKNBR_1, CYCLE);
-   //SET_TASK_HANDLE(TRANSMITTING_TASKNBR_1, TransmitTask1); 
-   //
-   //SET_CYCLE(TRANSMITTING_TASKNBR_2, 10);
-   //SET_TASK(TRANSMITTING_TASKNBR_2, CYCLE);
-   //SET_TASK_HANDLE(TRANSMITTING_TASKNBR_2, TransmitTask2); 
+	//SET_CYCLE(TRANSMITTING_TASKNBR_1, 50);
+	//SET_TASK(TRANSMITTING_TASKNBR_1, CYCLE);
+	//SET_TASK_HANDLE(TRANSMITTING_TASKNBR_1, TransmitTask1);
+	//
+	//SET_CYCLE(TRANSMITTING_TASKNBR_2, 10);
+	//SET_TASK(TRANSMITTING_TASKNBR_2, CYCLE);
+	//SET_TASK_HANDLE(TRANSMITTING_TASKNBR_2, TransmitTask2);
 }
 
 /**************************************************************************
@@ -139,7 +139,7 @@ void statusAntrieb(uint8_t status)
 	uint8_t sendArray;
 	
 	sendArray = status;
-	
+		
 	Send_Application_Data(&MCU1, ANTRIEB_PORTNBR, &sendArray, 1);
 }
 

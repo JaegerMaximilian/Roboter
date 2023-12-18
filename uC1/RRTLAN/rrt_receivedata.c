@@ -50,6 +50,7 @@ All Rights Reserved.
 #include "wifi.h"
 #include "observation.h"
 #include "logger.h"
+#include "rrt_transmittingtask.h"
 
 /**************************************************************************
 ***   FUNKTIONNAME: InitDebug                                           ***
@@ -65,8 +66,9 @@ void InitReceiveData(void)
 	Port_App_allocation(POS_MSG_GEGNER_PORTNBR, ENEMY_POS_TASKNBR);
 	Port_App_allocation(ANTRIEB_UC2_PORTNBR, ANTRIEB_UC2_TASKNBR);
 	Port_App_allocation(POS_UC2_PORTNBR, POS_UC2_TASKNBR);
-	Port_App_allocation(EINSTELLUNG_LCD_PORTNBR, EINSTELLUNG_LCD_TASKNBR);
-	Port_App_allocation(DEBUG_MSG_LCD_PORTNBR, DEBUG_MSG_LCD_TASKNBR);
+//	Port_App_allocation(EINSTELLUNG_LCD_PORTNBR, EINSTELLUNG_LCD_TASKNBR);
+//	Port_App_allocation(DEBUG_MSG_LCD_PORTNBR, DEBUG_MSG_LCD_TASKNBR);
+
 	// 	Port_App_allocation(ENEMYDATA_TO_PATHPLANER_PORTNBR,ENEMY_LIDAR_TASKNBR);
 	// 	Port_App_allocation(ENEMYDATA_RAW_TO_WIFI_PORTNBR,ENEMY_TO_WIFI_TASKNBR);
 	// 	if (RobotType_RAM == SLAVE_ROBOT)
@@ -81,10 +83,10 @@ void InitReceiveData(void)
 	SET_TASK_HANDLE(ENEMY_POS_TASKNBR, rrtlanEnemyPos_GegnerTask);
 	SET_TASK_HANDLE(ANTRIEB_UC2_TASKNBR, rrtlanAntrieb_uC2Task);
 	SET_TASK_HANDLE(POS_UC2_TASKNBR, rrtlanPos_uC2Task);
-	SET_TASK_HANDLE(EINSTELLUNG_LCD_TASKNBR, rrtlanEinstellung_LCDTask);
-	SET_TASK_HANDLE(DEBUG_MSG_LCD_TASKNBR, rrtlanDebugMsg_LCDTask);
-	SET_TASK_HANDLE(ENEMY_LIDAR_TASKNBR, rrtlanEnemyData_to_Pathplaner_Task);
-	SET_TASK_HANDLE(ENEMY_TO_WIFI_TASKNBR, rrtlanEnemyDataRaw_to_WIFI_Task);
+//	SET_TASK_HANDLE(EINSTELLUNG_LCD_TASKNBR, rrtlanEinstellung_LCDTask);
+//	SET_TASK_HANDLE(DEBUG_MSG_LCD_TASKNBR, rrtlanDebugMsg_LCDTask);
+//	SET_TASK_HANDLE(ENEMY_LIDAR_TASKNBR, rrtlanEnemyData_to_Pathplaner_Task);
+//	SET_TASK_HANDLE(ENEMY_TO_WIFI_TASKNBR, rrtlanEnemyDataRaw_to_WIFI_Task);
 }
 
 /**************************************************************************
@@ -142,7 +144,7 @@ unsigned char rrtlanSensor_uC2Task(void)
 unsigned char rrtlanEnemyPos_GegnerTask(void)
 {
 	uint8_t nbr_of_bytes = 0;
-	uint8_t receiveArray[15];
+	uint8_t receiveArray[30];
 	char text1[100];
 	convData_t x[5], y[5];
 	uint8_t j = 1;
@@ -163,7 +165,7 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			
 			enemyRobot[i].Xpos = 10000;
 			enemyRobot[i].Ypos = 10000;
-	
+			
 		}
 		
 		
@@ -181,10 +183,10 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 		}
 
 
-		sprintf(text1, "Gegner %d, (%d/%d), (%d/%d), (%d/%d)", receiveArray[0], enemyRobot[0].Xpos, enemyRobot[0].Ypos, enemyRobot[1].Xpos, enemyRobot[1].Ypos, enemyRobot[2].Xpos, enemyRobot[2].Ypos);
-		SendDebugMessage(text1, 2);
+		//sprintf(text1, "Gegner %d, (%d/%d), (%d/%d), (%d/%d)", receiveArray[0], enemyRobot[0].Xpos, enemyRobot[0].Ypos, enemyRobot[1].Xpos, enemyRobot[1].Ypos, enemyRobot[2].Xpos, enemyRobot[2].Ypos);
+		//SendDebugMessage(text1, 2);
 
-//		sprintf(text1, "# Gegner1 ;x; %d; y;  %d  \r\n *", x[1].uint16[0], y[1].uint16[0]);
+		//		sprintf(text1, "# Gegner1 ;x; %d; y;  %d  \r\n *", x[1].uint16[0], y[1].uint16[0]);
 		//writeString_usart(&usartC0, text1);
 		//
 		//sprintf(text1, "# Gegner2 ;x; %d; y;  %d  \r\n *", x[2].uint16[0], y[2].uint16[0]);
@@ -266,6 +268,10 @@ unsigned char rrtlanAntrieb_uC2Task(void)
 	{
 		Receive_Application_Data(&MCU2, ANTRIEB_UC2_PORTNBR, receiveArray);
 		
+		char text1[200];
+		sprintf(text1, "Wait for Status");
+		SendDebugMessage(text1,1);
+		
 		statusAntrieb = receiveArray[0];
 	}
 
@@ -315,12 +321,12 @@ unsigned char rrtlanDebugMsg_LCDTask(void)
 	unsigned char nbr_of_bytes = 0;
 	unsigned char receiveArray[200];
 
-// 	if(Received_AppData_Available(&LCD, DEBUG_MSG_LCD_PORTNBR, &nbr_of_bytes))
-// 	{
-// 		Receive_Application_Data(&LCD, DEBUG_MSG_LCD_PORTNBR, receiveArray);
-// 		
-// 		writeString_usart(&usartF0, receiveArray);
-// 	}
+	// 	if(Received_AppData_Available(&LCD, DEBUG_MSG_LCD_PORTNBR, &nbr_of_bytes))
+	// 	{
+	// 		Receive_Application_Data(&LCD, DEBUG_MSG_LCD_PORTNBR, receiveArray);
+	//
+	// 		writeString_usart(&usartF0, receiveArray);
+	// 	}
 	
 	return(DISABLE);
 }
@@ -337,13 +343,13 @@ unsigned char rrtlanEinstellung_LCDTask(void)
 	uint8_t nbr_of_bytes = 0;
 	uint8_t receiveArray[6];
 
-// 	if(Received_AppData_Available(&LCD, EINSTELLUNG_LCD_PORTNBR, &nbr_of_bytes))
-// 	{
-// 		Receive_Application_Data(&LCD, EINSTELLUNG_LCD_PORTNBR, receiveArray);
-// 		
-// 		SpielFarbe = receiveArray[0];
-// 		Strategie = receiveArray[1];
-// 	}
+	// 	if(Received_AppData_Available(&LCD, EINSTELLUNG_LCD_PORTNBR, &nbr_of_bytes))
+	// 	{
+	// 		Receive_Application_Data(&LCD, EINSTELLUNG_LCD_PORTNBR, receiveArray);
+	//
+	// 		SpielFarbe = receiveArray[0];
+	// 		Strategie = receiveArray[1];
+	// 	}
 	
 	return(DISABLE);
 }

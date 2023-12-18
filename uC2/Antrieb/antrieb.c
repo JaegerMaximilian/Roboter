@@ -131,7 +131,7 @@ void Init_WMRctrlVelPosOdo0(void)
 	// => Roboter z.B. 15° zuwenig dreht => 1065 => 1080/1065 = 1.014084507 => Multiplikation
 	
 	// erster Wert = Master
-	PCtrlOdo.PEncWhl_l =  CHECK_ROBOT_TYPE(0.108*(1800.0/1798.0)*(1800.0/1820.0) ,0.1136*(1800.0/1810.0));	// Abstand zwischen den Messrädern
+	PCtrlOdo.PEncWhl_l =  CHECK_ROBOT_TYPE(0.108*(1800.0/1798.0)*(1800.0/1820.0) ,0.107020);	// Abstand zwischen den Messrädern
 	
 	// Wenn der Roboter zuweit rechts ist => linkes Messrad kleiner oder rechtes Messrad größer
 	// Wenn der Roboter zuweit links ist  => linkes Messrad größer  oder rechtes Messrad kleiner
@@ -139,7 +139,7 @@ void Init_WMRctrlVelPosOdo0(void)
 	
 	// erster Wert = Master
 	PCtrlOdo.PEncWhl_rl[0] = CHECK_ROBOT_TYPE((0.02052873919 * 1.01170 * 0.984), 0.02053 * (1396.4/1400.0));	// Messrad rechts 0.000089494644, 0.0000530494644
-	PCtrlOdo.PEncWhl_rl[1] = CHECK_ROBOT_TYPE((0.02052873919 * 1.01025 * 0.9855), 0.02053  * (1396.4/1400.0));	// Messrad links, 0.0000306589438, 0.0000696589438	
+	PCtrlOdo.PEncWhl_rl[1] = CHECK_ROBOT_TYPE((0.02052873919 * 1.01025 * 0.9855),  0.02053 * (1396.4/1400.0) * 1.0025);	// Messrad links, 0.0000306589438, 0.0000696589438	
 
 	WMRctrlVelPosOdo0_rtZBUSinWMRctrl.P0_XYdXdYThdTh_desired[0] = 0.0;
 	WMRctrlVelPosOdo0_rtZBUSinWMRctrl.P0_XYdXdYThdTh_desired[1] = 0.0;

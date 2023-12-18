@@ -46,11 +46,6 @@ uint8_t PATH_DriveToAbsPos(point_t start, point_t ziel, point_t *pointList, uint
 	/* start path-planner */
 	else
 	{
-		/* get grid-coordinates of the start-point */
-		startMP = PATH_FindNearestMatrixPoint(start);
-		/* get grid-coordinates of the goal-point */
-		zielMP = PATH_FindNearestMatrixPoint(ziel);
-		
 		//char text1[100];
 		//sprintf(text1, "Start: (%d/%d) Ziel: (%d/%d)\n", startMP.Xpos, startMP.Ypos, zielMP.Xpos,zielMP.Ypos);
 		//writeString_usart(&WIFI_IF, text1);
@@ -78,6 +73,12 @@ uint8_t PATH_DriveToAbsPos(point_t start, point_t ziel, point_t *pointList, uint
 		/* set all obstacles in occypancy grid */
 		PATH_Set_ObstacleListInOccupancyGrid();
 		
+		/* get grid-coordinates of the start-point */
+		startMP = PATH_FindNearestMatrixPoint(start);
+		/* get grid-coordinates of the goal-point */
+		zielMP = PATH_FindNearestMatrixPoint(ziel);
+		
+		
 		/* start A* algorithm -> returns 1 if a path has been found and otherwise 0 */
 		if (PATH_A_Star(startMP, zielMP))
 		{
@@ -88,7 +89,7 @@ uint8_t PATH_DriveToAbsPos(point_t start, point_t ziel, point_t *pointList, uint
 			/* make a list of all segments of the objects (vectors between the edges) */
 			PATH_SetSegmentList();
 			/* shorten the path - delete unnecessary corners */
-			PATH_ShortenPath(startMP, zielMP); 
+			PATH_ShortenPath(startMP, zielMP);
 			/* recalculate the real coordinates of the matrix-points */
 			path.dimP = PATH_StoreRealPoints(zielMP, ziel);
 			/* execute path */
@@ -117,6 +118,8 @@ matrixpoint_t PATH_FindNearestMatrixPoint(point_t pos)
 {
 	volatile matrixpoint_t gridPoint;
 	
+	path.isInObservationArea = 0;
+	
 	/* add the (PATH_GRID_RESOLUTION / 2) to the pos -> so the result is rounded correctly */
 	/* example1: X = 1010, X += 50, X = 1060, X /= 100 -> result = 10 - OK! 1010 is closer to 1000 */
 	/* example1: X = 1070, X += 50, X = 1120, X /= 100 -> result = 11 - OK! 1070 is closer to 1100 */
@@ -134,6 +137,39 @@ matrixpoint_t PATH_FindNearestMatrixPoint(point_t pos)
 	/* limit grid-point in y */
 	gridPoint.Ypos = ((gridPoint.Ypos >= PATH_GRID_DIM_Y) ? PATH_GRID_DIM_Y-1 : gridPoint.Ypos);
 	gridPoint.Ypos = ((gridPoint.Ypos < 0) ? 0 : gridPoint.Ypos);
+	
+	/* if grid-point is in an obstacle */
+	/*  -> search nearest free grid-point */
+	if (path.occupancyGrid[gridPoint.Xpos][gridPoint.Ypos] == PATH_INFINITY)
+	{
+		for (uint8_t i = 1; i <= PATH_OBSTACLE_SIZE; i++)
+		{
+			if ((path.occupancyGrid[gridPoint.Xpos+i][gridPoint.Ypos] != PATH_INFINITY) && ((gridPoint.Xpos+i) < PATH_GRID_DIM_X))
+			{
+				gridPoint.Xpos += i;
+				path.isInObservationArea = 1;
+				break;
+			}
+			else if ((path.occupancyGrid[gridPoint.Xpos][gridPoint.Ypos+i] != PATH_INFINITY) && ((gridPoint.Ypos+i) < PATH_GRID_DIM_Y))
+			{
+				gridPoint.Ypos += i;
+				path.isInObservationArea = 1;
+				break;
+			}
+			else if ((path.occupancyGrid[gridPoint.Xpos-i][gridPoint.Ypos] != PATH_INFINITY) && ((gridPoint.Xpos-i) < PATH_GRID_DIM_X))
+			{
+				gridPoint.Xpos -= i;
+				path.isInObservationArea = 1;
+				break;
+			}
+			else if ((path.occupancyGrid[gridPoint.Xpos][gridPoint.Ypos-i] != PATH_INFINITY) && ((gridPoint.Ypos-i) < PATH_GRID_DIM_Y))
+			{
+				gridPoint.Ypos -= i;
+				path.isInObservationArea = 1;
+				break;
+			}
+		}
+	}
 	
 	/* return grid-point */
 	return(gridPoint);
@@ -628,7 +664,7 @@ obstacle_t PATH_Get_ObstacleLimits(point_t obstacle)
 		
 		/* set lower limit */
 		robot.xy.Xpos = (((obstacleInGrid.Xpos - PATH_OBSTACLE_SIZE) < 0) ? 0 : (obstacleInGrid.Xpos - PATH_OBSTACLE_SIZE));
-		robot.xy.Ypos = (((obstacleInGrid.Ypos - PATH_OBSTACLE_SIZE) < 0) ? 0 : (obstacleInGrid.Ypos - 3));
+		robot.xy.Ypos = (((obstacleInGrid.Ypos - PATH_OBSTACLE_SIZE) < 0) ? 0 : (obstacleInGrid.Ypos - PATH_OBSTACLE_SIZE));
 		/* set upper limit */
 		robot.XY.Xpos = (((obstacleInGrid.Xpos + PATH_OBSTACLE_SIZE) >= PATH_GRID_DIM_X) ? (PATH_GRID_DIM_X - 1) : (obstacleInGrid.Xpos + PATH_OBSTACLE_SIZE));
 		robot.XY.Ypos = (((obstacleInGrid.Ypos + PATH_OBSTACLE_SIZE) >= PATH_GRID_DIM_Y) ? (PATH_GRID_DIM_Y - 1) : (obstacleInGrid.Ypos + PATH_OBSTACLE_SIZE));
@@ -798,19 +834,19 @@ uint8_t PATH_CalcIntersection(matrixpoint_t A1, matrixpoint_t A2, segment_t B)
 		/*  -> |zAlpha| < |detK| and |zBeta| < |detK| */
 		/* otherwise there is no intersection -> return 0 */
 		//		if (((sign(detK) != sign(zAlpha)) && (zAlpha != 0)) || ((sign(detK) != sign(zBeta)) && (zBeta != 0)) || (abs(detK) < abs(zAlpha)) || (abs(detK) < abs(zBeta)) && (zAlpha != 0) && (zBeta != 0))
-// 		if (((sign(detK) != sign(zAlpha)) && (zAlpha != 0)) || ((sign(detK) != sign(zBeta)) && (zBeta != 0)) || (((abs(detK) < abs(zAlpha)) || (abs(detK) < abs(zBeta))) && (zAlpha != 0) && (zBeta != 0)))
-// 		{
-// 			return(0);
-// 		}
-// 		/* intersection has been detected -> return 1 */
-// 		else
-// 		{
-// 			return(1);
-// 		}
+		// 		if (((sign(detK) != sign(zAlpha)) && (zAlpha != 0)) || ((sign(detK) != sign(zBeta)) && (zBeta != 0)) || (((abs(detK) < abs(zAlpha)) || (abs(detK) < abs(zBeta))) && (zAlpha != 0) && (zBeta != 0)))
+		// 		{
+		// 			return(0);
+		// 		}
+		// 		/* intersection has been detected -> return 1 */
+		// 		else
+		// 		{
+		// 			return(1);
+		// 		}
 		if ((Alpha >= 0.0) && (Alpha <= 1.0) && (Beta >= 0.0) && (Beta <= 1.0))
 		{
 			return(1);
-		} 
+		}
 		else
 		{
 			return(0);

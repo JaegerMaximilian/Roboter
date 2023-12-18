@@ -64,6 +64,7 @@ unsigned char rrtlanAntrieb_Task(void);
 unsigned char rrtlanAntrieb_Clothoid_Task(void);
 unsigned char rrtlanPosition_Task(void);
 unsigned char rrtlanSetSchleppfehler_Task(void);
+unsigned char rrtlanSetACC_Task(void);
 
 #endif
 

@@ -80,7 +80,9 @@ uint8_t ObservationTask(void)
 	float distanzPunktPow2 = 0.0;
 	float cPow2 = 0.0;
 	uint8_t enemyEanable = 0;
-
+	
+	point_t pos;
+	matrixpoint_t gridPoint;
 	
 	/* set observertion-task intervall to 10ms */
 	SET_CYCLE(OBSERVATION_TASKNBR, 10);
@@ -89,16 +91,16 @@ uint8_t ObservationTask(void)
 	if (observationStarted == OBSERVATION_STARTED)
 	{
 		/*    ________front_______  _ _ _
-		     |                    |   s
-		     |                    |   i
-		 ____|__                  |   d
+		|                    |   s
+		|                    |   i
+		____|__                  |   d
 		|       |                 |   e
 		|   X   | - - - - - - - - | - - - > driving direction
 		|_______|                 |
-		  robot                   |
-		     |                    |
-		     |____________________|
-		        observed area                                    */
+		robot                   |
+		|                    |
+		|____________________|
+		observed area                                    */
 		
 		/**************************************************************************
 		***   motion observation    			                                ***
@@ -107,14 +109,70 @@ uint8_t ObservationTask(void)
 		***   Author  :  Michael Zauner							                ***
 		**************************************************************************/
 		/* set observation distance depending on the actual speed */
-		if (vIst > 0)
+		uint16_t Amax_DS_MI = 200;
+		
+// 		if (vIst > 0)
 		{
-			observationDisFront = 370 + (int16_t)((float)(abs(vIst))*0.8);
+			float t_brake = 0.0;
+			float t_react = 0.2;
+			float vIst_Enemy = abs(vIst);
+			float t_react_Enemy = 0.2;
+			float AmaxDs_Enemy = 100.0;
+			float t_brake_Enemy = 0.0;
+			uint16_t brakeingDistance = 0;
+			uint16_t brakeingDistance_Enemy = 0;
+
+			
+			t_brake = (float)abs(vIst) / ((float)Amax_DS_MI*10.0);
+			t_brake_Enemy = (float)vIst_Enemy / ((float)AmaxDs_Enemy*10.0);
+			
+			brakeingDistance =	(uint16_t)((float)abs(vIst) * t_react - ((float)Amax_DS_MI * 10.0 * t_brake * t_brake)/2.0 + (float)vIst * t_brake);  // reaction distance and Braking distance
+			brakeingDistance_Enemy = (uint16_t)(vIst_Enemy * t_react_Enemy - (AmaxDs_Enemy * 10.0 * t_brake_Enemy * t_brake_Enemy)/2.0 + vIst_Enemy * t_brake_Enemy);  // reaction distance and Braking distance Enemy
+			observationDisFront = 250 + brakeingDistance + brakeingDistance_Enemy;
+			
+			
+			
+			/* add the (PATH_GRID_RESOLUTION / 2) to the pos -> so the result is rounded correctly */
+			/* example1: X = 1010, X += 50, X = 1060, X /= 100 -> result = 10 - OK! 1010 is closer to 1000 */
+			/* example1: X = 1070, X += 50, X = 1120, X /= 100 -> result = 11 - OK! 1070 is closer to 1100 */
+			pos.Xpos = xPos + (PATH_GRID_RESOLUTION / 2);
+			pos.Ypos = yPos + (PATH_GRID_RESOLUTION / 2);
+			
+			/* calculate nearest grid-point */
+			gridPoint.Xpos = (int8_t)((pos.Xpos - PATH_NON_TRAFFICLE_AREA) / PATH_GRID_RESOLUTION);
+			gridPoint.Ypos = (int8_t)((pos.Ypos - PATH_NON_TRAFFICLE_AREA) / PATH_GRID_RESOLUTION);
+			
+			/* limit grid-point in x */
+			gridPoint.Xpos = ((gridPoint.Xpos >= PATH_GRID_DIM_X) ? PATH_GRID_DIM_X-1 : gridPoint.Xpos);
+			gridPoint.Xpos = ((gridPoint.Xpos < 0) ? 0 : gridPoint.Xpos);
+
+			/* limit grid-point in y */
+			gridPoint.Ypos = ((gridPoint.Ypos >= PATH_GRID_DIM_Y) ? PATH_GRID_DIM_Y-1 : gridPoint.Ypos);
+			gridPoint.Ypos = ((gridPoint.Ypos < 0) ? 0 : gridPoint.Ypos);
+			
+			
+			if ((path.isInObservationArea) && (path.occupancyGrid[gridPoint.Xpos][gridPoint.Ypos] == PATH_INFINITY))
+			{
+				observationDisSide = 150;
+			}
+			else
+			{
+				if(brakeingDistance > brakeingDistance_Enemy)
+				{
+					observationDisSide = (uint16_t)(((float)brakeingDistance + 150.0)/2.0) + 150; //Auf Mitte Roboter Bezogen
+				}
+				else
+				{
+					observationDisSide = (uint16_t)(((float)brakeingDistance_Enemy + 150.0)/2.0) + 250; //Auf Mitte Roboter Bezogen
+				}
+			}
+			
+			//observationDisFront = 370 + (int16_t)((float)(abs(vIst))*0.8);
 		}
-		else if (vIst < 0)
-		{
-			observationDisFront = 150 + abs(vIst);
-		}
+// 		else if (vIst < 0)
+// 		{
+// 			observationDisFront = 150 + abs(vIst);
+// 		}
 		
 
 		// ***************************************
@@ -157,9 +215,9 @@ uint8_t ObservationTask(void)
 			a[1] = geschwindigkeitsVorzeichen * ((float)observationDisFront * sin((float)(phiPos) * M_PI / 1800));
 			
 			/*             /- _
-			              /    -_
-			             /  O   /
-			 _____  - _ /      /  enemy
+			/    -_
+			/  O   /
+			_____  - _ /      /  enemy
 			|     |     b /- _/      _____
 			|  O  |enemy  _/________|___  |
 			|____\|      |/         |_/O| |enemy  .
@@ -167,9 +225,9 @@ uint8_t ObservationTask(void)
 			| \  /__|--'           |         |
 			|  `O---|------------->O
 			|_______|      a     Punkt vor Roboter
-			 Roboter|              |
-			        |______________|
-			    Bereich der überwacht wird */
+			Roboter|              |
+			|______________|
+			Bereich der überwacht wird */
 			
 			// up to 5 robots will be observed
 			for (k = 0; k < 5; k++)
@@ -207,8 +265,9 @@ uint8_t ObservationTask(void)
 						if(distanzPunktPow2 < cPow2)
 						{
 							/* break -> interrupt the actual motion */
+							setACCAntrieb_RRTLAN(100,(uint8_t)Amax_DS_MI);
 							setAntrieb_RRTLAN(0, 0, 0, 0, 0, 0, 0, 0, MOTION_INTERRUPT, GEGNER_OFF);
-							
+							//cmd_Drive(0,0,0,0,0,0,0,0,MOTION_INTERRUPT,0,NULL,NULL,100,100);
 							gegnerErkennung = OFF;
 							motionIR = 1;
 							
