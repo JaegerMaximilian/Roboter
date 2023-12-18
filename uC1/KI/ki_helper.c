@@ -225,6 +225,35 @@ void RePrioritisePlantTasks(void)
 		}
 	}
 }
+
+
+/**************************************************************************
+***   FUNKTIONNAME: CalcTimeMoveSolarPanelsMiddle					    ***
+***   FUNKTION: Calc time to Move Solar Panels Middle					***
+***   TRANSMIT PARAMETER: float                                         ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+float CalcTimeMoveSolarPanelsMiddle(void)
+{
+	float fixedVelocity = 0.3; // in [m/s]
+	
+	point_t aktpos;
+	aktpos.Xpos = xPos;
+	aktpos.Ypos = yPos;
+	
+	point_t solarPanelsMiddle;
+	solarPanelsMiddle.Xpos = 1500; // ENTER REAL VALUES OR MAKE THEM GLOBAL AT LEAST
+	solarPanelsMiddle.Ypos = 2000; // for clarity, use the postion of the middle solar panel of the 3
+	
+	float totalDistance = CalcDistance(aktpos,solarPanelsMiddle);
+	
+	float timeToDrive = fixedVelocity / totalDistance;
+	
+	float timeToMoveSolarPanels = 7.00; // [s] ERFAHRUNGSWERT
+	
+	return timeToDrive + timeToMoveSolarPanels;
+}
+
 /**************************************************************************
 ***   FUNKTIONNAME: OpenPlants											***
 ***   FUNKTION: OpenPlants												***
@@ -274,7 +303,7 @@ uint8_t CalcOpenParkPositions(void)
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-uint8_t CalcTimeRemainingPlants(void)
+float CalcTimeRemainingPlants(void)
 {
 	float totalDistance = 0.0;
 	
@@ -393,7 +422,7 @@ uint8_t CalcTimeRemainingPlants(void)
 	
 	for(int i= 11; i<=26;i++)
 	{
-		if((i<=16 || i>=21) && KI_Task[i].Status == OPEN  ) // KI_Tasks der Ablagen werden je nachdem ob sie voll sind oder welche Farbe wir sind gefiltert mit OPEN
+		if((i<=16 || i>=21) && KI_Task[i].Status == OPEN) // KI_Tasks der Ablagen werden je nachdem ob sie voll sind oder welche Farbe wir sind gefiltert mit OPEN
 		{
 			if (i==11){
 				PlanterOrFieldPos = PlanterMidleBlue;
@@ -440,12 +469,16 @@ uint8_t CalcTimeRemainingPlants(void)
 	
 	// Solution 1: devide a fixed Velocity by the total Distance
 	
-	uint8_t fixedVelocity = 0.3; // in [m/s]
-	uint8_t timeToDrive = fixedVelocity / totalDistance;
+	float fixedVelocity = 0.3; // in [m/s]
+	float timeToDrive = fixedVelocity / totalDistance;
 	
 	for(int i=0; i<3; i++){
 		char text1[200];
-		sprintf(text1, "State: %6d PIR: %d OPP: %d", MaxPriorityKI_TaskNumbers[i], MaxPriorityPlanterNumber );
+		
+		// ??WHAT DO YOU HAVE TO CHANGE IN THE SPRINTF IF YOU WANT TO PRINT OUT FLOAT NUMBERS NOT INT???
+		// ?????????????????????????????????????????????????????????????????????????????????????????????
+		
+		sprintf(text1, "TaskNumbers: %6d MaxPrioPlanter: %d DistanceGes: %d", MaxPriorityKI_TaskNumbers[i], MaxPriorityPlanterNumber, totalDistance );
 		SendDebugMessage(text1,1);
 	}
 	
