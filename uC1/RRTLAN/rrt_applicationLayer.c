@@ -137,7 +137,10 @@ void Receive_Application_Data(USART_data_t* usart, uint8_t local_portnbr, uint8_
               
              //allokierten Empfangsspeicher freigeben  
              cli();
-             free(usart->receive_status[i].freeptr); 
+			 if (usart->receive_status[i].freeptr != NULL)
+			 {
+				 free(usart->receive_status[i].freeptr); 
+			 }
              sei();
              
              //Speicher initialisieren, damit dieser wieder belegt werden darf

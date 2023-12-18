@@ -129,6 +129,7 @@ _GLOBAL_EXTERN uint8_t ParkedPlants;
 _GLOBAL_EXTERN uint8_t OpenPlants;
 _GLOBAL_EXTERN uint8_t motionFailureCount;
 _GLOBAL_EXTERN uint8_t planedPlants;
+_GLOBAL_EXTERN uint8_t nReachableCnt1000, nReachableCnt2000,nReachableCnt3000,nReachableCnt4000,nReachableCnt5000,nReachableCnt6000;
 
 _GLOBAL_EXTERN uint16_t velocity;
 

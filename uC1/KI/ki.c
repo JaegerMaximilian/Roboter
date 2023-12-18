@@ -101,6 +101,12 @@ void InitKI(void)
 	ParkedPlants = 0;
 	OpenPlants = 6;
 	motionFailureCount = 0;
+	nReachableCnt1000 = 0;
+	nReachableCnt2000 = 0;
+	nReachableCnt3000 = 0;
+	nReachableCnt4000 = 0;
+	nReachableCnt5000 = 0;
+	nReachableCnt6000 = 0;
 	planedPlants = 0;
 	ConfigPlanter = ConfigPlanter_Nextion;
 	ConfigStehlen = ConfigStehlen_Nextion;
@@ -1010,29 +1016,18 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 
-			if(motionFailureCount<3 && KI_Task[1].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				if(DriveBack(100,200))
-				{
-					KI_State = 1025;
-				}
-				else
-				{
-					KI_State = 1000;
-				}
-				break;
+				KI_State = 1025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_State = 500;
-				//KI_Task[1].Status = DONE; //==> gehört Raus
-				velocity = STANDARD_VELOCITY;
+				KI_State = 1000;
 			}
-			
 			break;
+
+			
 		}
 		
 		case 1025:
@@ -1043,7 +1038,21 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 1000;
+					if(motionFailureCount<3 && KI_Task[1].Status != DONE)
+					{
+						KI_State = 1000;
+					}
+					else
+					{
+						KI_State = 500;
+						nReachableCnt1000++;
+						if(nReachableCnt1000 >= 3)
+						{
+							KI_Task[1].Status = DID;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
 					break;
 				}
 				/* error happened during the motion */
@@ -1166,30 +1175,19 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 
-			if(motionFailureCount<3 && KI_Task[2].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				if(DriveBack(100,200))
-				{
-					KI_State = 2025;
-				}
-				else
-				{
-					KI_State = 2000;
-				}
-				break;
+				KI_State = 2025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_State = 500;
-				//KI_Task[2].Status = DONE; //==> gehört Raus
-				velocity = STANDARD_VELOCITY;
+				KI_State = 2000;
 			}
-			
 			break;
+
 		}
+
 		
 		case 2025:
 		{
@@ -1199,7 +1197,23 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 2000;
+					if(motionFailureCount<3 && KI_Task[2].Status != DONE)
+					{
+						KI_State = 2000;
+					}
+					else
+					{
+						KI_State = 500;
+						
+						nReachableCnt2000++;
+						
+						if(nReachableCnt2000 >= 3)
+						{
+							KI_Task[2].Status = DID;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
 					break;
 				}
 				/* error happened during the motion */
@@ -1211,6 +1225,7 @@ uint8_t KiTask(void)
 			}
 			break;
 		}
+		
 		case 2030:
 		{
 			KI_State = 2020;
@@ -1318,28 +1333,16 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 
-			if(motionFailureCount<3 && KI_Task[3].Status != DONE)
+
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				if(DriveBack(100,200))
-				{
-					KI_State = 3025;
-				}
-				else
-				{
-					KI_State = 3000;
-				}
-				break;
+				KI_State = 3025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_State = 500;
-				//KI_Task[3].Status = DONE; //==> gehört Raus
-				velocity = STANDARD_VELOCITY;
+				KI_State = 3000;
 			}
-			
 			break;
 		}
 		
@@ -1351,7 +1354,23 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 3000;
+					if(motionFailureCount<3 && KI_Task[3].Status != DONE)
+					{
+						KI_State = 3000;
+					}
+					else
+					{
+						KI_State = 500;
+						
+						nReachableCnt3000++;
+						
+						if(nReachableCnt3000 >= 3)
+						{
+							KI_Task[3].Status = DID;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
 					break;
 				}
 				/* error happened during the motion */
@@ -1426,9 +1445,12 @@ uint8_t KiTask(void)
 		
 		case 4010:
 		{
+			sprintf(text1, "Wait 4010");
+			SendDebugMessage(text1,1);
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
+
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
@@ -1473,29 +1495,17 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 
-			if(motionFailureCount<3 && KI_Task[4].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				if(DriveBack(100,200))
-				{
-					KI_State = 4025;
-				}
-				else
-				{
-					KI_State = 4000;
-				}
-				break;
+				KI_State = 4025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_State = 500;
-				//KI_Task[4].Status = DONE; //==> gehört Raus
-				velocity = STANDARD_VELOCITY;
+				KI_State = 4000;
 			}
-			
 			break;
+			
 		}
 		
 		case 4025:
@@ -1506,7 +1516,23 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 4000;
+					if(motionFailureCount<3 && KI_Task[4].Status != DONE)
+					{
+						KI_State = 4000;
+					}
+					else
+					{
+						KI_State = 500;
+						
+						nReachableCnt4000++;
+						
+						if(nReachableCnt4000 >= 3)
+						{
+							KI_Task[4].Status = DID;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
 					break;
 				}
 				/* error happened during the motion */
@@ -1625,29 +1651,17 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 
-			if(motionFailureCount<3 && KI_Task[5].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				if(DriveBack(100,200))
-				{
-					KI_State = 5025;
-				}
-				else
-				{
-					KI_State = 5000;
-				}
-				break;
+				KI_State = 5025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_State = 500;
-			//	KI_Task[5].Status = DONE; //==> gehört Raus
-				velocity = STANDARD_VELOCITY;
+				KI_State = 5000;
 			}
-			
 			break;
+
 		}
 		
 		case 5025:
@@ -1658,7 +1672,23 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 5000;
+					if(motionFailureCount<3 && KI_Task[5].Status != DONE)
+					{
+						KI_State = 5000;
+					}
+					else
+					{
+						KI_State = 500;
+						
+						nReachableCnt5000++;
+						
+						if(nReachableCnt5000 >= 3)
+						{
+							KI_Task[5].Status = DID;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
 					break;
 				}
 				/* error happened during the motion */
@@ -1777,29 +1807,17 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 
-			if(motionFailureCount<3 && KI_Task[6].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				if(DriveBack(100,200))
-				{
-					KI_State = 6025;
-				}
-				else
-				{
-					KI_State = 6000;
-				}
-				break;
+				KI_State = 6025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_State = 500;
-				velocity = STANDARD_VELOCITY;
-				//KI_Task[6].Status = DONE; //==> gehört Raus
+				KI_State = 6000;
 			}
-			
 			break;
+			
 		}
 		
 		case 6025:
@@ -1810,7 +1828,23 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 6000;
+					if(motionFailureCount<3 && KI_Task[6].Status != DONE)
+					{
+						KI_State = 6000;
+					}
+					else
+					{
+						KI_State = 500;
+						
+						nReachableCnt6000++;
+						
+						if(nReachableCnt6000 >= 3)
+						{
+							KI_Task[6].Status = DID;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
 					break;
 				}
 				/* error happened during the motion */
@@ -2049,6 +2083,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[11].Status = DONE;
 					CalcOpenParkPositions();
@@ -2072,6 +2107,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 11020;
 					break;
 				}
@@ -2084,30 +2120,56 @@ uint8_t KiTask(void)
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<3 && KI_Task[11].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 11000;
+				KI_State = 11025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[11].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 11000;
 			}
-
 			break;
 		}
+		
+		case 11025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[11].Status != DONE)
+					{
+						KI_State = 11000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 11020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 11030:
 		{
 			KI_State = 11020;
@@ -2150,6 +2212,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[12].Status = DONE;
 					CalcOpenParkPositions();
@@ -2166,6 +2229,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 12020;
 					break;
 				}
@@ -2210,30 +2274,55 @@ uint8_t KiTask(void)
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<3 && KI_Task[12].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 12000;
+				KI_State = 12025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[12].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 12000;
 			}
-
 			break;
 		}
+		case 12025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[12].Status != DONE)
+					{
+						KI_State = 12000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 12020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 12030:
 		{
 			KI_State = 12020;
@@ -2287,6 +2376,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[13].Status = DONE;
 					CalcOpenParkPositions();
@@ -2310,6 +2400,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 13020;
 					break;
 				}
@@ -2322,30 +2413,56 @@ uint8_t KiTask(void)
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<3 && KI_Task[13].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 13000;
+				KI_State = 13025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[13].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 13000;
 			}
-
 			break;
 		}
+		
+		case 13025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[13].Status != DONE)
+					{
+						KI_State = 13000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 13020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 13030:
 		{
 			KI_State = 13020;
@@ -2413,6 +2530,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[15].Status = DONE;
 					CalcOpenParkPositions();
@@ -2437,6 +2555,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 15020;
 					break;
 				}
@@ -2449,30 +2568,56 @@ uint8_t KiTask(void)
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
 			
-			if(motionFailureCount<3 && KI_Task[15].Status != DONE)
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 15000;
+				KI_State = 1525;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[15].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 15000;
 			}
-
 			break;
 		}
+		
+		case 15025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[15].Status != DONE)
+					{
+						KI_State = 15000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 15020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 15030:
 		{
 			KI_State = 15020;
@@ -2515,6 +2660,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[16].Status = DONE;
 					CalcOpenParkPositions();
@@ -2531,6 +2677,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 16020;
 					break;
 				}
@@ -2570,35 +2717,62 @@ uint8_t KiTask(void)
 			}
 			break;
 		}
+		
 		case 16020:
 		{
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
-			
-			if(motionFailureCount<3 && KI_Task[16].Status != DONE)
+
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 16000;
+				KI_State = 16025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[16].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 16000;
 			}
-
 			break;
 		}
+		
+		case 16025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[16].Status != DONE)
+					{
+						KI_State = 16000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 16020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 16030:
 		{
 			KI_State = 16020;
@@ -2699,6 +2873,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[21].Status = DONE;
 					CalcOpenParkPositions();
@@ -2722,6 +2897,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 21020;
 					break;
 				}
@@ -2733,31 +2909,57 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
-			
-			if(motionFailureCount<3 && KI_Task[21].Status != DONE)
+
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 21000;
+				KI_State = 21025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[21].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 21000;
 			}
-
 			break;
 		}
+		
+		case 21025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[21].Status != DONE)
+					{
+						KI_State = 21000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 21020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 21030:
 		{
 			KI_State = 21020;
@@ -2801,6 +3003,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[22].Status = DONE;
 					CalcOpenParkPositions();
@@ -2817,6 +3020,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 22020;
 					break;
 				}
@@ -2860,31 +3064,57 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
-			
-			if(motionFailureCount<3 && KI_Task[22].Status != DONE)
+
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 22000;
+				KI_State = 22025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[22].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 22000;
 			}
-
 			break;
 		}
+		
+		case 22025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[22].Status != DONE)
+					{
+						KI_State = 22000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 22020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 22030:
 		{
 			KI_State = 22020;
@@ -2937,6 +3167,7 @@ uint8_t KiTask(void)
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
+				velocity = STANDARD_VELOCITY;
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
@@ -2963,6 +3194,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 23020;
 					break;
 				}
@@ -2974,31 +3206,57 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
-			
-			if(motionFailureCount<3 && KI_Task[23].Status != DONE)
+
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 23000;
+				KI_State = 23025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[23].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 23000;
 			}
-
 			break;
 		}
+		
+		case 23025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[23].Status != DONE)
+					{
+						KI_State = 23000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 23020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 23030:
 		{
 			KI_State = 23020;
@@ -3066,6 +3324,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[25].Status = DONE;
 					CalcOpenParkPositions();
@@ -3090,6 +3349,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 25020;
 					break;
 				}
@@ -3101,31 +3361,57 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
-			
-			if(motionFailureCount<3 && KI_Task[25].Status != DONE)
+
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 25000;
+				KI_State = 25025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[25].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 25000;
 			}
-
 			break;
 		}
+		
+		case 25025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[25].Status != DONE)
+					{
+						KI_State = 25000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 25020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 25030:
 		{
 			KI_State = 25020;
@@ -3168,6 +3454,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
 					KI_Task[26].Status = DONE;
 					CalcOpenParkPositions();
@@ -3184,6 +3471,7 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
+					velocity = ENEMY_VELOCITY;
 					KI_State = 26020;
 					break;
 				}
@@ -3228,31 +3516,57 @@ uint8_t KiTask(void)
 		{
 			motionFailureCount++;
 			SET_CYCLE(KI_TASKNBR, 500);
-			
-			if(motionFailureCount<3 && KI_Task[26].Status != DONE)
+
+			//Drive Back
+			if(DriveBack(100,200))
 			{
-				//Drive Back
-				DriveBack(100,200);
-				KI_State = 26000;
+				KI_State = 26025;
 			}
-			
-			//***************************!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!***************************
 			else
 			{
-				KI_Task[26].Status = DONE; //==> gehört Raus
-				CalcOpenParkPositions();
-				if(OpenParkPos > 0)
-				{
-					KI_State = 10000;
-				}
-				else
-				{
-					KI_State = 500;
-				}
+				KI_State = 26000;
 			}
-
 			break;
 		}
+		
+		case 26025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[26].Status != DONE)
+					{
+						KI_State = 26000;
+					}
+					else
+					{
+						CalcOpenParkPositions();
+						if(OpenParkPos > 0)
+						{
+							KI_State = 10000;
+						}
+						else
+						{
+							KI_State = 500;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 26020;
+					break;
+				}
+			}
+			break;
+		}
+		
 		case 26030:
 		{
 			KI_State = 26020;
@@ -3842,17 +4156,17 @@ uint8_t KiTask(void)
 			break;
 		}
 	}
-	
+
 	//Write Message to Logger
 	if(KI_State != OldKI_State)
 	{
 		sprintf(text1, "State: %6d PIR: %d OPP: %d", KI_State, PlantsInRobot , OpenParkPos);
 		SendDebugMessage(text1,1);
 	}
-	
+
 	//sprintf(text1, "Side: %d Front: %d", observationDisSide , observationDisFront);
 	//SendDebugMessage(text1,1);
-	
+
 	OldKI_State = KI_State;
 	return(CYCLE);
 }

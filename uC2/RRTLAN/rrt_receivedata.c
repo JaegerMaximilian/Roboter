@@ -260,7 +260,7 @@ unsigned char rrtlanAntrieb_Task(void)
 {
 	//char text[200];
 	uint8_t nbr_of_bytes = 0;
-	uint8_t receiveArray[18];
+	uint8_t receiveArray[20];
 	int16_t vStart, vEnd, vMax, phiSoll;
 	uint16_t rSoll, xSoll, ySoll, sSoll;
 	uint8_t type, gegner;

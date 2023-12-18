@@ -306,6 +306,8 @@ void cmd_CtrlVacuum(uint8_t nbr, uint8_t val)
 ***                        gegnerErkennung ... Gegnererkennung ein/aus	***
 ***                        wP ... Pointer on way points (X, Y)			***
 ***						   nOP ... Number of points						***
+***						   AmaxUs ... Acceleration UpSlope				***
+***						   AmaxDs ... Acceleration DownSlope   			***
 ***																		***
 ***	  EXAMPLES															***
 ***		- drive to an absolute point (x,y) with a speed (v):			***

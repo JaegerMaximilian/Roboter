@@ -55,12 +55,12 @@ uint8_t KiWatchTask(void)
 	static uint8_t InArea6000 = 0;
 	
 	char text1[200];
-	InArea1000 = Path_IsInArea(1250,250,1750,750);
-	InArea2000 = Path_IsInArea(750, 450, 1250, 950);
-	InArea3000 = Path_IsInArea(750, 1050, 1250, 1550);
-	InArea4000 = Path_IsInArea(1250, 1250, 1750, 1750);
-	InArea5000 = Path_IsInArea(1750, 1050, 2250, 1550);
-	InArea6000 = Path_IsInArea(1750, 450, 2250, 950);
+	InArea1000 = Path_IsInArea(1200,200,1800,8000);
+	InArea2000 = Path_IsInArea(700, 400, 1300, 1000);
+	InArea3000 = Path_IsInArea(700, 1000, 1300, 1600);
+	InArea4000 = Path_IsInArea(1200, 1200, 1800, 1800);
+	InArea5000 = Path_IsInArea(1700, 1000, 2300, 1600);
+	InArea6000 = Path_IsInArea(1700, 400, 2300, 1000);
 	
 	//Position 1000
 	if(InArea1000)
