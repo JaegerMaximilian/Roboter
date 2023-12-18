@@ -231,7 +231,7 @@ void RePrioritisePlantTasks(void)
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-uint8_t CalcOpenPlants(void)
+void CalcOpenPlants(void)
 {
 	OpenPlants = 0;
 	for (int i = 1; i < 7; i++)
@@ -241,16 +241,15 @@ uint8_t CalcOpenPlants(void)
 			OpenPlants++;
 		}
 	}
-	return(OpenPlants);
 }
 
 /**************************************************************************
 ***   FUNKTIONNAME: CalcOpen Park-Positions 							***
-***   FUNKTION: OpenPlants												***
+***   FUNKTION: Calculate Open Park Positions							***
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-uint8_t CalcOpenParkPositions(void)
+void CalcOpenParkPositions(void)
 {
 	OpenParkPos = 0;
 	for (int i = 11; i < 27; i++)
@@ -260,17 +259,72 @@ uint8_t CalcOpenParkPositions(void)
 			OpenParkPos++;
 		}
 	}
-	return(OpenParkPos);
 }
 
+/**************************************************************************
+***   FUNKTIONNAME: CalcOpen Planter		 							***
+***   FUNKTION: Calculate Open Park Planter 							***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+void CalcOpenPlanter(void)
+{
+	OpenPlanter = 0;
+	if(KI_Task[11].Status == OPEN )
+	{
+		OpenPlanter++;
+	}
+	if(KI_Task[13].Status == OPEN )
+	{
+		OpenPlanter++;
+	}
+	if(KI_Task[15].Status == OPEN )
+	{
+		OpenPlanter++;
+	}
+	if(KI_Task[21].Status == OPEN )
+	{
+		OpenPlanter++;
+	}
+	if(KI_Task[23].Status == OPEN )
+	{
+		OpenPlanter++;
+	}
+	if(KI_Task[25].Status == OPEN )
+	{
+		OpenPlanter++;
+	}
+}
 
-
+/**************************************************************************
+***   FUNKTIONNAME: Repriorisise_solarpanels 							***
+***   FUNKTION: Repriorisiere Solar Panels  							***
+***   TRANSMIT PARAMETER: NO                                            ***
+***   RECEIVE PARAMETER.:												***
+**************************************************************************/
+void Repreoritise_SolarPanels(void)
+{
+	uint8_t panelsMiddleNotFree = Path_IsInArea(1000,1600,2000,1600);
+	
+	//Zeit gehört noch dazu
+	if(panelsMiddleNotFree)
+	{
+		KI_Task[31].Status = IS_DOING;
+		KI_Task[31].Priority = 77;
+	}
+	else if (KI_Task[31].Status != DONE)
+	{
+		KI_Task[31].Status = OPEN;	
+		KI_Task[31].Priority = 79;
+	}
+	
+}
 
 
 /**************************************************************************
 ***   FUNKTIONNAME: CalcTimeRemainingPlants								***
 ***   FUNKTION: Calculates Time it probably takes to Grab and Park      ***
-                Remaining Free Plants									***
+Remaining Free Plants									***
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
@@ -279,7 +333,7 @@ uint8_t CalcTimeRemainingPlants(void)
 	float totalDistance = 0.0;
 	
 	task_t MaxPriorityKI_Tasks[3];
-	uint8_t MaxPriorityKI_TaskNumbers[3]; 
+	uint8_t MaxPriorityKI_TaskNumbers[3];
 	
 	
 	// Filter Array (this first 6) to only OPEN or PENDING Tasks
@@ -309,10 +363,10 @@ uint8_t CalcTimeRemainingPlants(void)
 		}
 	}
 	
-	 // Get current Position and Calculate the way from this Position to the first Plant
-	 // and then to the next Plant and to the next (max 3 Plants)
+	// Get current Position and Calculate the way from this Position to the first Plant
+	// and then to the next Plant and to the next (max 3 Plants)
 	
-	// get Position of Last Plant 
+	// get Position of Last Plant
 	point_t aktpos;
 	aktpos.Xpos = xPos;
 	aktpos.Ypos = yPos;
@@ -323,67 +377,67 @@ uint8_t CalcTimeRemainingPlants(void)
 	for (int i =0; i<3; i++)
 	{
 		point_t PlantPosition;
-			if(MaxPriorityKI_TaskNumbers[i] == 1){
-				PlantPosition  = Plant1000;
-				//check if it either the last element in array or if array is not full with all 3, use the last one that
-				// is filled out as LastPlantPosition
-				if (i==3){
-					LastPlantPosition = Plant1000;
-					} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
-					LastPlantPosition = Plant1000;
-				}
+		if(MaxPriorityKI_TaskNumbers[i] == 1){
+			PlantPosition  = Plant1000;
+			//check if it either the last element in array or if array is not full with all 3, use the last one that
+			// is filled out as LastPlantPosition
+			if (i==3){
+				LastPlantPosition = Plant1000;
+				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
+				LastPlantPosition = Plant1000;
+			}
 			} else if (MaxPriorityKI_TaskNumbers[i] == 2){
-				PlantPosition = Plant2000;
-				if (i==3){
-					LastPlantPosition = Plant2000;
+			PlantPosition = Plant2000;
+			if (i==3){
+				LastPlantPosition = Plant2000;
 				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
-					LastPlantPosition = Plant2000;
-				}
+				LastPlantPosition = Plant2000;
+			}
 			} else if (MaxPriorityKI_TaskNumbers[i] == 3){
-				PlantPosition = Plant3000;
-				if (i==3){
-					LastPlantPosition = Plant3000;
+			PlantPosition = Plant3000;
+			if (i==3){
+				LastPlantPosition = Plant3000;
 				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
-					LastPlantPosition = Plant3000;
-				}	
+				LastPlantPosition = Plant3000;
+			}
 			} else if (MaxPriorityKI_TaskNumbers[i] == 4){
-				PlantPosition = Plant4000;
-				if (i==3){
-					LastPlantPosition = Plant4000;
+			PlantPosition = Plant4000;
+			if (i==3){
+				LastPlantPosition = Plant4000;
 				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
-					LastPlantPosition = Plant4000;
-				}
+				LastPlantPosition = Plant4000;
+			}
 			} else if (MaxPriorityKI_TaskNumbers[i] == 5){
-				PlantPosition = Plant5000;
-				if (i==3){
-					LastPlantPosition = Plant5000;
+			PlantPosition = Plant5000;
+			if (i==3){
+				LastPlantPosition = Plant5000;
 				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
-					LastPlantPosition = Plant5000;
-				}
+				LastPlantPosition = Plant5000;
+			}
 			} else if (MaxPriorityKI_TaskNumbers[i] == 6){
-				PlantPosition = Plant6000;
-				if (i==3){
-					LastPlantPosition = Plant5000;
+			PlantPosition = Plant6000;
+			if (i==3){
+				LastPlantPosition = Plant5000;
 				} else if (MaxPriorityKI_Tasks[i+1].Priority == 0) {
-					LastPlantPosition = Plant5000;
-				}
+				LastPlantPosition = Plant5000;
+			}
 		}
 		if(i==0) // add distance from current-pos to first plant-pos
 		{
 			totalDistance = totalDistance + CalcDistance(aktpos, PlantPosition);
-						
+			
 		} else // add distance from old plant-pos to next (new) plant-pos
 		{
 			totalDistance = totalDistance + CalcDistance(OldPlantPosition, PlantPosition);
 		}
 		OldPlantPosition = PlantPosition;
 	}
-	 
-	 
 	
-	 // Calculate the way from the last Plant  to the Nearest Parking-Station that has free
-	 // space (KI_Task.Status == OPEN), according to the Color we are
-	 
+	
+	
+	// Calculate the way from the last Plant  to the Nearest Parking-Station that has free
+	// space (KI_Task.Status == OPEN), according to the Color we are
+	
 	float MinDistance = 3000.0;
 	//task_t MaxPriorityPlanter;
 	uint8_t MaxPriorityPlanterNumber;
@@ -397,30 +451,30 @@ uint8_t CalcTimeRemainingPlants(void)
 		{
 			if (i==11){
 				PlanterOrFieldPos = PlanterMidleBlue;
-			} else if (i == 12){
+				} else if (i == 12){
 				PlanterOrFieldPos = FieldL1;
-			} else if (i == 13){
+				} else if (i == 13){
 				PlanterOrFieldPos = PlanterL1;
-			
-			} else if (i == 15){
+				
+				} else if (i == 15){
 				PlanterOrFieldPos = PlanterL2;
-			} else if (i == 16){
+				} else if (i == 16){
 				PlanterOrFieldPos = FieldL3;
-			} else if (i == 21){
+				} else if (i == 21){
 				PlanterOrFieldPos = PlanterMidleYellow;
-			} else if (i == 22){
+				} else if (i == 22){
 				PlanterOrFieldPos = FieldR1;
-			} else if (i == 23){
+				} else if (i == 23){
 				PlanterOrFieldPos = PlanterR1;
-			
-			} else if (i == 25){
+				
+				} else if (i == 25){
 				PlanterOrFieldPos = PlanterR2;
-			} else if (i == 26){
+				} else if (i == 26){
 				PlanterOrFieldPos = FieldR3;
 			}
 			
 			
-			 float distance = CalcDistance(LastPlantPosition,PlanterOrFieldPos);
+			float distance = CalcDistance(LastPlantPosition,PlanterOrFieldPos);
 			
 			if(distance < MinDistance)
 			{

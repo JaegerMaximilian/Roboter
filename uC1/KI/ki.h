@@ -58,6 +58,7 @@ Data Stack size     : 1024
 #define ParkPlants			10
 #define SolarPanels			30
 #define StealPlants			40
+#define driveHome			60
 
 #define MAX_KI_TASKS		65		// Maximale Aufgaben (Tasks)
 

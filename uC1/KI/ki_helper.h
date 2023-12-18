@@ -20,8 +20,10 @@ void ActivatePlantAsObstacle(void);
 uint8_t DriveBack(uint8_t distance, uint8_t speed);
 float CalcDistance(point_t firstPoint, point_t secondPoint);
 void RePrioritisePlantTasks(void);
-uint8_t CalcOpenPlants(void);
-uint8_t CalcOpenParkPositions(void);
+void CalcOpenPlants(void);
+void CalcOpenParkPositions(void);
+void CalcOpenPlanter(void);
+void Repreoritise_SolarPanels(void);
 uint8_t CalcTimeRemainingPlants(void);
 
 
