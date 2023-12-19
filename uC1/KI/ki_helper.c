@@ -386,7 +386,11 @@ uint8_t CalcTimeRemainingPlants(void)
 		}
 		
 	}
-
+	// nach dem testen das Printen in den Logger wieder auskommentieren!!!!
+	
+	//char text1[300];
+	//sprintf(text1, "Next Plant: %d", IndexMaxPrioPflanze);
+	//SendDebugMessage(text1,1);
 
 	// SCHIRTT 2:
 	// CALC DISTANCE TO MAXPRIO-PLANT AND MAKE IT TOTAL DISTANCE
@@ -420,6 +424,7 @@ uint8_t CalcTimeRemainingPlants(void)
 
 	// SCHRITT 3:
 	// BEREITE PrivateKI_Task[] vor um Prios der Planter nicht global herumzuschieben
+	
 	task_t PrivateKI_Task[MAX_KI_TASKS];
 	point_t PlanterOrFieldPos;
 	
@@ -428,14 +433,15 @@ uint8_t CalcTimeRemainingPlants(void)
 		PrivateKI_Task[i] = KI_Task[i];
 	}
 
-	
+	//sprintf(text1, "Plants in Robot: %d", PlantsInRobot);
+	//SendDebugMessage(text1,1);
 	
 	int PrivatePlantsInRobot = PlantsInRobot;
 	
 	
 	if (IndexMaxPrioPflanze != 0){ // DIESES IF NOCH ÜBERPRÜFEN OB SINN ERGIBT!!!!!!!!!
 		PrivatePlantsInRobot = PrivatePlantsInRobot + 1;
-	} // PrivatePlantsInRobot müsste jetzt 3 sein
+	} 
 	
 
 	// SCHRITT 4:
@@ -444,6 +450,8 @@ uint8_t CalcTimeRemainingPlants(void)
 		
 		uint8_t IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
 		
+		//sprintf(text1, "Planned Planter: %d", IndexNextPlanter);
+		//SendDebugMessage(text1,1);
 
 		if (IndexNextPlanter==11){
 			PlanterOrFieldPos = PlanterMidleBlue;
@@ -476,12 +484,20 @@ uint8_t CalcTimeRemainingPlants(void)
 	
 	// LETZTER SCHRITT:
 	// devide a fixed Velocity by the total Distance
-	float spazi = 0.0;
-	float TimeToPark = PlantsInRobot * 4; // 3 sec to park each plant
-	float fixedVelocity = 0.3; // in [m/s]
-	float timeToDrive = ((totalDistance/1000) / fixedVelocity) + TimeToPark +  spazi;
+	uint8_t spazi = 0;
+	uint8_t TimeToPark = PlantsInRobot * 2; // 3 sec to park each plant
+	uint8_t TimeToPickUp = 0;
 	
+	if (IndexMaxPrioPflanze != 0)
+	{
+		TimeToPickUp = 2; // if a next Plant is possible, add Time To Pick it up
+	}
+	float fixedVelocity = 0.5; // in [m/s]
+	float timeToDrive = ((totalDistance/1000) / fixedVelocity) + TimeToPickUp + TimeToPark +  spazi;
 	
+	//sprintf(text1, "Time: %d", timeToDrive);
+	//SendDebugMessage(text1,1);
+
 	
 	
 	

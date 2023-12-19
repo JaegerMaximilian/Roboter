@@ -734,6 +734,11 @@ uint8_t KiTask(void)
 		}
 	}
 	
+	if (spielZeit < 30) // ab angenommen 30s mittlere Solarpanele sperren
+	{
+		KI_Task[31].Status = DONE;
+	}
+	
 	// ********************************************************************
 	// ********************************************************************
 	// ******
@@ -847,11 +852,14 @@ uint8_t KiTask(void)
 			//Zeit Berechnen Abstellen
 			//Zeit Berechnen Solar Panels
 			CalcOpenPlanter();
-			time = CalcTimeRemainingPlants();
-			
-			sprintf(text1, "Time: %d", time);
-			SendDebugMessage(text1,1);
-			
+			if (OpenPlants != 0) 
+			{
+				time = CalcTimeRemainingPlants();
+				
+				sprintf(text1, "Time: %d", time);
+				SendDebugMessage(text1,1);
+
+			}
 			CalcOpenParkPositions();
 			
 			if(OpenPlants > 0)
@@ -3881,7 +3889,7 @@ uint8_t KiTask(void)
 		{
 			if(spielZeit > 15 && OpenPlants == 0)
 			{
-				KI_State = 31027;
+				KI_State = 500; // evtl. nicht bis Sekunde 15 warten zum wegfahren sondern gleich nach 8 Sekunden fahren (blockieren evtl bloed wegen Fair play)
 			}
 			else
 			{
