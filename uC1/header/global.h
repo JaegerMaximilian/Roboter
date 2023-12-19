@@ -121,7 +121,8 @@ typedef union
 _GLOBAL_EXTERN float Winkel_motor1, Winkel_motor2, Winkel_motor3;
 _GLOBAL_EXTERN float geschwindigkeitsVorzeichen;
 
-_GLOBAL_EXTERN uint8_t spielZeit, spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte, Punkte_SlaveRobot;
+_GLOBAL_EXTERN uint8_t spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte, Punkte_SlaveRobot;
+_GLOBAL_EXTERN uint16_t spielZeit;
 
 _GLOBAL_EXTERN uint8_t PlantsInRobot;
 _GLOBAL_EXTERN uint8_t OpenParkPos;
@@ -143,6 +144,7 @@ _GLOBAL_EXTERN uint8_t SpielFarbe_Nextion, Strategie, Page, ConfigPlanter_Nextio
 _GLOBAL_EXTERN uint8_t SpielFarbe, Strategie, Page, ConfigPlanter, ConfigStehlen;
 _GLOBAL_EXTERN point_t Plant1000,Plant2000,Plant3000,Plant4000,Plant5000,Plant6000;
 _GLOBAL_EXTERN point_t PlanterL1,PlanterR1,PlanterL2,PlanterR2,FieldL1,FieldR1,FieldL3,FieldR3,PlanterMidleBlue,PlanterMidleYellow,SolarPanelsBlue, SolarPanelsYellow, SolarPanelsMiddle;
+_GLOBAL_EXTERN uint16_t TimeToHome, TimeSolarPanelsMiddleToHome, TimeSolarPanelsHome,TimeAllSolarPanelsHome, TimeParkPlantsAtHome, TimeToSolarPanelsMiddle;
 
 //_GLOBAL_EXTERN point_t startPos;
 

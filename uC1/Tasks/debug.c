@@ -169,8 +169,8 @@ uint8_t DebugTask(void)
 		//Time=0;
 	//}
 	
-	NextionSetPoints(spielZeit);
-	NextionSetTime(spielZeit);
+	NextionSetPoints(spielZeit/100);
+	NextionSetTime(spielZeit/100);
 	//    LED_PORT.OUT ^= ledBit;
 	// //   ledBit = (ledBit != 0x40) ? ledBit << 1 : 0x20;
 	//    ledBit = (ledBit != 0x80) ? ledBit << 1 : 0x20;
@@ -419,17 +419,7 @@ uint8_t DebugTask(void)
 	
 
 	
-	if(Punkte_Kirschen > 0)
-	{
-		punkte_Kirschen_Zusatz = 5;
-	}
-	else
-	{
-		punkte_Kirschen_Zusatz = 0;
-	}
-	
-	setDataLCD_RRTLAN(Punkte+Punkte_Kirschen +punkte_Kirschen_Zusatz, spielZeit);
-	
+
 	
 	//	sprintf(text1, "OtherRobot:(%d:%d)/(%d:%d)/(%d:%d)/(%d:%d)\n", EnemyDataRaw.x[0], EnemyDataRaw.y[0],EnemyDataRaw.x[1], EnemyDataRaw.y[1]
 	//	,EnemyDataRaw.x[2], EnemyDataRaw.y[2],EnemyDataRaw.x[3], EnemyDataRaw.y[3]);

@@ -43,9 +43,7 @@ uint8_t KiWatchTask(void)
 	
 	
 	
-	/**************************************************************************
-	***   Set Plants as DID when enemy was there	                        ***
-	**************************************************************************/
+
 	static uint8_t CounterArea1000 = 0;
 	static uint8_t CounterArea2000 = 0;
 	static uint8_t CounterArea3000 = 0;
@@ -68,8 +66,15 @@ uint8_t KiWatchTask(void)
 	static int8_t counterPlanter2 = 0;
 	static int8_t counterPlanterMiddle = 0;
 	static int8_t counterField1 = 0;
+	static int8_t counterSolarPanelsMiddle = 0;
 	
+	uint8_t enemyRobotInSolarPanelsMiddle;
+
 	char text1[200];
+	
+	/**************************************************************************
+	***   Set Plants as DID when enemy was there	                        ***
+	**************************************************************************/
 	InArea1000 = Path_IsInArea(1200,200,1800,8000);
 	InArea2000 = Path_IsInArea(700, 400, 1300, 1000);
 	InArea3000 = Path_IsInArea(700, 1000, 1300, 1600);
@@ -246,11 +251,11 @@ uint8_t KiWatchTask(void)
 		enemyRobotInPlanter2 = Path_IsInArea(0,1000,600,2000);
 		if(!enemyRobotInPlanter2)
 		{
-			counterPlanter2 = ((++counterPlanter2 > 10) ? --counterPlanter2 : counterPlanter2);
+			counterPlanter2 = ((++counterPlanter2 > 10) ? 10 : counterPlanter2);
 		}
 		else
 		{
-			counterPlanter2 = ((--counterPlanter2 < 0) ? ++counterPlanter2 : counterPlanter2);
+			counterPlanter2 = ((--counterPlanter2 < 0) ? 0 : counterPlanter2);
 		}
 		
 		if(enemyRobotInPlanter2 && KI_Task[25].Status == OPEN)
@@ -269,11 +274,11 @@ uint8_t KiWatchTask(void)
 		enemyRobotInPlanterMiddle = Path_IsInArea(1937,0,2537,450);
 		if(!enemyRobotInPlanterMiddle)
 		{
-			counterPlanterMiddle = ((++counterPlanterMiddle > 10) ? --counterPlanterMiddle : counterPlanterMiddle);
+			counterPlanterMiddle = ((++counterPlanterMiddle > 10) ? 10 : counterPlanterMiddle);
 		}
 		else
 		{
-			counterPlanterMiddle = ((--counterPlanterMiddle < 0) ? ++counterPlanterMiddle: counterPlanterMiddle);
+			counterPlanterMiddle = ((--counterPlanterMiddle < 0) ? 0: counterPlanterMiddle);
 		}
 		
 		if(enemyRobotInPlanterMiddle && KI_Task[11].Status == OPEN)
@@ -290,11 +295,11 @@ uint8_t KiWatchTask(void)
 		enemyRobotInField1 = Path_IsInArea(2550,0,3000,450);
 		if(!enemyRobotInField1)
 		{
-			counterField1 = ((++counterField1 > 10) ? --counterField1 : counterField1);
+			counterField1 = ((++counterField1 > 10) ? 10 : counterField1);
 		}
 		else
 		{
-			counterField1 = ((--counterField1 < 0) ? ++counterField1: counterField1);
+			counterField1 = ((--counterField1 < 0) ? 0 : counterField1);
 		}
 		
 		if(enemyRobotInField1 && KI_Task[12].Status == OPEN)
@@ -315,11 +320,11 @@ uint8_t KiWatchTask(void)
 		enemyRobotInPlanter1 = Path_IsInArea(0,312,450,912);
 		if(!enemyRobotInPlanter1)
 		{
-			counterPlanter1 = ((++counterPlanter1 > 10) ? --counterPlanter1 : counterPlanter1);
+			counterPlanter1 = ((++counterPlanter1 > 10) ? 10 : counterPlanter1);
 		}
 		else
 		{
-			counterPlanter1 = ((--counterPlanter1 < 0) ? ++counterPlanter1: counterPlanter1);
+			counterPlanter1 = ((--counterPlanter1 < 0) ? 0 : counterPlanter1);
 		}
 		
 		if(enemyRobotInPlanter1 && KI_Task[23].Status == OPEN)
@@ -336,11 +341,11 @@ uint8_t KiWatchTask(void)
 		enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
 		if(!enemyRobotInPlanter2)
 		{
-			counterPlanter2 = ((++counterPlanter2 > 10) ? --counterPlanter2 : counterPlanter2);
+			counterPlanter2 = ((++counterPlanter2 > 10) ? 10 : counterPlanter2);
 		}
 		else
 		{
-			counterPlanter2 = ((--counterPlanter2 < 0) ? ++counterPlanter2 : counterPlanter2);
+			counterPlanter2 = ((--counterPlanter2 < 0) ? 0 : counterPlanter2);
 		}
 		
 		if(enemyRobotInPlanter2 && KI_Task[15].Status == OPEN)
@@ -357,11 +362,11 @@ uint8_t KiWatchTask(void)
 		enemyRobotInPlanterMiddle = Path_IsInArea(462,0,1062,450);
 		if(!enemyRobotInPlanterMiddle)
 		{
-			counterPlanterMiddle = ((++counterPlanterMiddle > 10) ? --counterPlanterMiddle : counterPlanterMiddle);
+			counterPlanterMiddle = ((++counterPlanterMiddle > 10) ? 10 : counterPlanterMiddle);
 		}
 		else
 		{
-			counterPlanterMiddle = ((--counterPlanterMiddle < 0) ? ++counterPlanterMiddle: counterPlanterMiddle);
+			counterPlanterMiddle = ((--counterPlanterMiddle < 0) ? 0 : counterPlanterMiddle);
 		}
 		
 		if(enemyRobotInPlanterMiddle && KI_Task[21].Status == OPEN)
@@ -378,11 +383,11 @@ uint8_t KiWatchTask(void)
 		enemyRobotInField1 = Path_IsInArea(0,0,450,450);
 		if(!enemyRobotInField1)
 		{
-			counterField1 = ((++counterField1 > 10) ? --counterField1 : counterField1);
+			counterField1 = ((++counterField1 > 10) ? 10 : counterField1);
 		}
 		else
 		{
-			counterField1 = ((--counterField1 < 0) ? ++counterField1: counterField1);
+			counterField1 = ((--counterField1 < 0) ? 0 : counterField1);
 		}
 		
 		if(enemyRobotInField1 && KI_Task[22].Status == OPEN)
@@ -395,7 +400,93 @@ uint8_t KiWatchTask(void)
 			counterField1 = 0;
 		}
 	}
+	
+	/**************************************************************************
+	***   Solar Panels to Is Doing 											***
+	**************************************************************************/
+	enemyRobotInSolarPanelsMiddle = Path_IsInArea(1000,1600,2000,1600);
+	
+	if(!enemyRobotInSolarPanelsMiddle)
+	{
+		counterSolarPanelsMiddle = ((++counterSolarPanelsMiddle > 10) ? 10 : counterSolarPanelsMiddle);
+	}
+	else
+	{
+		counterSolarPanelsMiddle = ((--counterSolarPanelsMiddle < 0) ? 0 : counterSolarPanelsMiddle);
+	}
+	
+	if(enemyRobotInSolarPanelsMiddle)
+	{
+		KI_Task[31].Status = IS_DOING;
+	}
+	else if(!enemyRobotInSolarPanelsMiddle && KI_Task[31].Status == IS_DOING && counterSolarPanelsMiddle >= 10)
+	{
+		KI_Task[31].Status = OPEN;
+		counterSolarPanelsMiddle = 0;
+	}
 
+	/**************************************************************************
+	***   Set Solar Panels Middle to Done if not enought Time               ***
+	**************************************************************************/
+	point_t start, ziel;
+	float distanceToSolarPanelsMiddle;
+	
+	if(PlantsInRobot == 3)
+	{
+		TimeParkPlantsAtHome = TimePark3PlantsAtHome;
+	}
+	else if(PlantsInRobot == 2)
+	{
+		TimeParkPlantsAtHome = TimePark2PlantsAtHome;
+	}
+	else if(PlantsInRobot == 1)
+	{
+		TimeParkPlantsAtHome = TimePark1PlantAtHome;
+	}
+	
+	// Start Position to begin movement from
+	start.Xpos = xPos;
+	start.Ypos = yPos;
+	
+	distanceToSolarPanelsMiddle = CalcDistance(start,SolarPanelsMiddle);
+	
+	//Time To Drive Home from Actual Position
+	TimeToSolarPanelsMiddle = (uint16_t)((distanceToSolarPanelsMiddle /(float)STANDARD_VELOCITY)*10.0); //In 10tel seconds
+	
+	TimeSolarPanelsMiddleToHome = (uint16_t)((1050.0/(float)STANDARD_VELOCITY)*10.0);
+	if (spielZeit < (4 *(uint16_t)TimeSolarpanels + 2*TimeSetPosAtSolarPanels + TimeSolarPanelsMiddleToHome + TimeParkPlantsAtHome + TimeToSolarPanelsMiddle)) //Each Solor Panels + Get Position At Solar Panels + Time to drive
+	{
+		KI_Task[31].Status = DONE;
+	}
+	
+	/**************************************************************************
+	***   Set Solar Panels at Home Position to Done if not enought Time     ***
+	**************************************************************************/
+	TimeAllSolarPanelsHome = TimeToHome + 3*TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome;
+	//Time to Drive to Solar Panels at Home Position
+	TimeSolarPanelsHome = TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome;
+	
+	if(spielZeit < TimeSolarPanelsHome)
+	{
+		KI_Task[30].Status = DONE;
+		KI_Task[32].Status = DONE;
+	}
+	
+	/**************************************************************************
+	***   Calculate Time to Drive Home					                    ***
+	**************************************************************************/
+	float distanceToHome;
+	
+	// Start Position to begin movement from
+	start.Xpos = xPos;
+	start.Ypos = yPos;
+	
+	ziel = ((SpielFarbe = BLUE) ? FieldL3 : FieldR3);
+	
+	distanceToHome = CalcDistance(start,ziel);
+	
+	//Time To Drive Home from Actual Position
+	TimeToHome = (uint16_t)((distanceToHome /(float)STANDARD_VELOCITY)*10.0); //In 10tel seconds
 	
 	return(CYCLE);
 }

@@ -77,6 +77,13 @@ Data Stack size     : 1024
 #define  STANDARD_ACC				120
 #define  PLANT_ACC					60
 
+//Time Settings
+#define TimeSolarpanels				30 //10 Seconds
+#define TimeSetPosAtSolarPanels		20 //2 Seconds
+#define TimePark1PlantAtHome		20 //2 Seconds
+#define TimePark2PlantsAtHome		50 //5 Seconds
+#define TimePark3PlantsAtHome		100 //10 Seconds
+
 // Struktur der Roboter (Position)
 typedef point_t robot_t;
 

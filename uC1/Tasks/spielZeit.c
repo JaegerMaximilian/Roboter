@@ -30,13 +30,12 @@
 void spielZeit_init()
 {
    /* cyclic task - cycle time: 10 ms */
-   SET_CYCLE(SPIELZEIT_TASKNBR, 1000);
+   SET_CYCLE(SPIELZEIT_TASKNBR, 100);
    SET_TASK(SPIELZEIT_TASKNBR, CYCLE);
    SET_TASK_HANDLE(SPIELZEIT_TASKNBR, spielZeitTask);
    
-   /* set playing time to 99 sec */
-   spielZeit = 100;
-    //spielZeit = 120;
+   /* set playing time to 100 sec */
+   spielZeit = 1000; //1000 1sec = 10
 }
 
 
@@ -52,7 +51,7 @@ void spielZeit_init()
 /* ************************************************************** */
 uint8_t spielZeitTask()
 {
-	SET_CYCLE(SPIELZEIT_TASKNBR, 1000);
+	SET_CYCLE(SPIELZEIT_TASKNBR, 100);
 
 	/* update playing time (1 sec - interval) */
 	if (spielZeit > 0)

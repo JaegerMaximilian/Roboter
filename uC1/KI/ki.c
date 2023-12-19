@@ -59,6 +59,7 @@ All Rights Reserved.
 #include "nextion.h"
 #include "logger.h"
 #include "ki_helper.h"
+#include "spielZeit.h"
 
 
 #define _DEBUG_MOTION_
@@ -70,7 +71,7 @@ char text[200];
 uint8_t stopEngin = 0;
 
 /* the last 5 sec no new task will be chosen */
-#define KI_DISABLE_TIME			5
+#define KI_DISABLE_TIME			0
 
 // Distanzen für Gegnererkennung (Ultraschallsensoren)
 #define  WATCH_DIS_FRONT		600
@@ -714,7 +715,7 @@ uint8_t KiTask(void)
 	// ******   S P I E L Z E I T U E B E R W A C H U N G
 	// ********************************************************************
 
-	if(spielZeit < 1)
+	if(spielZeit < 10)
 	{
 		// Hier alle notwendigen Systeme deaktivieren
 		cmd_SetDigitalOut(DO_LED1_NBR, 1);
@@ -732,11 +733,6 @@ uint8_t KiTask(void)
 		{
 			
 		}
-	}
-	
-	if (spielZeit < 30) // ab angenommen 30s mittlere Solarpanele sperren
-	{
-		KI_Task[31].Status = DONE;
 	}
 	
 	// ********************************************************************
@@ -848,9 +844,7 @@ uint8_t KiTask(void)
 			uint8_t panelsMiddleNotFree = Path_IsInArea(1000,1600,2000,1600);
 			uint8_t time;
 			RePrioritisePlantTasks();
-			Repreoritise_SolarPanels();
 			//Zeit Berechnen Abstellen
-			//Zeit Berechnen Solar Panels
 			CalcOpenPlanter();
 			if (OpenPlants != 0)
 			{
@@ -862,7 +856,7 @@ uint8_t KiTask(void)
 			}
 			CalcOpenParkPositions();
 			
-			if(OpenPlants > 0)
+			if(OpenPlants > 0 && PlantsInRobot < 3 && spielZeit > (time + TimeAllSolarPanelsHome))
 			{
 				//Nächste Pflanze von PENDING to OPEN
 				for (int prio = 98;prio>90; prio--)
@@ -884,30 +878,26 @@ uint8_t KiTask(void)
 				}
 			}
 			ActivatePlantAsObstacle();
-			
+
 			//Select Next Step
-			if(spielZeit < 12 && spielZeit > 5)
-			{
-				KI_State = 20;
-				StateOfGame = SolarPanels;
-			}
-			else if(spielZeit <= 5)
+			if(spielZeit < TimeSolarPanelsHome)
 			{
 				StateOfGame = driveHome;
 				KI_State = 20;
 			}
-			else if(OpenPlants > 0)
-			{
-				KI_State = 20;
-				StateOfGame = GetPlants;
-			}
-			else if((OpenParkPos == 1  && OpenPlanter == 0  && OpenPlants == 0
-			&! panelsMiddleNotFree && KI_Task[31].Status != DONE) || (OpenPlants == 0 && PlantsInRobot == 0))
+
+			else if((OpenPlanter == 0 || (OpenPlants == 0 && PlantsInRobot == 0)) &&((spielZeit < time + TimeAllSolarPanelsHome) || OpenPlants == 0)
+			&& spielZeit > TimeSolarPanelsHome)
 			{
 				KI_State = 20;
 				StateOfGame = SolarPanels;
 			}
-			else if(PlantsInRobot >= 1)
+			else if(OpenPlants > 0 && PlantsInRobot < 3 && spielZeit > (time + TimeAllSolarPanelsHome))
+			{
+				KI_State = 20;
+				StateOfGame = GetPlants;
+			}
+			else if(PlantsInRobot > 0)
 			{
 				KI_State = 10000;
 				StateOfGame = ParkPlants;
@@ -946,7 +936,7 @@ uint8_t KiTask(void)
 					break;
 				}
 			}
-			if(done==1 && spielZeit > 15)
+			if(done==1 )
 			{
 				KI_State = 20;
 				break;
@@ -1032,11 +1022,15 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
+					if(spielZeit < (TimeToHome + 20))
+					{
+						KI_State = 500;
+					}
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
-					else if((PlantsInRobot == planedPlants && ParkedPlants == 0)||OpenPlants == 0 || PlantsInRobot == 3)
+					else if((PlantsInRobot == planedPlants && ParkedPlants == 0))
 					{
 						KI_State = 10000;
 						StateOfGame = ParkPlants;
@@ -1085,7 +1079,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[1].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[1].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
 					{
 						KI_State = 1000;
 					}
@@ -1192,11 +1186,15 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
+					if(spielZeit < (TimeToHome + 20))
+					{
+						KI_State = 500;
+					}
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
-					else if((PlantsInRobot == planedPlants && ParkedPlants == 0)||OpenPlants == 0 || PlantsInRobot == 3)
+					else if((PlantsInRobot == planedPlants && ParkedPlants == 0))
 					{
 						KI_State = 10000;
 						StateOfGame = ParkPlants;
@@ -1244,7 +1242,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[2].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[2].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
 					{
 						KI_State = 2000;
 					}
@@ -1350,11 +1348,15 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
+					if(spielZeit < (TimeToHome + 20))
+					{
+						KI_State = 500;
+					}
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
-					else if((PlantsInRobot == planedPlants && ParkedPlants == 0)||OpenPlants == 0 || PlantsInRobot == 3)
+					else if((PlantsInRobot == planedPlants && ParkedPlants == 0))
 					{
 						KI_State = 10000;
 						StateOfGame = ParkPlants;
@@ -1512,11 +1514,15 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
+					if(spielZeit < (TimeToHome + 20))
+					{
+						KI_State = 500;
+					}
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
-					else if((PlantsInRobot == planedPlants && ParkedPlants == 0)||OpenPlants == 0 || PlantsInRobot == 3)
+					else if((PlantsInRobot == planedPlants && ParkedPlants == 0))
 					{
 						KI_State = 10000;
 						StateOfGame = ParkPlants;
@@ -1563,7 +1569,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[4].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[4].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
 					{
 						KI_State = 4000;
 					}
@@ -1668,11 +1674,15 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
+					if(spielZeit < (TimeToHome + 20))
+					{
+						KI_State = 500;
+					}
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
-					else if((PlantsInRobot == planedPlants && ParkedPlants == 0)||OpenPlants == 0 || PlantsInRobot == 3)
+					else if((PlantsInRobot == planedPlants && ParkedPlants == 0))
 					{
 						KI_State = 10000;
 						StateOfGame = ParkPlants;
@@ -1719,7 +1729,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[5].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[5].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
 					{
 						KI_State = 5000;
 					}
@@ -1824,11 +1834,15 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
+					if(spielZeit < (TimeToHome + 20))
+					{
+						KI_State = 500;
+					}
 					if(PlantsInRobot<planedPlants && ParkedPlants == 0 && OpenPlants > 0)
 					{
 						KI_State = 550;
 					}
-					else if((PlantsInRobot == planedPlants && ParkedPlants == 0)||OpenPlants == 0 || PlantsInRobot == 3)
+					else if((PlantsInRobot == planedPlants && ParkedPlants == 0))
 					{
 						KI_State = 10000;
 						StateOfGame = ParkPlants;
@@ -1875,7 +1889,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[6].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[6].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
 					{
 						KI_State = 6000;
 					}
@@ -2077,7 +2091,7 @@ uint8_t KiTask(void)
 				KI_Task[22].Priority = 85;
 			}
 
-			if(spielZeit > 15)
+			if(spielZeit > (TimeToHome + 20))
 			{
 				KI_State = 20;
 			}
@@ -2137,14 +2151,8 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					KI_State = 500;
+
 					break;
 				}
 				/* error happened during the motion */
@@ -2183,21 +2191,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[11].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[11].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 11000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -2292,14 +2292,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					KI_State = 500;
 					break;
 				}
 				/* error happened during the motion */
@@ -2336,21 +2329,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[12].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[12].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 12000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -2430,14 +2415,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					KI_State = 500;
 					break;
 				}
 				/* error happened during the motion */
@@ -2476,21 +2454,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[13].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[13].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 13000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -2584,15 +2554,16 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot < 3 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-						StateOfGame = GetPlants; // gehört raus
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					KI_State = 500;
+					//if(PlantsInRobot < 3 || OpenParkPos == 0)
+					//{
+					//KI_State = 500;
+					//StateOfGame = GetPlants; // gehört raus
+					//}
+					//else
+					//{
+					//KI_State = 10000;
+					//}
 					break;
 				}
 				/* error happened during the motion */
@@ -2631,21 +2602,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[15].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[15].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 15000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -2923,14 +2886,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					KI_State = 500;
 					break;
 				}
 				/* error happened during the motion */
@@ -2969,21 +2925,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[21].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[21].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 21000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -3079,14 +3027,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					KI_State = 500;
 					break;
 				}
 				/* error happened during the motion */
@@ -3124,21 +3065,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[22].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[22].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 22000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -3220,14 +3153,7 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot==0 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					KI_State = 500;
 					break;
 				}
 				/* error happened during the motion */
@@ -3266,21 +3192,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[23].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[23].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 23000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -3374,15 +3292,16 @@ uint8_t KiTask(void)
 					PlantsInRobot--;
 					ParkedPlants++;
 					
-					if(PlantsInRobot < 3 || OpenParkPos == 0)
-					{
-						KI_State = 500;
-						StateOfGame = GetPlants; 
-					}
-					else
-					{
-						KI_State = 10000;
-					}
+					//if(PlantsInRobot < 3 || OpenParkPos == 0)
+					//{
+					//KI_State = 500;
+					//StateOfGame = GetPlants;
+					//}
+					//else
+					//{
+					//KI_State = 10000;
+					//}
+					KI_State = 500;
 					break;
 				}
 				/* error happened during the motion */
@@ -3421,21 +3340,13 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[25].Status == OPEN)
+					if(motionFailureCount<3 && KI_Task[25].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
 					{
 						KI_State = 25000;
 					}
 					else
 					{
-						CalcOpenParkPositions();
-						if(OpenParkPos > 0)
-						{
-							KI_State = 10000;
-						}
-						else
-						{
-							KI_State = 500;
-						}
+						KI_State = 500;
 
 						velocity = STANDARD_VELOCITY;
 					}
@@ -3748,7 +3659,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						if(spielZeit < 15)
+						if(spielZeit < TimeToHome)
 						{
 							KI_State = 60000;
 						}
@@ -3880,9 +3791,9 @@ uint8_t KiTask(void)
 		}
 		case 31027:
 		{
-			if(spielZeit > 15 && OpenPlants == 0)
+			if(spielZeit > (TimeAllSolarPanelsHome + 20) && OpenPlants == 0)
 			{
-				KI_State = 500; // evtl. nicht bis Sekunde 15 warten zum wegfahren sondern gleich nach 8 Sekunden fahren (blockieren evtl bloed wegen Fair play)
+				KI_State = 31027; // evtl. nicht bis Sekunde 15 warten zum wegfahren sondern gleich nach 8 Sekunden fahren (blockieren evtl bloed wegen Fair play)
 			}
 			else
 			{
@@ -3996,7 +3907,7 @@ uint8_t KiTask(void)
 					}
 					else
 					{
-						if(spielZeit < 12)
+						if(spielZeit < TimeToHome)
 						{
 							KI_State = 60000;
 						}

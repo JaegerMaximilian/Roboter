@@ -327,33 +327,6 @@ void CalcOpenPlanter(void)
 }
 
 /**************************************************************************
-***   FUNKTIONNAME: Repriorisise_solarpanels 							***
-***   FUNKTION: Repriorisiere Solar Panels  							***
-***   TRANSMIT PARAMETER: NO                                            ***
-***   RECEIVE PARAMETER.:												***
-**************************************************************************/
-void Repreoritise_SolarPanels(void)
-{
-	uint8_t panelsMiddleNotFree = Path_IsInArea(1000,1600,2000,1600);
-	
-	//Zeit gehört noch dazu
-	if(panelsMiddleNotFree)
-	{
-		KI_Task[31].Status = IS_DOING;
-		KI_Task[31].Priority = 77;
-	}
-	else if (KI_Task[31].Status != DONE)
-	{
-		KI_Task[31].Status = OPEN;	
-		KI_Task[31].Priority = 79;
-	}
-	
-}
-
-
-
-
-/**************************************************************************
 ***   FUNKTIONNAME: CalcTimeRemainingPlants								***
 ***   FUNKTION: Calculates Time it probably takes to Grab another Plant 
 and then park all Plants that are in the Robot                          ***
