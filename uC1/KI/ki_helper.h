@@ -25,6 +25,7 @@ void CalcOpenParkPositions(void);
 void CalcOpenPlanter(void);
 void Repreoritise_SolarPanels(void);
 uint8_t CalcTimeRemainingPlants(void);
+uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[]);
 
 
 // ****************************************************
