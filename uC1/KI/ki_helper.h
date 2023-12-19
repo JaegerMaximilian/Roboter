@@ -20,15 +20,15 @@ void ActivatePlantAsObstacle(void);
 uint8_t DriveBack(uint8_t distance, uint8_t speed);
 float CalcDistance(point_t firstPoint, point_t secondPoint);
 void RePrioritisePlantTasks(void);
-void RePrioritiseSolarPanels(void);
-uint8_t CalcOpenPlants(void);
-uint8_t CalcOpenParkPositions(void);
-float CalcTimeMoveSolarPanelsMiddle(void)
-float CalcTimeRemainingPlants(void);
+void CalcOpenPlants(void);
+void CalcOpenParkPositions(void);
+void CalcOpenPlanter(void);
+void Repreoritise_SolarPanels(void);
+uint8_t CalcTimeRemainingPlants(void);
 
 
 // ****************************************************
-// Dot2D, Norm2D, AngleToXAxis2D from path_math.c (µC2)
+// Dot2D, Norm2D, AngleToXAxis2D from path_math.c (ï¿½C2)
 // ****************************************************
 float Dot2D(float* vectorA, float* vectorB);
 float Norm2D(float* vector);

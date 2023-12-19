@@ -20,6 +20,7 @@
 #include "Pfadplanung.h"
 #include "multitask.h"
 #include "logger.h"
+#include "nextion.h"
 
 void InitKiWatch(void)
 {
@@ -40,6 +41,11 @@ uint8_t KiWatchTask(void)
 	// zyklischer Task - Zykluszeit: 200 ms
 	SET_CYCLE(KI_WATCH_TASKNBR, 100);
 	
+	
+	
+	/**************************************************************************
+	***   Set Plants as DID when enemy was there	                        ***
+	**************************************************************************/
 	static uint8_t CounterArea1000 = 0;
 	static uint8_t CounterArea2000 = 0;
 	static uint8_t CounterArea3000 = 0;
@@ -199,6 +205,110 @@ uint8_t KiWatchTask(void)
 		KI_Task[6].Status = DID;
 	}
 	
+	
+	/**************************************************************************
+	***   Set Park Positions to PENDING when enemy is there	                    ***
+	**************************************************************************/
+	uint8_t enemyRobotInPlanter1;
+	uint8_t enemyRobotInPlanter2;
+	uint8_t enemyRobotInPlanterMiddle;
+	uint8_t enemyRobotInField1;
+
+	if(SpielFarbe == BLUE)
+	{
+		//Planter 1
+		enemyRobotInPlanter1 = Path_IsInArea(2550,312,3000,912);
+		if(enemyRobotInPlanter1 && KI_Task[13].Status == OPEN)
+		{
+			KI_Task[13].Status == PENDING;
+		}
+		else if(!enemyRobotInPlanter2 && KI_Task[13].Status == PENDING)
+		{
+			KI_Task[13].Status = OPEN;
+		}
+		
+		//Planter 2
+		enemyRobotInPlanter2 = Path_IsInArea(0,1000,600,2000);
+		if(enemyRobotInPlanter2 && KI_Task[25].Status == OPEN)
+		{
+			KI_Task[25].Status = PENDING;
+		}
+		else if(!enemyRobotInPlanter2 && KI_Task[25].Status == PENDING && ConfigPlanter) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
+		{
+			KI_Task[25].Status = OPEN;
+		}
+		
+		//Planter Middle
+		enemyRobotInPlanterMiddle = Path_IsInArea(1937,0,2537,450);
+		if(enemyRobotInPlanterMiddle && KI_Task[11].Status == OPEN)
+		{
+			KI_Task[11].Status = PENDING;
+		}
+		else if(!enemyRobotInPlanterMiddle && KI_Task[11].Status == PENDING)
+		{
+			KI_Task[11].Status = OPEN;
+		}
+		
+		//Field 1
+		enemyRobotInField1 = Path_IsInArea(2550,0,3000,450);
+		if(enemyRobotInField1 && KI_Task[12].Status == OPEN)
+		{
+			KI_Task[12].Status = PENDING;
+		}
+		else if(!enemyRobotInField1 && KI_Task[12].Status == PENDING)
+		{
+			KI_Task[12].Status = OPEN;
+		}
+		
+	}
+	
+	if(SpielFarbe == Yellow)
+	{
+		//Planter 1
+		enemyRobotInPlanter1 = Path_IsInArea(0,312,450,912);
+		if(enemyRobotInPlanter1 && KI_Task[13].Status == OPEN)
+		{
+			KI_Task[23].Status = PENDING;
+		}
+		else if(!enemyRobotInPlanter2 && KI_Task[13].Status == PENDING)
+		{
+			KI_Task[23].Status = OPEN;
+		}
+		
+		//Planter 2
+		enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
+		if(enemyRobotInPlanter2 && KI_Task[25].Status == OPEN)
+		{
+			KI_Task[15].Status = PENDING;
+		}
+		else if(!enemyRobotInPlanter2 && KI_Task[25].Status == PENDING && ConfigPlanter) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
+		{
+			KI_Task[15].Status = OPEN;
+		}
+		
+		//Planter Middle
+		enemyRobotInPlanterMiddle = Path_IsInArea(462,0,1062,450);
+		if(enemyRobotInPlanterMiddle && KI_Task[21].Status == OPEN)
+		{
+			KI_Task[21].Status = PENDING;
+		}
+		else if(!enemyRobotInPlanterMiddle && KI_Task[21].Status == PENDING)
+		{
+			KI_Task[21].Status = OPEN;
+		}
+		
+		//Field 1
+		enemyRobotInField1 = Path_IsInArea(0,0,450,450);
+		if(enemyRobotInField1 && KI_Task[22].Status == OPEN)
+		{
+			KI_Task[22].Status = PENDING;
+		}
+		else if(!enemyRobotInField1 && KI_Task[22].Status == PENDING)
+		{
+			KI_Task[22].Status = OPEN;
+		}
+	}
+
 	
 	return(CYCLE);
 }

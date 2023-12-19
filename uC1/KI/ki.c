@@ -70,7 +70,7 @@ char text[200];
 uint8_t stopEngin = 0;
 
 /* the last 5 sec no new task will be chosen */
-#define KI_DISABLE_TIME			0
+#define KI_DISABLE_TIME			5
 
 // Distanzen für Gegnererkennung (Ultraschallsensoren)
 #define  WATCH_DIS_FRONT		600
@@ -137,6 +137,8 @@ void InitKI(void)
 	FieldL3.Ypos = 1700;
 	PlanterMidleBlue.Xpos = 2237;
 	PlanterMidleBlue.Ypos = 300;
+	SolarPanelsBlue.Xpos = 2500;
+	SolarPanelsBlue.Ypos = 1700;
 	
 	PlanterR1.Xpos = 300;
 	PlanterR1.Ypos = 612;
@@ -148,6 +150,11 @@ void InitKI(void)
 	FieldR3.Ypos = 1700;
 	PlanterMidleYellow.Xpos = 762;
 	PlanterMidleYellow.Ypos = 300;
+	SolarPanelsYellow.Xpos = 500;
+	SolarPanelsYellow.Ypos = 1700;
+	
+	SolarPanelsMiddle.Xpos = 1500;
+	SolarPanelsMiddle.Ypos = 1700;
 
 	//Set Gamecolors
 	if(SpielFarbe_Nextion == BLUE_L1 || SpielFarbe_Nextion == BLUE_L3 || SpielFarbe_Nextion == BLUE_R2)
@@ -573,6 +580,7 @@ void InitKI(void)
 			KI_Task[31].Status = OPEN;
 			KI_Task[32].Status = OPEN;
 		}
+
 		if(SpielFarbe == BLUE)
 		{
 			//Parking Positions
@@ -603,14 +611,25 @@ void InitKI(void)
 			KI_Task[31].Status = OPEN;
 			KI_Task[32].Status = LOCKED;
 		}
+		
+		//Prios Solar Panels
+		KI_Task[30].Priority = 78;
+		KI_Task[32].Priority = 78;
+		KI_Task[31].Priority = 79;
+		
+		//Drive Home Task
+		KI_Task[60].Status = OPEN;
 	}
+
+
+
 	else
 	{
 		// *******************************************
 		// Strategy: STRATEGY_HOMOLOGATION
 		// *******************************************
 	}
-	
+
 	// *******************************************
 	// Set State of First Plant to Open if in pre-adjusted plan or to pending if not
 	// *******************************************
@@ -629,12 +648,12 @@ void InitKI(void)
 			planedPlants++;
 		}
 	}
-	
+
 	// *******************************************
 	// Set Plant as Obstacle if not used
 	// *******************************************
 	ActivatePlantAsObstacle();
-	
+
 }
 
 /**************************************************************************
@@ -664,7 +683,7 @@ uint8_t KiTask(void)
 	// Cycle per default to 100 ms
 	SET_CYCLE(KI_TASKNBR, 100);
 	
-	char text1[200];
+	char text1[300];
 	
 	//Position of enemy and my own robot
 	uint8_t index [] = {1,2,3,4,5,6};
@@ -678,18 +697,15 @@ uint8_t KiTask(void)
 	uint16_t YPosition[] = {yPos, enemySend[0].Ypos,enemySend[1].Ypos,enemySend[2].Ypos,enemySend[3].Ypos,enemySend[4].Ypos};
 	SendPlaygroundPositionMessage(index, XPosition,YPosition,6);
 	
-	//sprintf(text1, "PosX: %d PosY: %d", enemySend[0].Xpos, enemySend[0].Ypos);
-	//SendDebugMessage(text1,1);
-	
 	//State and Priority of Tasks
-	uint8_t index1 [] = {1,2,3,4,5,6,11,12,13,15,16,21,22,23,25,26};
+	uint8_t index1 [] = {1,2,3,4,5,6,11,12,13,15,16,21,22,23,25,26,30,31,32};
 	uint8_t state[] = {	KI_Task[1].Status,KI_Task[2].Status,KI_Task[3].Status,KI_Task[4].Status,KI_Task[5].Status,KI_Task[6].Status,
 		KI_Task[11].Status,KI_Task[12].Status,KI_Task[13].Status,KI_Task[15].Status,KI_Task[16].Status,
-	KI_Task[21].Status,KI_Task[22].Status,KI_Task[23].Status,KI_Task[25].Status,KI_Task[26].Status};
+	KI_Task[21].Status,KI_Task[22].Status,KI_Task[23].Status,KI_Task[25].Status,KI_Task[26].Status,KI_Task[30].Status,KI_Task[31].Status,KI_Task[32].Status};
 	
 	uint8_t priority[] = {	KI_Task[1].Priority,KI_Task[2].Priority,KI_Task[3].Priority,KI_Task[4].Priority,KI_Task[5].Priority,KI_Task[6].Priority,
 		KI_Task[11].Priority,KI_Task[12].Priority,KI_Task[13].Priority,KI_Task[15].Priority,KI_Task[16].Priority,
-	KI_Task[21].Priority,KI_Task[22].Priority,KI_Task[23].Priority,KI_Task[25].Priority,KI_Task[26].Priority};
+	KI_Task[21].Priority,KI_Task[22].Priority,KI_Task[23].Priority,KI_Task[25].Priority,KI_Task[26].Priority,KI_Task[30].Priority,KI_Task[31].Priority,KI_Task[32].Priority};
 	SendTaskInfo(index1,state,priority);
 
 
@@ -824,12 +840,14 @@ uint8_t KiTask(void)
 		case 500:
 		{
 			uint8_t done = 0;
+			uint8_t panelsMiddleNotFree = Path_IsInArea(1000,1600,2000,1600);
 			RePrioritisePlantTasks();
-			//Solar Panels Priorisieren
+			Repreoritise_SolarPanels();
 			//Zeit Berechnen Abstellen
 			//Zeit Berechnen Solar Panels
-			CalcOpenPlants();
-			CalcTimeRemainingPlants();
+			CalcOpenPlanter();
+			//CalcTimeRemainingPlants();
+			CalcOpenParkPositions();
 			
 			if(OpenPlants > 0)
 			{
@@ -854,20 +872,37 @@ uint8_t KiTask(void)
 			}
 			ActivatePlantAsObstacle();
 			
-			if(OpenPlants == 0 && PlantsInRobot > 0)
+			//Select Next Step
+			if(spielZeit < 12 && spielZeit > 5)
 			{
-				KI_State = 10000;
-				StateOfGame = ParkPlants;
+				KI_State = 20;
+				StateOfGame = SolarPanels;
+			}
+			else if(spielZeit <= 5)
+			{
+				StateOfGame = driveHome;
+				KI_State = 20;
 			}
 			else if(OpenPlants > 0)
 			{
 				KI_State = 20;
 				StateOfGame = GetPlants;
 			}
-			else
+			else if((PlantsInRobot <= 2 && OpenParkPos == 1  && OpenPlanter == 0  && OpenPlants == 0
+			&! panelsMiddleNotFree && KI_Task[31].Status != DONE) || (OpenPlants == 0 && PlantsInRobot == 0))
 			{
 				KI_State = 20;
 				StateOfGame = SolarPanels;
+			}
+			else if(PlantsInRobot > 1)
+			{
+				KI_State = 10000;
+				StateOfGame = ParkPlants;
+			}
+			else
+			{
+				KI_State = 20;
+				StateOfGame = driveHome;
 			}
 			break;
 		}
@@ -898,7 +933,7 @@ uint8_t KiTask(void)
 					break;
 				}
 			}
-			if(done==1)
+			if(done==1 && spielZeit > 15)
 			{
 				KI_State = 20;
 				break;
@@ -907,7 +942,6 @@ uint8_t KiTask(void)
 			{
 				KI_State = 500;
 				break;
-				
 			}
 		}
 		
@@ -1924,9 +1958,9 @@ uint8_t KiTask(void)
 			//Prio 88 = Planter Midle Task 11/21
 			//Prio 87 = Field 1 Side Task 12/22 ==> Changeable
 			//Prio 86 = Planter 1 Task 13/23
-			//Prio 85 = Field 1 Task 12/22 or Field 3 Task 16/26 ==> Changeable
-			//Prio 84 = Field 1 Task 12/22 or Field 3 Task 16/26 ==> Changeable
+			//Prio 85 = Field 1 Task 12/22 ==> Changeable
 			//Prio 83 = Planter 2 Task 15/25  ==> Changeable
+			//Prio 82 = Field 3 Task 16/26
 			
 			point_t PlanterMidlePos, Planter2Pos, field1Pos, field3Pos, aktPos, Planter1Pos;
 			float distance_PlanterMidle;
@@ -1990,6 +2024,8 @@ uint8_t KiTask(void)
 			KI_Task[21].Priority = 88;
 			KI_Task[13].Priority = 86;
 			KI_Task[23].Priority = 86;
+			KI_Task[16].Priority = 82;
+			KI_Task[26].Priority = 82;
 			
 			//Detect if Enemy is in Area Planter 2
 			if(SpielFarbe == BLUE)
@@ -2016,33 +2052,27 @@ uint8_t KiTask(void)
 			}
 
 			//Task field 1 as Prio 87
-			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && PlantsInRobot > 1) && (KI_Task[13].Status == OPEN || KI_Task[23].Status == OPEN))
+			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && PlantsInRobot > 1) && (KI_Task[13].Status == OPEN || KI_Task[23].Status == OPEN) && PlantsInRobot >= 2)
 			{
 				KI_Task[12].Priority = 87;
 				KI_Task[22].Priority = 87;
 			}
-			
-			//Task field1 and field3 as Prio 84/85
-			if((KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN && KI_Task[12].Status != OPEN && KI_Task[22].Status != OPEN))
+			else
 			{
-				if(distance_Field1<distance_Field3)
-				{
-					KI_Task[12].Priority = 85;
-					KI_Task[22].Priority = 85;
-					KI_Task[16].Priority = 84;
-					KI_Task[26].Priority = 84;
-				}
-				else
-				{
-					
-					KI_Task[12].Priority = 84;
-					KI_Task[22].Priority = 84;
-					KI_Task[16].Priority = 85;
-					KI_Task[26].Priority = 85;
-					
-				}
+				//Task field1  as Prio 85
+				KI_Task[12].Priority = 85;
+				KI_Task[22].Priority = 85;
 			}
-			KI_State = 20;
+
+			if(spielZeit > 15)
+			{
+				KI_State = 20;
+			}
+			else
+			{
+				KI_State = 500;
+			}
+
 			break;
 		}
 
@@ -2662,7 +2692,7 @@ uint8_t KiTask(void)
 				{
 					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
-					KI_Task[16].Status = DONE;
+					//KI_Task[16].Status = DONE;
 					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 500);
@@ -2697,7 +2727,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
+					if(PlantsInRobot == 0  || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -3456,7 +3486,7 @@ uint8_t KiTask(void)
 				{
 					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
-					KI_Task[26].Status = DONE;
+					//KI_Task[26].Status = DONE;
 					CalcOpenParkPositions();
 					//Wait specific time
 					SET_CYCLE(KI_TASKNBR, 500);
@@ -3491,7 +3521,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(PlantsInRobot==0 || (OpenParkPos == 1 && PlantsInRobot < 3 && OpenPlants > 0) || OpenParkPos == 0)
+					if(PlantsInRobot == 0  || OpenParkPos == 0)
 					{
 						KI_State = 500;
 					}
@@ -3627,8 +3657,117 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 30000:
 		{
-			KI_State = 30000;
-			
+			point_t start, goal;
+
+			// Start Position to begin from movement
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+
+			//Check if Enemy Robot is in Area Next to Planter
+			goal.Xpos = SolarPanelsBlue.Xpos;
+			goal.Ypos = SolarPanelsBlue.Ypos;
+
+
+			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
+			{
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
+				KI_State = 30010;
+			}
+			else
+			{
+				KI_State = 30030;
+			}
+
+			velocity = STANDARD_VELOCITY;
+
+			break;
+		}
+		
+		case 30010:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					velocity = STANDARD_VELOCITY;
+					//Set Task to Done
+					KI_Task[30].Status = DONE;
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 8000);
+					
+					KI_State = 60000;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					velocity = ENEMY_VELOCITY;
+					KI_State = 30020;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 30020:
+		{
+			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
+
+			//Drive Back
+			if(DriveBack(100,200))
+			{
+				KI_State = 30025;
+			}
+			else
+			{
+				KI_State = 30000;
+			}
+			break;
+		}
+		
+		case 30025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[30].Status != DONE)
+					{
+						KI_State = 30000;
+					}
+					else
+					{
+						if(spielZeit < 15)
+						{
+							KI_State = 60000;
+						}
+						else
+						{
+							KI_State = 30000;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 30020;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 30030:
+		{
+			KI_State = 30020;
 			break;
 		}
 
@@ -3642,10 +3781,118 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 31000:
 		{
-			KI_State = 31000;
-			
+			point_t start, goal;
+
+			// Start Position to begin from movement
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+
+			//Check if Enemy Robot is in Area Next to Planter
+			goal.Xpos = SolarPanelsMiddle.Xpos;
+			goal.Ypos = SolarPanelsMiddle.Ypos;
+
+
+			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
+			{
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
+				KI_State = 31010;
+			}
+			else
+			{
+				KI_State = 31030;
+			}
+
+			velocity = STANDARD_VELOCITY;
+
 			break;
 		}
+		
+		case 31010:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					velocity = STANDARD_VELOCITY;
+					//Set Task to Done
+					KI_Task[31].Status = DONE;
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 8000);
+					
+					KI_State = 31027;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					velocity = ENEMY_VELOCITY;
+					KI_State = 31020;
+					break;
+				}
+			}
+			break;
+		}
+		
+		case 31020:
+		{
+			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
+
+			//Drive Back
+			if(DriveBack(100,200))
+			{
+				KI_State = 31025;
+			}
+			else
+			{
+				KI_State = 31000;
+			}
+			break;
+		}
+		
+		case 31025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					KI_State = 31027;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 31020;
+					break;
+				}
+			}
+			break;
+		}
+		case 31027:
+		{
+			if(spielZeit > 15 && OpenPlants == 0)
+			{
+				KI_State = 31027;
+			}
+			else
+			{
+				KI_State = 500;
+			}
+			
+			velocity = STANDARD_VELOCITY;
+		}
+		
+		
+		case 31030:
+		{
+			KI_State = 31020;
+			break;
+		}
+
 		
 		
 		// ********************************************************************
@@ -3657,10 +3904,118 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 32000:
 		{
-			KI_State = 32000;
+			point_t start, goal;
+
+			// Start Position to begin from movement
+			start.Xpos = xPos;
+			start.Ypos = yPos;
+
+			//Check if Enemy Robot is in Area Next to Planter
+			goal.Xpos = SolarPanelsYellow.Xpos;
+			goal.Ypos = SolarPanelsYellow.Ypos;
+
+
+			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
+			{
+				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
+				KI_State = 32010;
+			}
+			else
+			{
+				KI_State = 32030;
+			}
+
+			velocity = STANDARD_VELOCITY;
 
 			break;
-			
+		}
+
+		case 32010:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					velocity = STANDARD_VELOCITY;
+					//Set Task to Done
+					KI_Task[32].Status = DONE;
+					//Wait specific time
+					SET_CYCLE(KI_TASKNBR, 8000);
+					
+					KI_State = 60000;
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					velocity = ENEMY_VELOCITY;
+					KI_State = 32020;
+					break;
+				}
+			}
+			break;
+		}
+
+		case 32020:
+		{
+			motionFailureCount++;
+			SET_CYCLE(KI_TASKNBR, 500);
+
+			//Drive Back
+			if(DriveBack(100,200))
+			{
+				KI_State = 32025;
+			}
+			else
+			{
+				KI_State = 32000;
+			}
+			break;
+		}
+
+		case 32025:
+		{
+			/* check observation-result */
+			switch (GetObservationResult())
+			{
+				/* motion was OK */
+				case OBSERVATION_MOTION_OK:
+				{
+					if(motionFailureCount<3 && KI_Task[32].Status != DONE)
+					{
+						KI_State = 32000;
+					}
+					else
+					{
+						if(spielZeit < 12)
+						{
+							KI_State = 60000;
+						}
+						else
+						{
+							KI_State = 32000;
+						}
+
+						velocity = STANDARD_VELOCITY;
+					}
+					break;
+				}
+				/* error happened during the motion */
+				case OBSERVATION_MOTION_ERROR:
+				{
+					KI_State = 32020;
+					break;
+				}
+			}
+			break;
+		}
+
+		case 32030:
+		{
+			KI_State = 32020;
+			break;
 		}
 
 		
@@ -4070,14 +4425,23 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		// ********************************************************************
 		// ******
-		// ******   Task 60000 - Keine Aufgabe
+		// ******   Task 60000 - Heimfahren
 		// ******
 		// ********************************************************************
 		// ********************************************************************
 		case 60000:
 		{
-			KI_State = 60000;
-
+			if(SpielFarbe == BLUE)
+			{
+				KI_State = 16000;
+			}
+			else if (SpielFarbe == Yellow)
+			{
+				KI_State = 26000;
+			}
+			
+			KI_Task[60].Status = DONE;
+			
 			break;
 		}
 
@@ -4091,9 +4455,7 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 61000:
 		{
-			KI_State = 61000;
 
-			break;
 		}
 
 		
