@@ -84,12 +84,12 @@ ISR(TCF0_OVF_vect)
 	
 	char text1[200];
 	
-	if(sysTime > 50)
-	{
-			sprintf(text1, "KI: %d (%d) Debug: %d (%d)", sMultitasking[KI_TASKNBR].ucStatus, sMultitasking[KI_TASKNBR].uiIntervall, sMultitasking[DEBUG_TASKNBR].ucStatus , sMultitasking[DEBUG_TASKNBR].uiIntervall);
-			SendDebugMessage(text1,2);
-			sysTime = 0;
-	}
+	//if(sysTime > 50)
+	//{
+			//sprintf(text1, "KI: %d (%d) Debug: %d (%d)", sMultitasking[KI_TASKNBR].ucStatus, sMultitasking[KI_TASKNBR].uiIntervall, sMultitasking[DEBUG_TASKNBR].ucStatus , sMultitasking[DEBUG_TASKNBR].uiIntervall);
+			//SendDebugMessage(text1,2);
+			//sysTime = 0;
+	//}
 
 
 	/* execute the cyclic tasks */

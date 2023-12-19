@@ -60,6 +60,15 @@ uint8_t KiWatchTask(void)
 	static uint8_t InArea5000 = 0;
 	static uint8_t InArea6000 = 0;
 	
+	uint8_t enemyRobotInPlanter1;
+	uint8_t enemyRobotInPlanter2;
+	uint8_t enemyRobotInPlanterMiddle;
+	uint8_t enemyRobotInField1;
+	static int8_t counterPlanter1 = 0;
+	static int8_t counterPlanter2 = 0;
+	static int8_t counterPlanterMiddle = 0;
+	static int8_t counterField1 = 0;
+	
 	char text1[200];
 	InArea1000 = Path_IsInArea(1200,200,1800,8000);
 	InArea2000 = Path_IsInArea(700, 400, 1300, 1000);
@@ -209,55 +218,93 @@ uint8_t KiWatchTask(void)
 	/**************************************************************************
 	***   Set Park Positions to PENDING when enemy is there	                    ***
 	**************************************************************************/
-	uint8_t enemyRobotInPlanter1;
-	uint8_t enemyRobotInPlanter2;
-	uint8_t enemyRobotInPlanterMiddle;
-	uint8_t enemyRobotInField1;
-
 	if(SpielFarbe == BLUE)
 	{
 		//Planter 1
 		enemyRobotInPlanter1 = Path_IsInArea(2550,312,3000,912);
+		if(!enemyRobotInPlanter1)
+		{
+			counterPlanter1 = ((++counterPlanter1 > 10) ? 10 : counterPlanter1);
+		}
+		else
+		{
+			counterPlanter1 = ((--counterPlanter1 < 0) ? 0 : counterPlanter1);
+		}
+		
 		if(enemyRobotInPlanter1 && KI_Task[13].Status == OPEN)
 		{
-			KI_Task[13].Status == PENDING;
+			KI_Task[13].Status = PENDING;
 		}
-		else if(!enemyRobotInPlanter2 && KI_Task[13].Status == PENDING)
+		else if(!enemyRobotInPlanter1 && KI_Task[13].Status == PENDING && counterPlanter1 >= 10)
 		{
 			KI_Task[13].Status = OPEN;
+			counterPlanter1 = 0;
 		}
 		
 		//Planter 2
+		
 		enemyRobotInPlanter2 = Path_IsInArea(0,1000,600,2000);
+		if(!enemyRobotInPlanter2)
+		{
+			counterPlanter2 = ((++counterPlanter2 > 10) ? --counterPlanter2 : counterPlanter2);
+		}
+		else
+		{
+			counterPlanter2 = ((--counterPlanter2 < 0) ? ++counterPlanter2 : counterPlanter2);
+		}
+		
 		if(enemyRobotInPlanter2 && KI_Task[25].Status == OPEN)
 		{
 			KI_Task[25].Status = PENDING;
+			
 		}
-		else if(!enemyRobotInPlanter2 && KI_Task[25].Status == PENDING && ConfigPlanter) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
+
+		else if(!enemyRobotInPlanter2 && KI_Task[25].Status == PENDING && ConfigPlanter && counterPlanter2 >= 10) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
 		{
 			KI_Task[25].Status = OPEN;
+			counterPlanter2 = 0;
 		}
 		
 		//Planter Middle
 		enemyRobotInPlanterMiddle = Path_IsInArea(1937,0,2537,450);
+		if(!enemyRobotInPlanterMiddle)
+		{
+			counterPlanterMiddle = ((++counterPlanterMiddle > 10) ? --counterPlanterMiddle : counterPlanterMiddle);
+		}
+		else
+		{
+			counterPlanterMiddle = ((--counterPlanterMiddle < 0) ? ++counterPlanterMiddle: counterPlanterMiddle);
+		}
+		
 		if(enemyRobotInPlanterMiddle && KI_Task[11].Status == OPEN)
 		{
 			KI_Task[11].Status = PENDING;
 		}
-		else if(!enemyRobotInPlanterMiddle && KI_Task[11].Status == PENDING)
+		else if(!enemyRobotInPlanterMiddle && KI_Task[11].Status == PENDING && counterPlanterMiddle >=10)
 		{
 			KI_Task[11].Status = OPEN;
+			counterPlanterMiddle = 0;
 		}
 		
 		//Field 1
 		enemyRobotInField1 = Path_IsInArea(2550,0,3000,450);
+		if(!enemyRobotInField1)
+		{
+			counterField1 = ((++counterField1 > 10) ? --counterField1 : counterField1);
+		}
+		else
+		{
+			counterField1 = ((--counterField1 < 0) ? ++counterField1: counterField1);
+		}
+		
 		if(enemyRobotInField1 && KI_Task[12].Status == OPEN)
 		{
 			KI_Task[12].Status = PENDING;
 		}
-		else if(!enemyRobotInField1 && KI_Task[12].Status == PENDING)
+		else if(!enemyRobotInField1 && KI_Task[12].Status == PENDING && counterField1 >= 10)
 		{
 			KI_Task[12].Status = OPEN;
+			counterField1 = 0;
 		}
 		
 	}
@@ -266,46 +313,86 @@ uint8_t KiWatchTask(void)
 	{
 		//Planter 1
 		enemyRobotInPlanter1 = Path_IsInArea(0,312,450,912);
-		if(enemyRobotInPlanter1 && KI_Task[13].Status == OPEN)
+		if(!enemyRobotInPlanter1)
+		{
+			counterPlanter1 = ((++counterPlanter1 > 10) ? --counterPlanter1 : counterPlanter1);
+		}
+		else
+		{
+			counterPlanter1 = ((--counterPlanter1 < 0) ? ++counterPlanter1: counterPlanter1);
+		}
+		
+		if(enemyRobotInPlanter1 && KI_Task[23].Status == OPEN)
 		{
 			KI_Task[23].Status = PENDING;
 		}
-		else if(!enemyRobotInPlanter2 && KI_Task[13].Status == PENDING)
+		else if(!enemyRobotInPlanter1 && KI_Task[23].Status == PENDING && counterPlanter1 >= 10)
 		{
 			KI_Task[23].Status = OPEN;
+			counterPlanter1 = 0;
 		}
 		
 		//Planter 2
 		enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
+		if(!enemyRobotInPlanter2)
+		{
+			counterPlanter2 = ((++counterPlanter2 > 10) ? --counterPlanter2 : counterPlanter2);
+		}
+		else
+		{
+			counterPlanter2 = ((--counterPlanter2 < 0) ? ++counterPlanter2 : counterPlanter2);
+		}
+		
 		if(enemyRobotInPlanter2 && KI_Task[15].Status == OPEN)
 		{
 			KI_Task[15].Status = PENDING;
 		}
-		else if(!enemyRobotInPlanter2 && KI_Task[15].Status == PENDING && ConfigPlanter) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
+		else if(!enemyRobotInPlanter2 && KI_Task[15].Status == PENDING && ConfigPlanter && counterPlanter2 >= 10) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
 		{
 			KI_Task[15].Status = OPEN;
+			counterPlanter2 = 0;
 		}
 		
 		//Planter Middle
 		enemyRobotInPlanterMiddle = Path_IsInArea(462,0,1062,450);
+		if(!enemyRobotInPlanterMiddle)
+		{
+			counterPlanterMiddle = ((++counterPlanterMiddle > 10) ? --counterPlanterMiddle : counterPlanterMiddle);
+		}
+		else
+		{
+			counterPlanterMiddle = ((--counterPlanterMiddle < 0) ? ++counterPlanterMiddle: counterPlanterMiddle);
+		}
+		
 		if(enemyRobotInPlanterMiddle && KI_Task[21].Status == OPEN)
 		{
 			KI_Task[21].Status = PENDING;
 		}
-		else if(!enemyRobotInPlanterMiddle && KI_Task[21].Status == PENDING)
+		else if(!enemyRobotInPlanterMiddle && KI_Task[21].Status == PENDING && counterPlanterMiddle >= 10)
 		{
 			KI_Task[21].Status = OPEN;
+			counterPlanterMiddle = 0;
 		}
 		
 		//Field 1
 		enemyRobotInField1 = Path_IsInArea(0,0,450,450);
+		if(!enemyRobotInField1)
+		{
+			counterField1 = ((++counterField1 > 10) ? --counterField1 : counterField1);
+		}
+		else
+		{
+			counterField1 = ((--counterField1 < 0) ? ++counterField1: counterField1);
+		}
+		
 		if(enemyRobotInField1 && KI_Task[22].Status == OPEN)
 		{
 			KI_Task[22].Status = PENDING;
 		}
-		else if(!enemyRobotInField1 && KI_Task[22].Status == PENDING)
+		else if(!enemyRobotInField1 && KI_Task[22].Status == PENDING && counterField1 >= 10)
 		{
 			KI_Task[22].Status = OPEN;
+			counterField1 = 0;
 		}
 	}
 
