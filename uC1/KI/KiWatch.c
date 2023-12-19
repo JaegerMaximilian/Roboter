@@ -277,11 +277,11 @@ uint8_t KiWatchTask(void)
 		
 		//Planter 2
 		enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
-		if(enemyRobotInPlanter2 && KI_Task[25].Status == OPEN)
+		if(enemyRobotInPlanter2 && KI_Task[15].Status == OPEN)
 		{
 			KI_Task[15].Status = PENDING;
 		}
-		else if(!enemyRobotInPlanter2 && KI_Task[25].Status == PENDING && ConfigPlanter) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
+		else if(!enemyRobotInPlanter2 && KI_Task[15].Status == PENDING && ConfigPlanter) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
 		{
 			KI_Task[15].Status = OPEN;
 		}

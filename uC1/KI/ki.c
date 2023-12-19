@@ -2601,7 +2601,7 @@ uint8_t KiTask(void)
 			//Drive Back
 			if(DriveBack(100,200))
 			{
-				KI_State = 1525;
+				KI_State = 15025;
 			}
 			else
 			{
@@ -3884,6 +3884,7 @@ uint8_t KiTask(void)
 			}
 			
 			velocity = STANDARD_VELOCITY;
+			break;
 		}
 		
 		
@@ -4517,19 +4518,21 @@ uint8_t KiTask(void)
 			
 			break;
 		}
+		
+
 	}
 
+
+	//sprintf(text1, "Side: %d Front: %d", observationDisSide , observationDisFront);
+	//SendDebugMessage(text1,1);
 	//Write Message to Logger
 	if(KI_State != OldKI_State)
 	{
 		sprintf(text1, "State: %6d PIR: %d OPP: %d", KI_State, PlantsInRobot , OpenParkPos);
 		SendDebugMessage(text1,1);
 	}
-
-	//sprintf(text1, "Side: %d Front: %d", observationDisSide , observationDisFront);
-	//SendDebugMessage(text1,1);
-
 	OldKI_State = KI_State;
+
 	return(CYCLE);
 }
 
