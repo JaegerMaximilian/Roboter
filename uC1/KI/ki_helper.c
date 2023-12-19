@@ -19,6 +19,7 @@
 #include "Pfadplanung.h"
 #include "observation.h"
 #include "logger.h"
+#include "nextion.h"
 
 /**************************************************************************
 ***   FUNKTIONNAME: AddMiddlePoint                                      ***

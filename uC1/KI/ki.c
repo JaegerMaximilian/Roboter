@@ -841,12 +841,17 @@ uint8_t KiTask(void)
 		{
 			uint8_t done = 0;
 			uint8_t panelsMiddleNotFree = Path_IsInArea(1000,1600,2000,1600);
+			uint8_t time;
 			RePrioritisePlantTasks();
 			Repreoritise_SolarPanels();
 			//Zeit Berechnen Abstellen
 			//Zeit Berechnen Solar Panels
 			CalcOpenPlanter();
-			//CalcTimeRemainingPlants();
+			time = CalcTimeRemainingPlants();
+			
+			sprintf(text1, "Time: %d", time);
+			SendDebugMessage(text1,1);
+			
 			CalcOpenParkPositions();
 			
 			if(OpenPlants > 0)
@@ -2170,7 +2175,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[11].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[11].Status == OPEN)
 					{
 						KI_State = 11000;
 					}
@@ -2323,7 +2328,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[12].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[12].Status == OPEN)
 					{
 						KI_State = 12000;
 					}
@@ -2463,7 +2468,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[13].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[13].Status == OPEN)
 					{
 						KI_State = 13000;
 					}
@@ -2618,7 +2623,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[15].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[15].Status == OPEN)
 					{
 						KI_State = 15000;
 					}
@@ -2773,7 +2778,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[16].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[16].Status == OPEN)
 					{
 						KI_State = 16000;
 					}
@@ -2960,7 +2965,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[21].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[21].Status == OPEN)
 					{
 						KI_State = 21000;
 					}
@@ -3115,7 +3120,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[22].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[22].Status == OPEN)
 					{
 						KI_State = 22000;
 					}
@@ -3257,7 +3262,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[23].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[23].Status == OPEN)
 					{
 						KI_State = 23000;
 					}
@@ -3412,7 +3417,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[25].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[25].Status == OPEN)
 					{
 						KI_State = 25000;
 					}
@@ -3567,7 +3572,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[26].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[26].Status == OPEN)
 					{
 						KI_State = 26000;
 					}
@@ -3736,7 +3741,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[30].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[30].Status == OPEN)
 					{
 						KI_State = 30000;
 					}
@@ -3984,7 +3989,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[32].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[32].Status == OPEN)
 					{
 						KI_State = 32000;
 					}
