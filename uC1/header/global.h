@@ -142,9 +142,12 @@ _GLOBAL_EXTERN uint8_t gegnerErkennung;
 
 _GLOBAL_EXTERN uint8_t SpielFarbe_Nextion, Strategie, Page, ConfigPlanter_Nextion, ConfigStehlen_Nextion;
 _GLOBAL_EXTERN uint8_t SpielFarbe, Strategie, Page, ConfigPlanter, ConfigStehlen;
-_GLOBAL_EXTERN point_t Plant1000,Plant2000,Plant3000,Plant4000,Plant5000,Plant6000;
-_GLOBAL_EXTERN point_t PlanterL1,PlanterR1,PlanterL2,PlanterR2,FieldL1,FieldR1,FieldL3,FieldR3,PlanterMidleBlue,PlanterMidleYellow,SolarPanelsBlue, SolarPanelsYellow, SolarPanelsMiddle;
-_GLOBAL_EXTERN uint16_t TimeToHome, TimeSolarPanelsMiddleToHome, TimeSolarPanelsHome,TimeAllSolarPanelsHome, TimeParkPlantsAtHome, TimeToSolarPanelsMiddle;
+_GLOBAL_EXTERN point_t PosPlant1000,PosPlant2000,PosPlant3000,PosPlant4000,PosPlant5000,PosPlant6000;
+_GLOBAL_EXTERN point_t PosHome, PosPlanterL1,PosPlanterR1,PosPlanterL2,PosPlanterR2,PosFieldL1,PosFieldR1,PosFieldL3,PosFieldR3,PosPlanterMidleBlue,PosPlanterMidleYellow,PosSolarPanelsBlue, PosSolarPanelsYellow, PosSolarPanelsMiddle;
+_GLOBAL_EXTERN uint16_t TimeToHome, TimeSolarPanelsMiddleToHome, TimeSolarPanelsHome,TimeAllSolarPanelsHome, TimeParkPlantsAtHome, TimeParkPlantsPlus1AtHome, TimeParkPlantsMinus1AtHome, TimeToSolarPanelsMiddle;
+_GLOBAL_EXTERN uint16_t TimeHandleNextPlant, TimeForPlant1000, TimeForPlant2000, TimeForPlant3000, TimeForPlant4000, TimeForPlant5000, TimeForPlant6000;
+_GLOBAL_EXTERN uint16_t TimeParkNextPlantInPlanter, TimeParkNextPlantInField, TimeParkFieldL1, TimeParkPlanterL1, TimeParkPlanterL2, TimeParkPlanterLMiddle;
+_GLOBAL_EXTERN uint16_t TimeParkFieldR1, TimeParkPlanterR1, TimeParkPlanterR2, TimeParkPlanterRMiddle;
 
 //_GLOBAL_EXTERN point_t startPos;
 

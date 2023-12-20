@@ -125,12 +125,12 @@ void RePrioritisePlantTasks(void)
 	aktpos.Xpos = xPos;
 	aktpos.Ypos = yPos;
 	
-	float distance_1000 = CalcDistance(aktpos,Plant1000);
-	float distance_2000 = CalcDistance(aktpos,Plant2000);
-	float distance_3000 = CalcDistance(aktpos,Plant3000);
-	float distance_4000 = CalcDistance(aktpos,Plant4000);
-	float distance_5000 = CalcDistance(aktpos,Plant5000);
-	float distance_6000 = CalcDistance(aktpos,Plant6000);
+	float distance_1000 = CalcDistance(aktpos,PosPlant1000);
+	float distance_2000 = CalcDistance(aktpos,PosPlant2000);
+	float distance_3000 = CalcDistance(aktpos,PosPlant3000);
+	float distance_4000 = CalcDistance(aktpos,PosPlant4000);
+	float distance_5000 = CalcDistance(aktpos,PosPlant5000);
+	float distance_6000 = CalcDistance(aktpos,PosPlant6000);
 	float distanceEnemy_1000 = 3000.0;
 	float distanceEnemy_2000 = 3000.0;
 	float distanceEnemy_3000 = 3000.0;
@@ -143,29 +143,29 @@ void RePrioritisePlantTasks(void)
 	{
 		if (enemyRobot[i].Xpos != 10000 && enemyRobot[i].Ypos != 10000)
 		{
-			if(CalcDistance(Plant1000,enemyRobot[i])<distanceEnemy_1000)
+			if(CalcDistance(PosPlant1000,enemyRobot[i])<distanceEnemy_1000)
 			{
-				distanceEnemy_1000 = CalcDistance(Plant1000,enemyRobot[i]);
+				distanceEnemy_1000 = CalcDistance(PosPlant1000,enemyRobot[i]);
 			}
-			if(CalcDistance(Plant2000,enemyRobot[i])<distanceEnemy_2000)
+			if(CalcDistance(PosPlant2000,enemyRobot[i])<distanceEnemy_2000)
 			{
-				distanceEnemy_2000 = CalcDistance(Plant2000,enemyRobot[i]);
+				distanceEnemy_2000 = CalcDistance(PosPlant2000,enemyRobot[i]);
 			}
-			if(CalcDistance(Plant3000,enemyRobot[i])<distanceEnemy_3000)
+			if(CalcDistance(PosPlant3000,enemyRobot[i])<distanceEnemy_3000)
 			{
-				distanceEnemy_3000 = CalcDistance(Plant3000,enemyRobot[i]);
+				distanceEnemy_3000 = CalcDistance(PosPlant3000,enemyRobot[i]);
 			}
-			if(CalcDistance(Plant4000,enemyRobot[i])<distanceEnemy_4000)
+			if(CalcDistance(PosPlant4000,enemyRobot[i])<distanceEnemy_4000)
 			{
-				distanceEnemy_4000 = CalcDistance(Plant4000,enemyRobot[i]);
+				distanceEnemy_4000 = CalcDistance(PosPlant4000,enemyRobot[i]);
 			}
-			if(CalcDistance(Plant5000,enemyRobot[i])<distanceEnemy_5000)
+			if(CalcDistance(PosPlant5000,enemyRobot[i])<distanceEnemy_5000)
 			{
-				distanceEnemy_5000 = CalcDistance(Plant5000,enemyRobot[i]);
+				distanceEnemy_5000 = CalcDistance(PosPlant5000,enemyRobot[i]);
 			}
-			if(CalcDistance(Plant6000,enemyRobot[i])<distanceEnemy_6000)
+			if(CalcDistance(PosPlant6000,enemyRobot[i])<distanceEnemy_6000)
 			{
-				distanceEnemy_6000 = CalcDistance(Plant6000,enemyRobot[i]);
+				distanceEnemy_6000 = CalcDistance(PosPlant6000,enemyRobot[i]);
 			}
 		}
 	}
@@ -375,23 +375,23 @@ uint8_t CalcTimeRemainingPlants(void)
 	
 	
 	if(IndexMaxPrioPflanze == 1){
-		totalDistance = CalcDistance(aktpos,Plant1000);
-		aktpos = Plant1000;
+		totalDistance = CalcDistance(aktpos,PosPlant1000);
+		aktpos = PosPlant1000;
 		} else if (IndexMaxPrioPflanze == 2){
-		totalDistance = CalcDistance(aktpos,Plant2000);
-		aktpos = Plant2000;
+		totalDistance = CalcDistance(aktpos,PosPlant2000);
+		aktpos = PosPlant2000;
 		} else if (IndexMaxPrioPflanze == 3){
-		totalDistance = CalcDistance(aktpos,Plant3000);
-		aktpos = Plant3000;
+		totalDistance = CalcDistance(aktpos,PosPlant3000);
+		aktpos = PosPlant3000;
 		} else if (IndexMaxPrioPflanze == 4){
-		totalDistance = CalcDistance(aktpos,Plant4000);
-		aktpos = Plant4000;
+		totalDistance = CalcDistance(aktpos,PosPlant4000);
+		aktpos = PosPlant4000;
 		} else if (IndexMaxPrioPflanze == 5){
-		totalDistance = CalcDistance(aktpos,Plant5000);
-		aktpos = Plant5000;
+		totalDistance = CalcDistance(aktpos,PosPlant5000);
+		aktpos = PosPlant5000;
 		} else if (IndexMaxPrioPflanze == 6){
-		totalDistance = CalcDistance(aktpos,Plant6000);
-		aktpos = Plant6000;
+		totalDistance = CalcDistance(aktpos,PosPlant6000);
+		aktpos = PosPlant6000;
 	}
 	
 
@@ -427,27 +427,27 @@ uint8_t CalcTimeRemainingPlants(void)
 		//SendDebugMessage(text1,1);
 
 		if (IndexNextPlanter==11){
-			PlanterOrFieldPos = PlanterMidleBlue;
+			PlanterOrFieldPos = PosPlanterMidleBlue;
 			} else if (IndexNextPlanter == 12){
-			PlanterOrFieldPos = FieldL1;
+			PlanterOrFieldPos = PosFieldL1;
 			} else if (IndexNextPlanter == 13){
-			PlanterOrFieldPos = PlanterL1;
+			PlanterOrFieldPos = PosPlanterL1;
 			
 			} else if (IndexNextPlanter == 15){
-			PlanterOrFieldPos = PlanterL2;
+			PlanterOrFieldPos = PosPlanterL2;
 			} else if (IndexNextPlanter == 16){
-			PlanterOrFieldPos = FieldL3;
+			PlanterOrFieldPos = PosFieldL3;
 			} else if (IndexNextPlanter == 21){
-			PlanterOrFieldPos = PlanterMidleYellow;
+			PlanterOrFieldPos = PosPlanterMidleYellow;
 			} else if (IndexNextPlanter == 22){
-			PlanterOrFieldPos = FieldR1;
+			PlanterOrFieldPos = PosFieldR1;
 			} else if (IndexNextPlanter == 23){
-			PlanterOrFieldPos = PlanterR1;
+			PlanterOrFieldPos = PosPlanterR1;
 			
 			} else if (IndexNextPlanter == 25){
-			PlanterOrFieldPos = PlanterR2;
+			PlanterOrFieldPos = PosPlanterR2;
 			} else if (IndexNextPlanter == 26){
-			PlanterOrFieldPos = FieldR3;
+			PlanterOrFieldPos = PosFieldR3;
 		}
 		
 		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos);
@@ -505,28 +505,28 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	if(SpielFarbe == BLUE )
 	{
 		// Position of Planter Midle
-		PlanterMidlePos = PlanterMidleBlue;
+		PlanterMidlePos = PosPlanterMidleBlue;
 		//Position of Planter 1
-		Planter1Pos = PlanterL1;
+		Planter1Pos = PosPlanterL1;
 		//Position of Planter 2
-		Planter2Pos = PlanterR2;
+		Planter2Pos = PosPlanterR2;
 		//Position of Field 1
-		field1Pos = FieldL1;
+		field1Pos = PosFieldL1;
 		//Position of Field 3
-		field3Pos = FieldL3;
+		field3Pos = PosFieldL3;
 	}
 	if(SpielFarbe == Yellow )
 	{
 		// Position of Planter Midle
-		PlanterMidlePos = PlanterMidleYellow;
+		PlanterMidlePos = PosPlanterMidleYellow;
 		//Position of Planter 1
-		Planter1Pos = PlanterR1;
+		Planter1Pos = PosPlanterR1;
 		//Position of Planter 2
-		Planter2Pos = PlanterL2;
+		Planter2Pos = PosPlanterL2;
 		//Position of Field 1
-		field1Pos = FieldR1;
+		field1Pos = PosFieldR1;
 		//Position of Field 3
-		field3Pos = FieldR3;
+		field3Pos = PosFieldR3;
 	}
 	
 	//Distance to Planter Midle

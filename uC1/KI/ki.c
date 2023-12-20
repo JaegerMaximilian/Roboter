@@ -114,48 +114,50 @@ void InitKI(void)
 	velocity = STANDARD_VELOCITY;
 	
 	//Set Plant Positions
-	Plant1000.Xpos = 1500;
-	Plant1000.Ypos = 500;
-	Plant2000.Xpos = 1000;
-	Plant2000.Ypos = 700;
-	Plant3000.Xpos = 1000;
-	Plant3000.Ypos = 1300;
-	Plant4000.Xpos = 1500;
-	Plant4000.Ypos = 1500;
-	Plant5000.Xpos = 2000;
-	Plant5000.Ypos = 1300;
-	Plant6000.Xpos = 2000;
-	Plant6000.Ypos = 700;
+	PosPlant1000.Xpos = 1500;
+	PosPlant1000.Ypos = 500;
+	PosPlant2000.Xpos = 1000;
+	PosPlant2000.Ypos = 700;
+	PosPlant3000.Xpos = 1000;
+	PosPlant3000.Ypos = 1300;
+	PosPlant4000.Xpos = 1500;
+	PosPlant4000.Ypos = 1500;
+	PosPlant5000.Xpos = 2000;
+	PosPlant5000.Ypos = 1300;
+	PosPlant6000.Xpos = 2000;
+	PosPlant6000.Ypos = 700;
 	
 	//Set Park Positions
-	PlanterL1.Xpos = 2700;
-	PlanterL1.Ypos = 612;
-	PlanterL2.Xpos = 2700;
-	PlanterL2.Ypos = 1387;
-	FieldL1.Xpos = 2700;
-	FieldL1.Ypos = 300;
-	FieldL3.Xpos = 2700;
-	FieldL3.Ypos = 1700;
-	PlanterMidleBlue.Xpos = 2237;
-	PlanterMidleBlue.Ypos = 300;
-	SolarPanelsBlue.Xpos = 2500;
-	SolarPanelsBlue.Ypos = 1700;
+	PosPlanterL1.Xpos = 2700;
+	PosPlanterL1.Ypos = 612;
+	PosPlanterL2.Xpos = 2700;
+	PosPlanterL2.Ypos = 1387;
+	PosFieldL1.Xpos = 2700;
+	PosFieldL1.Ypos = 300;
+	PosFieldL3.Xpos = 2700;
+	PosFieldL3.Ypos = 1700;
+	PosPlanterMidleBlue.Xpos = 2237;
+	PosPlanterMidleBlue.Ypos = 300;
+	PosSolarPanelsBlue.Xpos = 2500;
+	PosSolarPanelsBlue.Ypos = 1700;
 	
-	PlanterR1.Xpos = 300;
-	PlanterR1.Ypos = 612;
-	PlanterR2.Xpos = 300;
-	PlanterR2.Ypos = 1387;
-	FieldR1.Xpos = 300;
-	FieldR1.Ypos = 300;
-	FieldR3.Xpos = 300;
-	FieldR3.Ypos = 1700;
-	PlanterMidleYellow.Xpos = 762;
-	PlanterMidleYellow.Ypos = 300;
-	SolarPanelsYellow.Xpos = 500;
-	SolarPanelsYellow.Ypos = 1700;
+	PosPlanterR1.Xpos = 300;
+	PosPlanterR1.Ypos = 612;
+	PosPlanterR2.Xpos = 300;
+	PosPlanterR2.Ypos = 1387;
+	PosFieldR1.Xpos = 300;
+	PosFieldR1.Ypos = 300;
+	PosFieldR3.Xpos = 300;
+	PosFieldR3.Ypos = 1700;
+	PosPlanterMidleYellow.Xpos = 762;
+	PosPlanterMidleYellow.Ypos = 300;
+	PosSolarPanelsYellow.Xpos = 500;
+	PosSolarPanelsYellow.Ypos = 1700;
 	
-	SolarPanelsMiddle.Xpos = 1500;
-	SolarPanelsMiddle.Ypos = 1700;
+	PosSolarPanelsMiddle.Xpos = 1500;
+	PosSolarPanelsMiddle.Ypos = 1700;
+	
+	PosHome = ((SpielFarbe = BLUE) ? PosFieldL3 : PosFieldR3);
 
 	//Set Gamecolors
 	if(SpielFarbe_Nextion == BLUE_L1 || SpielFarbe_Nextion == BLUE_L3 || SpielFarbe_Nextion == BLUE_R2)
@@ -848,7 +850,7 @@ uint8_t KiTask(void)
 			CalcOpenPlanter();
 			if (OpenPlants != 0)
 			{
-				time = CalcTimeRemainingPlants();
+				time = CalcTimeRemainingPlants()*10;
 				
 				sprintf(text1, "Time: %d", time);
 				SendDebugMessage(text1,1);
@@ -971,17 +973,17 @@ uint8_t KiTask(void)
 			float distance;
 			
 			/* calculate the distance to drive */
-			distance = CalcDistance(start,Plant1000);
+			distance = CalcDistance(start,PosPlant1000);
 			
 			/* if the distance to drive is smaller as 300 mm -> drive direct to the goal */
 			if (distance > 500.0)
 			{
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,Plant1000);
+				ziel = AddMiddlePoint(start,PosPlant1000);
 			}
 			else
 			{
-				ziel = Plant1000;
+				ziel = PosPlant1000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
@@ -989,8 +991,8 @@ uint8_t KiTask(void)
 				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = Plant1000.Xpos;
-					wp_KI[wpNbr].Ypos = Plant1000.Ypos;
+					wp_KI[wpNbr].Xpos = PosPlant1000.Xpos;
+					wp_KI[wpNbr].Ypos = PosPlant1000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
@@ -1079,7 +1081,8 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[1].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
+					if(motionFailureCount<3 && KI_Task[1].Status != DID && spielZeit > TimeForPlant1000
+					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant1000 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 1000;
 					}
@@ -1135,16 +1138,16 @@ uint8_t KiTask(void)
 			float distance;
 			
 			/* calculate the distance to drive */
-			distance = CalcDistance(start,Plant2000);
+			distance = CalcDistance(start,PosPlant2000);
 			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,Plant2000);
+				ziel = AddMiddlePoint(start,PosPlant2000);
 			}
 			else
 			{
-				ziel = Plant2000;
+				ziel = PosPlant2000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
@@ -1152,8 +1155,8 @@ uint8_t KiTask(void)
 				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = Plant2000.Xpos;
-					wp_KI[wpNbr].Ypos = Plant2000.Ypos;
+					wp_KI[wpNbr].Xpos = PosPlant2000.Xpos;
+					wp_KI[wpNbr].Ypos = PosPlant2000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
@@ -1242,7 +1245,8 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[2].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
+					if(motionFailureCount<3 && KI_Task[2].Status != DID && spielZeit > TimeForPlant2000
+					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant2000 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 2000;
 					}
@@ -1297,16 +1301,16 @@ uint8_t KiTask(void)
 			float distance;
 			
 			/* calculate the distance to drive */
-			distance = CalcDistance(start,Plant3000);
+			distance = CalcDistance(start,PosPlant3000);
 			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,Plant3000);
+				ziel = AddMiddlePoint(start,PosPlant3000);
 			}
 			else
 			{
-				ziel = Plant3000;
+				ziel = PosPlant3000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
@@ -1314,8 +1318,8 @@ uint8_t KiTask(void)
 				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = Plant3000.Xpos;
-					wp_KI[wpNbr].Ypos = Plant3000.Ypos;
+					wp_KI[wpNbr].Xpos = PosPlant3000.Xpos;
+					wp_KI[wpNbr].Ypos = PosPlant3000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
@@ -1403,7 +1407,8 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[3].Status != DONE)
+					if(motionFailureCount<3 && KI_Task[3].Status != DID && spielZeit > TimeForPlant3000
+					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant3000 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 3000;
 					}
@@ -1454,22 +1459,22 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			// Position where the plants stand
-			Plant4000.Xpos = 1500;
-			Plant4000.Ypos = 1500;
+			PosPlant4000.Xpos = 1500;
+			PosPlant4000.Ypos = 1500;
 			
 			float distance;
 			
 			/* calculate the distance to drive */
-			distance = CalcDistance(start,Plant4000);
+			distance = CalcDistance(start,PosPlant4000);
 			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,Plant4000);
+				ziel = AddMiddlePoint(start,PosPlant4000);
 			}
 			else
 			{
-				ziel = Plant4000;
+				ziel = PosPlant4000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
@@ -1477,8 +1482,8 @@ uint8_t KiTask(void)
 				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = Plant4000.Xpos;
-					wp_KI[wpNbr].Ypos = Plant4000.Ypos;
+					wp_KI[wpNbr].Xpos = PosPlant4000.Xpos;
+					wp_KI[wpNbr].Ypos = PosPlant4000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
@@ -1569,7 +1574,8 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[4].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
+					if(motionFailureCount<3 && KI_Task[4].Status != DID && spielZeit > TimeForPlant4000
+					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant4000 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 4000;
 					}
@@ -1624,16 +1630,16 @@ uint8_t KiTask(void)
 			float distance;
 			
 			/* calculate the distance to drive */
-			distance = CalcDistance(start,Plant5000);
+			distance = CalcDistance(start,PosPlant5000);
 			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,Plant5000);
+				ziel = AddMiddlePoint(start,PosPlant5000);
 			}
 			else
 			{
-				ziel = Plant5000;
+				ziel = PosPlant5000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
@@ -1641,8 +1647,8 @@ uint8_t KiTask(void)
 				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = Plant5000.Xpos;
-					wp_KI[wpNbr].Ypos = Plant5000.Ypos;
+					wp_KI[wpNbr].Xpos = PosPlant5000.Xpos;
+					wp_KI[wpNbr].Ypos = PosPlant5000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
@@ -1729,7 +1735,8 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[5].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
+					if(motionFailureCount<3 && KI_Task[5].Status != DID  && spielZeit > TimeForPlant5000
+					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant5000 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 5000;
 					}
@@ -1783,16 +1790,16 @@ uint8_t KiTask(void)
 			float distance;
 			
 			/* calculate the distance to drive */
-			distance = CalcDistance(start,Plant6000);
+			distance = CalcDistance(start,PosPlant6000);
 			if (distance > 500.0)
 			{
 
 				// Middle Point to move correctly to the plant from the correct Quadrant
-				ziel = AddMiddlePoint(start,Plant6000);
+				ziel = AddMiddlePoint(start,PosPlant6000);
 			}
 			else
 			{
-				ziel = Plant6000;
+				ziel = PosPlant6000;
 			}
 			
 			if (PATH_DriveToAbsPos(start, ziel, wp_KI, &wpNbr))
@@ -1800,8 +1807,8 @@ uint8_t KiTask(void)
 				if(distance>500.0)
 				{
 					// Set Plants-Position as 3rd Position to move to
-					wp_KI[wpNbr].Xpos = Plant6000.Xpos;
-					wp_KI[wpNbr].Ypos = Plant6000.Ypos;
+					wp_KI[wpNbr].Xpos = PosPlant6000.Xpos;
+					wp_KI[wpNbr].Ypos = PosPlant6000.Ypos;
 					wpNbr++;
 				}
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,PLANT_ACC);
@@ -1889,7 +1896,9 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[6].Status != DONE && spielZeit > (TimeToHome + 20)) //Time to this Plant has to be added
+					
+					if(motionFailureCount<3 && KI_Task[6].Status != DID && spielZeit > TimeForPlant6000
+					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant6000 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 6000;
 					}
@@ -2007,28 +2016,28 @@ uint8_t KiTask(void)
 			if(SpielFarbe == BLUE )
 			{
 				// Position of Planter Midle
-				PlanterMidlePos = PlanterMidleBlue;
+				PlanterMidlePos = PosPlanterMidleBlue;
 				//Position of Planter 1
-				Planter1Pos = PlanterL1;
+				Planter1Pos = PosPlanterL1;
 				//Position of Planter 2
-				Planter2Pos = PlanterR2;
+				Planter2Pos = PosPlanterR2;
 				//Position of Field 1
-				field1Pos = FieldL1;
+				field1Pos = PosFieldL1;
 				//Position of Field 3
-				field3Pos = FieldL3;
+				field3Pos = PosFieldL3;
 			}
 			if(SpielFarbe == Yellow )
 			{
 				// Position of Planter Midle
-				PlanterMidlePos = PlanterMidleYellow;
+				PlanterMidlePos = PosPlanterMidleYellow;
 				//Position of Planter 1
-				Planter1Pos = PlanterR1;
+				Planter1Pos = PosPlanterR1;
 				//Position of Planter 2
-				Planter2Pos = PlanterL2;
+				Planter2Pos = PosPlanterL2;
 				//Position of Field 1
-				field1Pos = FieldR1;
+				field1Pos = PosFieldR1;
 				//Position of Field 3
-				field3Pos = FieldR3;
+				field3Pos = PosFieldR3;
 			}
 			
 			//Distance to Planter Midle
@@ -2120,7 +2129,7 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			if (PATH_DriveToAbsPos(start, PlanterMidleBlue, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PosPlanterMidleBlue, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 11010;
@@ -2191,7 +2200,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[11].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[11].Status == OPEN && spielZeit > TimeParkPlanterLMiddle);
 					{
 						KI_State = 11000;
 					}
@@ -2235,7 +2244,7 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			if (PATH_DriveToAbsPos(start, FieldL1, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PosFieldL1, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 12010;
@@ -2329,7 +2338,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[12].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[12].Status == OPEN && spielZeit > (TimeParkFieldL1 + TimeAllSolarPanelsHome))
 					{
 						KI_State = 12000;
 					}
@@ -2374,8 +2383,8 @@ uint8_t KiTask(void)
 			start.Ypos = yPos;
 			
 			//Check if Enemy Robot is in Area Next to Planter
-			goal.Xpos = PlanterL1.Xpos;
-			goal.Ypos = PlanterL1.Ypos;
+			goal.Xpos = PosPlanterL1.Xpos;
+			goal.Ypos = PosPlanterL1.Ypos;
 			
 			if(Path_IsInArea(2550,775,3000,1225))
 			{
@@ -2454,7 +2463,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[13].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[13].Status == OPEN && spielZeit > TimeParkPlanterL1)
 					{
 						KI_State = 13000;
 					}
@@ -2513,8 +2522,8 @@ uint8_t KiTask(void)
 			start.Ypos = yPos;
 			
 			//Check if Enemy Robot is in Area Next to Planter
-			goal.Xpos = PlanterL2.Xpos;
-			goal.Ypos = PlanterL2.Ypos;
+			goal.Xpos = PosPlanterL2.Xpos;
+			goal.Ypos = PosPlanterL2.Ypos;
 			
 			if(Path_IsInArea(2550,1550,3000,2000))
 			{
@@ -2522,7 +2531,7 @@ uint8_t KiTask(void)
 				velocity = ENEMY_VELOCITY;
 			}
 			
-			if (PATH_DriveToAbsPos(start, PlanterL2, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PosPlanterL2, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 15010;
@@ -2602,7 +2611,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[15].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[15].Status == OPEN && spielZeit > (TimeParkPlanterL2 + TimeAllSolarPanelsHome))
 					{
 						KI_State = 15000;
 					}
@@ -2646,7 +2655,7 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			if (PATH_DriveToAbsPos(start, FieldL3, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PosFieldL3, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 16010;
@@ -2854,7 +2863,7 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			if (PATH_DriveToAbsPos(start, PlanterMidleYellow, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PosPlanterMidleYellow, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 21010;
@@ -2925,7 +2934,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[21].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[21].Status == OPEN && spielZeit > (TimeParkPlanterRMiddle + TimeAllSolarPanelsHome))
 					{
 						KI_State = 21000;
 					}
@@ -2969,7 +2978,7 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			if (PATH_DriveToAbsPos(start, FieldR1, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PosFieldR1, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 22010;
@@ -3065,7 +3074,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[22].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[22].Status == OPEN && spielZeit > TimeParkFieldR1)
 					{
 						KI_State = 22000;
 					}
@@ -3110,8 +3119,8 @@ uint8_t KiTask(void)
 			start.Ypos = yPos;
 			
 			//Check if Enemy Robot is in Area Next to Planter
-			goal.Xpos = PlanterR1.Xpos;
-			goal.Ypos = PlanterR1.Ypos;
+			goal.Xpos = PosPlanterR1.Xpos;
+			goal.Ypos = PosPlanterR1.Ypos;
 			
 			if(Path_IsInArea(0,775,450,1225))
 			{
@@ -3192,7 +3201,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[23].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[23].Status == OPEN && spielZeit > (TimeParkPlanterR1 + TimeAllSolarPanelsHome))
 					{
 						KI_State = 23000;
 					}
@@ -3251,8 +3260,8 @@ uint8_t KiTask(void)
 			start.Ypos = yPos;
 			
 			//Check if Enemy Robot is in Area Next to Planter
-			goal.Xpos = PlanterR2.Xpos;
-			goal.Ypos = PlanterR2.Ypos;
+			goal.Xpos = PosPlanterR2.Xpos;
+			goal.Ypos = PosPlanterR2.Ypos;
 			
 			if(Path_IsInArea(0,1550,450,2000))
 			{
@@ -3340,7 +3349,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[25].Status == OPEN && spielZeit > (TimeToHome + 20)) //Time to this Parkpos has to be added
+					if(motionFailureCount<3 && KI_Task[25].Status == OPEN && spielZeit > (TimeParkPlanterR2 + TimeAllSolarPanelsHome))
 					{
 						KI_State = 25000;
 					}
@@ -3384,7 +3393,7 @@ uint8_t KiTask(void)
 			start.Xpos = xPos;
 			start.Ypos = yPos;
 			
-			if (PATH_DriveToAbsPos(start, FieldR3, wp_KI, &wpNbr))
+			if (PATH_DriveToAbsPos(start, PosFieldR3, wp_KI, &wpNbr))
 			{
 				cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
 				KI_State = 26010;
@@ -3581,8 +3590,8 @@ uint8_t KiTask(void)
 			start.Ypos = yPos;
 
 			//Check if Enemy Robot is in Area Next to Planter
-			goal.Xpos = SolarPanelsBlue.Xpos;
-			goal.Ypos = SolarPanelsBlue.Ypos;
+			goal.Xpos = PosSolarPanelsBlue.Xpos;
+			goal.Ypos = PosSolarPanelsBlue.Ypos;
 
 
 			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
@@ -3705,8 +3714,8 @@ uint8_t KiTask(void)
 			start.Ypos = yPos;
 
 			//Check if Enemy Robot is in Area Next to Planter
-			goal.Xpos = SolarPanelsMiddle.Xpos;
-			goal.Ypos = SolarPanelsMiddle.Ypos;
+			goal.Xpos = PosSolarPanelsMiddle.Xpos;
+			goal.Ypos = PosSolarPanelsMiddle.Ypos;
 
 
 			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
@@ -3829,8 +3838,8 @@ uint8_t KiTask(void)
 			start.Ypos = yPos;
 
 			//Check if Enemy Robot is in Area Next to Planter
-			goal.Xpos = SolarPanelsYellow.Xpos;
-			goal.Ypos = SolarPanelsYellow.Ypos;
+			goal.Xpos = PosSolarPanelsYellow.Xpos;
+			goal.Ypos = PosSolarPanelsYellow.Ypos;
 
 
 			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))

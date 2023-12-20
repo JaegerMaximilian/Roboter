@@ -15,8 +15,8 @@
 
 
 
-void InitKiWatchRobotPositionTask(void);
-uint8_t KiWatchRobotPositionTask(void);
+void InitKiCalculateTimesTask(void);
+uint8_t KiCalculateTimesTask(void);
 
 
 #endif /* KIWATCHROBOTPOSITION_H_ */

@@ -221,7 +221,7 @@ uint8_t KiWatchTask(void)
 	
 	
 	/**************************************************************************
-	***   Set Park Positions to PENDING when enemy is there	                    ***
+	***   Set Park Positions to PENDING when enemy is there	                ***
 	**************************************************************************/
 	if(SpielFarbe == BLUE)
 	{
@@ -402,7 +402,7 @@ uint8_t KiWatchTask(void)
 	}
 	
 	/**************************************************************************
-	***   Solar Panels to Is Doing 											***
+	***   Solar Panels to Is Doing when Enemy is there						***
 	**************************************************************************/
 	enemyRobotInSolarPanelsMiddle = Path_IsInArea(1000,1600,2000,1600);
 	
@@ -428,32 +428,6 @@ uint8_t KiWatchTask(void)
 	/**************************************************************************
 	***   Set Solar Panels Middle to Done if not enought Time               ***
 	**************************************************************************/
-	point_t start, ziel;
-	float distanceToSolarPanelsMiddle;
-	
-	if(PlantsInRobot == 3)
-	{
-		TimeParkPlantsAtHome = TimePark3PlantsAtHome;
-	}
-	else if(PlantsInRobot == 2)
-	{
-		TimeParkPlantsAtHome = TimePark2PlantsAtHome;
-	}
-	else if(PlantsInRobot == 1)
-	{
-		TimeParkPlantsAtHome = TimePark1PlantAtHome;
-	}
-	
-	// Start Position to begin movement from
-	start.Xpos = xPos;
-	start.Ypos = yPos;
-	
-	distanceToSolarPanelsMiddle = CalcDistance(start,SolarPanelsMiddle);
-	
-	//Time To Drive Home from Actual Position
-	TimeToSolarPanelsMiddle = (uint16_t)((distanceToSolarPanelsMiddle /(float)STANDARD_VELOCITY)*10.0); //In 10tel seconds
-	
-	TimeSolarPanelsMiddleToHome = (uint16_t)((1050.0/(float)STANDARD_VELOCITY)*10.0);
 	if (spielZeit < (4 *(uint16_t)TimeSolarpanels + 2*TimeSetPosAtSolarPanels + TimeSolarPanelsMiddleToHome + TimeParkPlantsAtHome + TimeToSolarPanelsMiddle)) //Each Solor Panels + Get Position At Solar Panels + Time to drive
 	{
 		KI_Task[31].Status = DONE;
@@ -461,32 +435,16 @@ uint8_t KiWatchTask(void)
 	
 	/**************************************************************************
 	***   Set Solar Panels at Home Position to Done if not enought Time     ***
-	**************************************************************************/
-	TimeAllSolarPanelsHome = TimeToHome + 3*TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome;
-	//Time to Drive to Solar Panels at Home Position
-	TimeSolarPanelsHome = TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome;
-	
+	**************************************************************************/	
 	if(spielZeit < TimeSolarPanelsHome)
 	{
 		KI_Task[30].Status = DONE;
 		KI_Task[32].Status = DONE;
 	}
 	
-	/**************************************************************************
-	***   Calculate Time to Drive Home					                    ***
-	**************************************************************************/
-	float distanceToHome;
+
 	
-	// Start Position to begin movement from
-	start.Xpos = xPos;
-	start.Ypos = yPos;
-	
-	ziel = ((SpielFarbe = BLUE) ? FieldL3 : FieldR3);
-	
-	distanceToHome = CalcDistance(start,ziel);
-	
-	//Time To Drive Home from Actual Position
-	TimeToHome = (uint16_t)((distanceToHome /(float)STANDARD_VELOCITY)*10.0); //In 10tel seconds
+
 	
 	return(CYCLE);
 }

@@ -98,7 +98,7 @@
 #define TESTBETRIEB_TASKNBR						15
 #define KI_TASKNBR								16
 #define KI_WATCH_TASKNBR						17
-#define KI_WATCH_ROBOT_POS_TASKNBR				18
+#define KI_Calculate_Times_TASKNBR				18
 #define DEBUG_MSG_UC2_TASKNBR					19
 #define SENSOR_UC2_TASKNBR						20
 #define SENSOR_TASKNBR							21
