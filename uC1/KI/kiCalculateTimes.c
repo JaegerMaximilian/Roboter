@@ -21,6 +21,7 @@
 #include "multitask.h"
 #include "spielZeit.h"
 #include "nextion.h"
+#include "ki_helper.h"
 
 void InitKiCalculateTimesTask(void)
 {
@@ -153,6 +154,11 @@ uint8_t KiCalculateTimesTask(void)
 	/**************************************************************************
 	***   Calculate Times SolarPanelsMiddle					             ***
 	**************************************************************************/
+	
+	start.Xpos = xPos;
+	start.Ypos = yPos;
+
+	
 	float distanceToSolarPanelsMiddle = CalcDistance(start,PosSolarPanelsMiddle);
 	
 	//Time To Drive to Solar Panels Middle from Actual Position
@@ -165,9 +171,9 @@ uint8_t KiCalculateTimesTask(void)
 	***   Calculate Times Solar Panels Home			                        ***
 	**************************************************************************/
 	//Time to Drive to Solar Panels at Home Position and make all Solar Panels
-	TimeAllSolarPanelsHome = TimeToHome + 3*TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome;
+	TimeAllSolarPanelsHome = 3*TimeSolarpanels + TimeSetPosAtSolarPanels;
 	//Time to Drive to Solar Panels at Home Position and make at least 1 Solar Panel
-	TimeSolarPanelsHome = TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome;
+	TimeSolarPanelsHome = TimeSolarpanels + TimeSetPosAtSolarPanels;
 
 	return(CYCLE);
 }

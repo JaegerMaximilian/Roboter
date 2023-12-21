@@ -113,6 +113,7 @@ unsigned char StartTask(void)
 		
 		InitKI();
 		InitKiWatch();
+		InitKiCalculateTimesTask();
 		
 		return(DISABLE);
 	}

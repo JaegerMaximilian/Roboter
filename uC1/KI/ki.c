@@ -112,6 +112,8 @@ void InitKI(void)
 	ConfigPlanter = ConfigPlanter_Nextion;
 	ConfigStehlen = ConfigStehlen_Nextion;
 	velocity = STANDARD_VELOCITY;
+	SolarpanelsHomePosDone = 0;
+	SolarpanelsMiddleDone = 0;
 	
 	//Set Plant Positions
 	PosPlant1000.Xpos = 1500;
@@ -858,8 +860,25 @@ uint8_t KiTask(void)
 			}
 			CalcOpenParkPositions();
 			
-			if(OpenPlants > 0 && PlantsInRobot < 3 && spielZeit > (time + TimeAllSolarPanelsHome))
+			//Select Next Step
+			if(((OpenPlanter == 0 || (OpenPlants == 0 && PlantsInRobot == 0)) && ((spielZeit < (time + TimeAllSolarPanelsHome + TimeParkPlantsAtHome)) || OpenPlants == 0))
+			&& (spielZeit > (TimeSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)))
+			//||(OpenPlanter > 0) && PlantsInRobot > 0 && spielZeit < (AbstellenderPflanzen + Rest))
 			{
+				KI_State = 20;
+				StateOfGame = SolarPanels;
+			}
+			else if(spielZeit < (TimeSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome))
+			{
+				StateOfGame = driveHome;
+				KI_State = 20;
+			}
+			else if(OpenPlants > 0 && PlantsInRobot < 3 && (spielZeit > (time + TimeAllSolarPanelsHome))
+			&& ((PlantsInRobot < OpenParkPos) || (OpenParkPos == 0)))
+			{
+				KI_State = 20;
+				StateOfGame = GetPlants;
+				
 				//Nächste Pflanze von PENDING to OPEN
 				for (int prio = 98;prio>90; prio--)
 				{
@@ -878,26 +897,8 @@ uint8_t KiTask(void)
 						break;
 					}
 				}
-			}
-			ActivatePlantAsObstacle();
+				ActivatePlantAsObstacle();
 
-			//Select Next Step
-			if(spielZeit < TimeSolarPanelsHome)
-			{
-				StateOfGame = driveHome;
-				KI_State = 20;
-			}
-
-			else if((OpenPlanter == 0 || (OpenPlants == 0 && PlantsInRobot == 0)) &&((spielZeit < time + TimeAllSolarPanelsHome) || OpenPlants == 0)
-			&& spielZeit > TimeSolarPanelsHome)
-			{
-				KI_State = 20;
-				StateOfGame = SolarPanels;
-			}
-			else if(OpenPlants > 0 && PlantsInRobot < 3 && spielZeit > (time + TimeAllSolarPanelsHome))
-			{
-				KI_State = 20;
-				StateOfGame = GetPlants;
 			}
 			else if(PlantsInRobot > 0)
 			{
@@ -1024,7 +1025,8 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
-					if(spielZeit < (TimeToHome + 20))
+					if(((spielZeit < (TimeAllSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter == 0)
+					|| ((spielZeit < (TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter > 0)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 					{
 						KI_State = 500;
 					}
@@ -1082,7 +1084,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					if(motionFailureCount<3 && KI_Task[1].Status != DID && spielZeit > TimeForPlant1000
-					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant1000 + TimeAllSolarPanelsHome)))
+					&! (OpenPlanter == 0 && (spielZeit < (TimeForPlant1000 + TimeAllSolarPanelsHome))))
 					{
 						KI_State = 1000;
 					}
@@ -1189,7 +1191,8 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
-					if(spielZeit < (TimeToHome + 20))
+					if(((spielZeit < (TimeAllSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter == 0)
+					|| ((spielZeit < (TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter > 0)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 					{
 						KI_State = 500;
 					}
@@ -1246,7 +1249,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					if(motionFailureCount<3 && KI_Task[2].Status != DID && spielZeit > TimeForPlant2000
-					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant2000 + TimeAllSolarPanelsHome)))
+					&! (OpenPlanter == 0 && (spielZeit < (TimeForPlant2000 + TimeAllSolarPanelsHome))))
 					{
 						KI_State = 2000;
 					}
@@ -1352,7 +1355,8 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
-					if(spielZeit < (TimeToHome + 20))
+					if(((spielZeit < (TimeAllSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter == 0)
+					|| ((spielZeit < (TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter > 0)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 					{
 						KI_State = 500;
 					}
@@ -1408,7 +1412,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					if(motionFailureCount<3 && KI_Task[3].Status != DID && spielZeit > TimeForPlant3000
-					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant3000 + TimeAllSolarPanelsHome)))
+					&! (OpenPlanter == 0 && (spielZeit < (TimeForPlant3000 + TimeAllSolarPanelsHome))))
 					{
 						KI_State = 3000;
 					}
@@ -1519,7 +1523,8 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
-					if(spielZeit < (TimeToHome + 20))
+					if(((spielZeit < (TimeAllSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter == 0)
+					|| ((spielZeit < (TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter > 0)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 					{
 						KI_State = 500;
 					}
@@ -1575,7 +1580,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					if(motionFailureCount<3 && KI_Task[4].Status != DID && spielZeit > TimeForPlant4000
-					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant4000 + TimeAllSolarPanelsHome)))
+					&! (OpenPlanter == 0 && (spielZeit < (TimeForPlant4000 + TimeAllSolarPanelsHome))))
 					{
 						KI_State = 4000;
 					}
@@ -1680,7 +1685,8 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
-					if(spielZeit < (TimeToHome + 20))
+					if(((spielZeit < (TimeAllSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter == 0)
+					|| ((spielZeit < (TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter > 0)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 					{
 						KI_State = 500;
 					}
@@ -1736,7 +1742,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					if(motionFailureCount<3 && KI_Task[5].Status != DID  && spielZeit > TimeForPlant5000
-					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant5000 + TimeAllSolarPanelsHome)))
+					&! (OpenPlanter == 0 && (spielZeit < (TimeForPlant5000 + TimeAllSolarPanelsHome))))
 					{
 						KI_State = 5000;
 					}
@@ -1841,7 +1847,8 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
-					if(spielZeit < (TimeToHome + 20))
+					if(((spielZeit < (TimeAllSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter == 0)
+					|| ((spielZeit < (TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter > 0)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 					{
 						KI_State = 500;
 					}
@@ -1898,7 +1905,7 @@ uint8_t KiTask(void)
 				{
 					
 					if(motionFailureCount<3 && KI_Task[6].Status != DID && spielZeit > TimeForPlant6000
-					&! (OpenPlanter == 0 && spielZeit < (TimeForPlant6000 + TimeAllSolarPanelsHome)))
+					&! (OpenPlanter == 0 && (spielZeit < (TimeForPlant6000 + TimeAllSolarPanelsHome))))
 					{
 						KI_State = 6000;
 					}
@@ -2100,7 +2107,7 @@ uint8_t KiTask(void)
 				KI_Task[22].Priority = 85;
 			}
 
-			if(spielZeit > (TimeToHome + 20))
+			if(spielZeit > (TimeToHome + TimeParkPlantsAtHome)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 			{
 				KI_State = 20;
 			}
@@ -2200,7 +2207,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[11].Status == OPEN && spielZeit > TimeParkPlanterLMiddle);
+					if(motionFailureCount<3 && KI_Task[11].Status == OPEN && (spielZeit > TimeParkPlanterLMiddle))
 					{
 						KI_State = 11000;
 					}
@@ -2338,7 +2345,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[12].Status == OPEN && spielZeit > (TimeParkFieldL1 + TimeAllSolarPanelsHome))
+					if(motionFailureCount<3 && KI_Task[12].Status == OPEN && (spielZeit > (TimeParkFieldL1 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 12000;
 					}
@@ -2463,7 +2470,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[13].Status == OPEN && spielZeit > TimeParkPlanterL1)
+					if(motionFailureCount<3 && KI_Task[13].Status == OPEN && (spielZeit > TimeParkPlanterL1))
 					{
 						KI_State = 13000;
 					}
@@ -2611,7 +2618,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[15].Status == OPEN && spielZeit > (TimeParkPlanterL2 + TimeAllSolarPanelsHome))
+					if(motionFailureCount<3 && KI_Task[15].Status == OPEN && (spielZeit > (TimeParkPlanterL2 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 15000;
 					}
@@ -2934,7 +2941,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[21].Status == OPEN && spielZeit > (TimeParkPlanterRMiddle + TimeAllSolarPanelsHome))
+					if(motionFailureCount<3 && KI_Task[21].Status == OPEN && (spielZeit > (TimeParkPlanterRMiddle + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 21000;
 					}
@@ -3074,7 +3081,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[22].Status == OPEN && spielZeit > TimeParkFieldR1)
+					if(motionFailureCount<3 && KI_Task[22].Status == OPEN && (spielZeit > TimeParkFieldR1))
 					{
 						KI_State = 22000;
 					}
@@ -3201,7 +3208,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[23].Status == OPEN && spielZeit > (TimeParkPlanterR1 + TimeAllSolarPanelsHome))
+					if(motionFailureCount<3 && KI_Task[23].Status == OPEN && (spielZeit > (TimeParkPlanterR1 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 23000;
 					}
@@ -3349,7 +3356,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[25].Status == OPEN && spielZeit > (TimeParkPlanterR2 + TimeAllSolarPanelsHome))
+					if(motionFailureCount<3 && KI_Task[25].Status == OPEN && (spielZeit > (TimeParkPlanterR2 + TimeAllSolarPanelsHome)))
 					{
 						KI_State = 25000;
 					}
@@ -3415,7 +3422,7 @@ uint8_t KiTask(void)
 				{
 					velocity = STANDARD_VELOCITY;
 					//Set Task to Done
-					if(PlantsInRobot = 0)
+					if(PlantsInRobot == 0)
 					{
 						KI_Task[26].Status = DONE;
 					}
@@ -3444,7 +3451,7 @@ uint8_t KiTask(void)
 		case 26012:
 		{
 			cmd_Drive(0,0,-200,0,0,500,yPos,0,POS_ABS,ON,NULL,NULL,STANDARD_ACC,STANDARD_ACC);
-			KI_State=22015;
+			KI_State=26015;
 			break;
 		}
 		case 26015:
@@ -3592,7 +3599,8 @@ uint8_t KiTask(void)
 			//Check if Enemy Robot is in Area Next to Planter
 			goal.Xpos = PosSolarPanelsBlue.Xpos;
 			goal.Ypos = PosSolarPanelsBlue.Ypos;
-
+			
+			
 
 			if (PATH_DriveToAbsPos(start, goal, wp_KI, &wpNbr))
 			{
@@ -3603,7 +3611,7 @@ uint8_t KiTask(void)
 			{
 				KI_State = 30030;
 			}
-
+			
 			velocity = STANDARD_VELOCITY;
 
 			break;
@@ -3618,12 +3626,8 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					velocity = STANDARD_VELOCITY;
-					//Set Task to Done
-					KI_Task[30].Status = DONE;
-					//Wait specific time
-					SET_CYCLE(KI_TASKNBR, 8000);
-					
-					KI_State = 60000;
+
+					KI_State = 30015;
 					break;
 				}
 				/* error happened during the motion */
@@ -3634,6 +3638,47 @@ uint8_t KiTask(void)
 					break;
 				}
 			}
+			break;
+		}
+		case 30015:
+		{
+			//später löschen ==> fake task
+
+			sprintf(text1, "TPPAT: %6d TSp: %d TSPaSp: %d", TimeParkPlantsAtHome, TimeSolarpanels , TimeSetPosAtSolarPanels);
+			SendDebugMessage(text1,2);
+
+			//Wait specific time
+			if((spielZeit < (TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels) && SolarpanelsHomePosDone == 0)
+			|| (spielZeit < (TimeParkPlantsAtHome + TimeSolarpanels) && SolarpanelsHomePosDone > 0))
+			{
+				KI_State = 60000;
+			}
+			else if(SolarpanelsHomePosDone == 0)
+			{
+				SolarpanelsHomePosDone++;
+				SET_CYCLE(KI_TASKNBR, (TimeSetPosAtSolarPanels+TimeSolarpanels)*100);
+				KI_State = 30016;
+			}
+			else if (SolarpanelsHomePosDone < 2)
+			{
+				SolarpanelsHomePosDone++;
+				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
+				KI_State = 30016;
+			}
+			else
+			{
+				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
+				SolarpanelsHomePosDone++;
+				//Set Task to Done
+				KI_Task[30].Status = DONE;
+				KI_State = 60000;
+			}
+			break;
+		}
+		case 30016:
+		{
+			//später löschen ==> fake task
+			KI_State = 30015;
 			break;
 		}
 		
@@ -3662,21 +3707,18 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[30].Status == OPEN)
+					if(spielZeit < (TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome))
+					{
+						KI_State = 60000;
+						velocity = STANDARD_VELOCITY;
+					}
+					else if(motionFailureCount<3 && KI_Task[30].Status == OPEN )
 					{
 						KI_State = 30000;
 					}
 					else
 					{
-						if(spielZeit < TimeToHome)
-						{
-							KI_State = 60000;
-						}
-						else
-						{
-							KI_State = 30000;
-						}
-
+						KI_State = 500;
 						velocity = STANDARD_VELOCITY;
 					}
 					break;
@@ -3742,12 +3784,8 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					velocity = STANDARD_VELOCITY;
-					//Set Task to Done
-					KI_Task[31].Status = DONE;
-					//Wait specific time
-					SET_CYCLE(KI_TASKNBR, 8000);
 					
-					KI_State = 31027;
+					KI_State = 31015;
 					break;
 				}
 				/* error happened during the motion */
@@ -3758,6 +3796,48 @@ uint8_t KiTask(void)
 					break;
 				}
 			}
+			break;
+		}
+		case 31015:
+		{
+			//später löschen ==> fake task
+
+			//Wait specific time
+			if(spielZeit < (TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels + TimeToHome))
+			{
+				KI_State = 60000;
+			}
+			else if((spielZeit < (TimeParkPlantsAtHome + TimeAllSolarPanelsHome + TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels) && SolarpanelsMiddleDone == 0)
+			||(spielZeit < (TimeParkPlantsAtHome + TimeAllSolarPanelsHome + TimeToHome + TimeSolarpanels) && SolarpanelsMiddleDone > 0))
+			{
+				KI_State = 500;
+			}
+			else if(SolarpanelsMiddleDone == 0)
+			{
+				SolarpanelsMiddleDone++;
+				SET_CYCLE(KI_TASKNBR, (TimeSetPosAtSolarPanels+TimeSolarpanels)*100);
+				KI_State = 31016;
+			}
+			else if (SolarpanelsMiddleDone < 2)
+			{
+				SolarpanelsMiddleDone++;
+				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
+				KI_State = 31016;
+			}
+			else
+			{
+				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
+				SolarpanelsMiddleDone++;
+				//Set Task to Done
+				KI_Task[31].Status = DONE;
+				KI_State = 500;
+			}
+			break;
+		}
+		case 31016:
+		{
+			//später löschen ==> fake task
+			KI_State = 31015;
 			break;
 		}
 		
@@ -3786,7 +3866,20 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					KI_State = 31027;
+					if(spielZeit < (TimeParkPlantsAtHome + TimeAllSolarPanelsHome + TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels))
+					{
+						KI_State = 500;
+						velocity = STANDARD_VELOCITY;
+					}
+					else if(motionFailureCount<3 && KI_Task[31].Status == OPEN )
+					{
+						KI_State = 31000;
+					}
+					else
+					{
+						KI_State = 500;
+						velocity = STANDARD_VELOCITY;
+					}
 					break;
 				}
 				/* error happened during the motion */
@@ -3798,21 +3891,6 @@ uint8_t KiTask(void)
 			}
 			break;
 		}
-		case 31027:
-		{
-			if(spielZeit > (TimeAllSolarPanelsHome + 20) && OpenPlants == 0)
-			{
-				KI_State = 31027; // evtl. nicht bis Sekunde 15 warten zum wegfahren sondern gleich nach 8 Sekunden fahren (blockieren evtl bloed wegen Fair play)
-			}
-			else
-			{
-				KI_State = 500;
-			}
-			
-			velocity = STANDARD_VELOCITY;
-			break;
-		}
-		
 		
 		case 31030:
 		{
@@ -3866,12 +3944,8 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					velocity = STANDARD_VELOCITY;
-					//Set Task to Done
-					KI_Task[32].Status = DONE;
-					//Wait specific time
-					SET_CYCLE(KI_TASKNBR, 8000);
 					
-					KI_State = 60000;
+					KI_State = 32015;
 					break;
 				}
 				/* error happened during the motion */
@@ -3882,6 +3956,44 @@ uint8_t KiTask(void)
 					break;
 				}
 			}
+			break;
+		}
+		case 32015:
+		{
+			//später löschen ==> fake task
+
+			//Wait specific time
+			if((spielZeit < (TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels) && SolarpanelsHomePosDone == 0)
+			|| (spielZeit < (TimeParkPlantsAtHome + TimeSolarpanels) && SolarpanelsHomePosDone > 0))
+			{
+				KI_State = 60000;
+			}
+			else if(SolarpanelsHomePosDone == 0 )
+			{
+				SolarpanelsHomePosDone++;
+				SET_CYCLE(KI_TASKNBR, (TimeSetPosAtSolarPanels+TimeSolarpanels)*100);
+				KI_State = 32016;
+			}
+			else if (SolarpanelsHomePosDone < 2 )
+			{
+				SolarpanelsHomePosDone++;
+				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
+				KI_State = 32016;
+			}
+			else
+			{
+				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
+				SolarpanelsHomePosDone++;
+				//Set Task to Done
+				KI_Task[32].Status = DONE;
+				KI_State = 60000;
+			}
+			break;
+		}
+		case 32016:
+		{
+			//später löschen ==> fake task
+			KI_State = 30015;
 			break;
 		}
 
@@ -3910,21 +4022,18 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[32].Status == OPEN)
+					if(spielZeit < (TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels + TimeParkPlantsAtHome))
+					{
+						KI_State = 60000;
+						velocity = STANDARD_VELOCITY;
+					}
+					else if(motionFailureCount<3 && KI_Task[32].Status == OPEN )
 					{
 						KI_State = 32000;
 					}
 					else
 					{
-						if(spielZeit < TimeToHome)
-						{
-							KI_State = 60000;
-						}
-						else
-						{
-							KI_State = 32000;
-						}
-
+						KI_State = 500;
 						velocity = STANDARD_VELOCITY;
 					}
 					break;

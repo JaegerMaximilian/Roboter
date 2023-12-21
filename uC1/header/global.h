@@ -148,6 +148,7 @@ _GLOBAL_EXTERN uint16_t TimeToHome, TimeSolarPanelsMiddleToHome, TimeSolarPanels
 _GLOBAL_EXTERN uint16_t TimeHandleNextPlant, TimeForPlant1000, TimeForPlant2000, TimeForPlant3000, TimeForPlant4000, TimeForPlant5000, TimeForPlant6000;
 _GLOBAL_EXTERN uint16_t TimeParkNextPlantInPlanter, TimeParkNextPlantInField, TimeParkFieldL1, TimeParkPlanterL1, TimeParkPlanterL2, TimeParkPlanterLMiddle;
 _GLOBAL_EXTERN uint16_t TimeParkFieldR1, TimeParkPlanterR1, TimeParkPlanterR2, TimeParkPlanterRMiddle;
+_GLOBAL_EXTERN uint8_t SolarpanelsHomePosDone, SolarpanelsMiddleDone;
 
 //_GLOBAL_EXTERN point_t startPos;
 

@@ -66,8 +66,8 @@ void InitReceiveData(void)
 	Port_App_allocation(POS_MSG_GEGNER_PORTNBR, ENEMY_POS_TASKNBR);
 	Port_App_allocation(ANTRIEB_UC2_PORTNBR, ANTRIEB_UC2_TASKNBR);
 	Port_App_allocation(POS_UC2_PORTNBR, POS_UC2_TASKNBR);
-//	Port_App_allocation(EINSTELLUNG_LCD_PORTNBR, EINSTELLUNG_LCD_TASKNBR);
-//	Port_App_allocation(DEBUG_MSG_LCD_PORTNBR, DEBUG_MSG_LCD_TASKNBR);
+	//	Port_App_allocation(EINSTELLUNG_LCD_PORTNBR, EINSTELLUNG_LCD_TASKNBR);
+	//	Port_App_allocation(DEBUG_MSG_LCD_PORTNBR, DEBUG_MSG_LCD_TASKNBR);
 
 	// 	Port_App_allocation(ENEMYDATA_TO_PATHPLANER_PORTNBR,ENEMY_LIDAR_TASKNBR);
 	// 	Port_App_allocation(ENEMYDATA_RAW_TO_WIFI_PORTNBR,ENEMY_TO_WIFI_TASKNBR);
@@ -83,10 +83,10 @@ void InitReceiveData(void)
 	SET_TASK_HANDLE(ENEMY_POS_TASKNBR, rrtlanEnemyPos_GegnerTask);
 	SET_TASK_HANDLE(ANTRIEB_UC2_TASKNBR, rrtlanAntrieb_uC2Task);
 	SET_TASK_HANDLE(POS_UC2_TASKNBR, rrtlanPos_uC2Task);
-//	SET_TASK_HANDLE(EINSTELLUNG_LCD_TASKNBR, rrtlanEinstellung_LCDTask);
-//	SET_TASK_HANDLE(DEBUG_MSG_LCD_TASKNBR, rrtlanDebugMsg_LCDTask);
-//	SET_TASK_HANDLE(ENEMY_LIDAR_TASKNBR, rrtlanEnemyData_to_Pathplaner_Task);
-//	SET_TASK_HANDLE(ENEMY_TO_WIFI_TASKNBR, rrtlanEnemyDataRaw_to_WIFI_Task);
+	//	SET_TASK_HANDLE(EINSTELLUNG_LCD_TASKNBR, rrtlanEinstellung_LCDTask);
+	//	SET_TASK_HANDLE(DEBUG_MSG_LCD_TASKNBR, rrtlanDebugMsg_LCDTask);
+	//	SET_TASK_HANDLE(ENEMY_LIDAR_TASKNBR, rrtlanEnemyData_to_Pathplaner_Task);
+	//	SET_TASK_HANDLE(ENEMY_TO_WIFI_TASKNBR, rrtlanEnemyDataRaw_to_WIFI_Task);
 }
 
 /**************************************************************************
@@ -145,6 +145,7 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 {
 	uint8_t nbr_of_bytes = 0;
 	uint8_t receiveArray[30];
+	static int8_t counter = 0;
 	char text1[100];
 	convData_t x[5], y[5];
 	uint8_t j = 1;
@@ -178,8 +179,27 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			y[i].uint8[0] = receiveArray[j++];
 			y[i].uint8[1] = receiveArray[j++];
 			
-			enemyRobot[i].Xpos = x[i].uint16[0];
-			enemyRobot[i].Ypos = y[i].uint16[0];
+			
+			//Erst wenn Gengererkennung öfter als 5 mal nichts sieht als kein Gegner werten
+			if(x[i].uint16[0] != 10000 )
+			{
+				enemyRobot[i].Xpos = x[i].uint16[0];
+				enemyRobot[i].Ypos = y[i].uint16[0];
+				counter = 0;
+			}
+			else
+			{
+				counter = ((++counter > 5) ? 5 : counter);
+			}
+			
+			if(x[i].uint16[0] == 10000 && counter >= 5)
+			{
+				enemyRobot[i].Xpos = x[i].uint16[0];
+				enemyRobot[i].Ypos = y[i].uint16[0];
+			}
+			
+
+
 		}
 
 

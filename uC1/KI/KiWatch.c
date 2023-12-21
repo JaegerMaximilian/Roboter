@@ -428,15 +428,16 @@ uint8_t KiWatchTask(void)
 	/**************************************************************************
 	***   Set Solar Panels Middle to Done if not enought Time               ***
 	**************************************************************************/
-	if (spielZeit < (4 *(uint16_t)TimeSolarpanels + 2*TimeSetPosAtSolarPanels + TimeSolarPanelsMiddleToHome + TimeParkPlantsAtHome + TimeToSolarPanelsMiddle)) //Each Solor Panels + Get Position At Solar Panels + Time to drive
+	
+	if (spielZeit < (4 *TimeSolarpanels + 2*TimeSetPosAtSolarPanels + TimeSolarPanelsMiddleToHome + TimeParkPlantsAtHome + TimeToSolarPanelsMiddle)) //Each Solor Panels + Get Position At Solar Panels + Time to drive
 	{
 		KI_Task[31].Status = DONE;
 	}
 	
 	/**************************************************************************
 	***   Set Solar Panels at Home Position to Done if not enought Time     ***
-	**************************************************************************/	
-	if(spielZeit < TimeSolarPanelsHome)
+	**************************************************************************/
+	if(spielZeit < TimeSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)
 	{
 		KI_Task[30].Status = DONE;
 		KI_Task[32].Status = DONE;

@@ -169,8 +169,8 @@ uint8_t DebugTask(void)
 		//Time=0;
 	//}
 	
-	NextionSetPoints(spielZeit/100);
-	NextionSetTime(spielZeit/100);
+	NextionSetPoints(spielZeit/10);
+	NextionSetTime(spielZeit/10);
 	//    LED_PORT.OUT ^= ledBit;
 	// //   ledBit = (ledBit != 0x40) ? ledBit << 1 : 0x20;
 	//    ledBit = (ledBit != 0x80) ? ledBit << 1 : 0x20;
