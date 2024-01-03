@@ -181,22 +181,22 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			
 			
 			//Erst wenn Gengererkennung öfter als 5 mal nichts sieht als kein Gegner werten
-			if(x[i].uint16[0] != 10000 )
-			{
+			//if(x[i].uint16[0] != 10000 )
+			//{
 				enemyRobot[i].Xpos = x[i].uint16[0];
 				enemyRobot[i].Ypos = y[i].uint16[0];
-				counter = 0;
-			}
-			else
-			{
-				counter = ((++counter > 10) ? 10 : counter);
-			}
-			
-			if(x[i].uint16[0] == 10000 && counter >= 10)
-			{
-				enemyRobot[i].Xpos = x[i].uint16[0];
-				enemyRobot[i].Ypos = y[i].uint16[0];
-			}
+				//counter = 0;
+			//}
+			//else
+			//{
+				//counter = ((++counter > 10) ? 10 : counter);
+			//}
+			//
+			//if(x[i].uint16[0] == 10000 && counter >= 10)
+			//{
+				//enemyRobot[i].Xpos = x[i].uint16[0];
+				//enemyRobot[i].Ypos = y[i].uint16[0];
+			//}
 			
 
 
@@ -288,9 +288,9 @@ unsigned char rrtlanAntrieb_uC2Task(void)
 	{
 		Receive_Application_Data(&MCU2, ANTRIEB_UC2_PORTNBR, receiveArray);
 		
-		char text1[200];
-		sprintf(text1, "Wait for Status");
-		SendDebugMessage(text1,1);
+		//char text1[200];
+		//sprintf(text1, "Wait for Status");
+		//SendDebugMessage(text1,1);
 		
 		statusAntrieb = receiveArray[0];
 	}

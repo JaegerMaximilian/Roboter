@@ -488,6 +488,9 @@ uint8_t KiWatchTask(void)
 		
 		VelocityEnemy = ((VelocityEnemy>700) ? 700 : VelocityEnemy);
 		
+		//sprintf(text1, "Velocity: %f", VelocityEnemy);
+		//SendDebugMessage(text1,1);
+		
 	}
 
 	if(aktPoint.Xpos != oldPoint.Xpos)
@@ -504,9 +507,14 @@ uint8_t KiWatchTask(void)
 	**************************************************************************/
 	if(KI_State != OldKI_State)
 	{
-		sprintf(text1, "State: %6ld PIR: %d OPP: %d PP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, planedPlants, ParkedPlants);
+		sprintf(text1, "State: %6ld PIR: %d OPP: %d OP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, OpenPlants, ParkedPlants);
 		SendDebugMessage(text1,1);
+		
+		//sprintf(text1, "TPNP: %d", TimeParkNextPlant);
+		//SendDebugMessage(text1,1);
 	}
+	
+	
 
 	OldKI_State = KI_State;
 	

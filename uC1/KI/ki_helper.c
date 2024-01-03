@@ -328,13 +328,13 @@ void CalcOpenPlanter(void)
 
 /**************************************************************************
 ***   FUNKTIONNAME: CalcTimeRemainingPlants								***
-***   FUNKTION: Calculates Time it probably takes to Grab another Plant 
+***   FUNKTION: Calculates Time it probably takes to Grab another Plant
 and then park all Plants that are in the Robot                          ***
-									                                    ***
+***
 ***   TRANSMIT PARAMETER: NO                                            ***
 ***   RECEIVE PARAMETER.:												***
 **************************************************************************/
-uint8_t CalcTimeRemainingPlants(void)
+uint16_t CalcTimeRemainingPlants(void)
 {
 	float totalDistance = 0.0;
 	
@@ -344,13 +344,9 @@ uint8_t CalcTimeRemainingPlants(void)
 	int IndexMaxPrioPflanze = 0;
 	int MaxPrio = 0;
 	
-	
-	
-	
-	
 	for (int i = 1; i <= 6; i++)
 	{
-		
+
 		if((KI_Task[i].Status == OPEN || KI_Task[i].Status == PENDING) && KI_Task[i].Priority > MaxPrio )
 		{
 			MaxPrio = KI_Task[i].Priority;
@@ -361,7 +357,7 @@ uint8_t CalcTimeRemainingPlants(void)
 	}
 	// nach dem testen das Printen in den Logger wieder auskommentieren!!!!
 	
-	//char text1[300];
+	char text1[300];
 	//sprintf(text1, "Next Plant: %d", IndexMaxPrioPflanze);
 	//SendDebugMessage(text1,1);
 
@@ -371,8 +367,6 @@ uint8_t CalcTimeRemainingPlants(void)
 	point_t aktpos;
 	aktpos.Xpos = xPos;
 	aktpos.Ypos = yPos;
-	
-	
 	
 	if(IndexMaxPrioPflanze == 1){
 		totalDistance = CalcDistance(aktpos,PosPlant1000);
@@ -410,26 +404,27 @@ uint8_t CalcTimeRemainingPlants(void)
 	//SendDebugMessage(text1,1);
 	
 	uint8_t PrivatePlantsInRobot = PlantsInRobot;
-	uint8_t ArtificialPlantsInRobot = PlantsInRobot;
-	
+	uint16_t waysToDrive = 0;
+	//uint8_t ArtificialPlantsInRobot = PlantsInRobot;
+	//
 	if (IndexMaxPrioPflanze != 0){ // DIESES IF NOCH ÜBERPRÜFEN OB SINN ERGIBT!!!!!!!!!
 		PrivatePlantsInRobot = PrivatePlantsInRobot + 1;
-		ArtificialPlantsInRobot = PrivatePlantsInRobot + 1;
-	} 
+		waysToDrive = 1;
+		//ArtificialPlantsInRobot = PrivatePlantsInRobot + 1;
+	}
+	
 	
 
 	// SCHRITT 4:
 	// Berechne Zeit die es dauert, um alle Pflanzen der Reihe nach bei versch. Plantern abzustellen!!
-	
 	uint8_t IndexNextPlanter;
-	uint8_t AnzahlNextPlanters = 0;
-	float TimeToPark = 0;
+	uint16_t TimeToPark = 0;
 	
-	for(int i = 0; i< PrivatePlantsInRobot; i++){
-		
+	for(int i = 0; i< PrivatePlantsInRobot; i++)
+	{
 		IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
 		
-		//sprintf(text1, "Planned Planter: %d", IndexNextPlanter);
+		//sprintf(text1, "Planned Planter: %d PIR: %d", IndexNextPlanter,PrivatePlantsInRobot);
 		//SendDebugMessage(text1,1);
 
 		if (IndexNextPlanter==11){
@@ -458,64 +453,66 @@ uint8_t CalcTimeRemainingPlants(void)
 		
 		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
 		
+		waysToDrive = waysToDrive + 1;
 		
-		AnzahlNextPlanters = AnzahlNextPlanters + 1;
 		if (IndexNextPlanter == 12 || IndexNextPlanter == 14 || IndexNextPlanter == 22 || IndexNextPlanter == 24 ) // if park at fields
 		{
-			TimeToPark = TimeToPark + ((float)TimeParkNextPlantInField/10); 
-		} else if (IndexNextPlanter ==  11 || IndexNextPlanter ==  13 || IndexNextPlanter ==  15 || IndexNextPlanter ==  21 ||
-		 IndexNextPlanter ==  23 || IndexNextPlanter ==  25 ) // if park at planters
+			TimeToPark = TimeToPark + TimeParkNextPlantInField;
+		}
+		else if (IndexNextPlanter ==  11 || IndexNextPlanter ==  13 || IndexNextPlanter ==  15 || IndexNextPlanter ==  21 ||
+		IndexNextPlanter ==  23 || IndexNextPlanter ==  25 ) // if park at planters
 		{
-			TimeToPark = TimeToPark + ((float)TimeParkNextPlantInPlanter/10);
-		} else if (IndexNextPlanter == 16 || IndexNextPlanter == 26) // if park at home
+			TimeToPark = TimeToPark + TimeParkNextPlantInPlanter;
+		}
+		else if (PrivatePlantsInRobot > OpenParkPos) // if park at home
 		{
-			if (ArtificialPlantsInRobot == 1)
+			if((PrivatePlantsInRobot - OpenParkPos) == 1)
 			{
-				TimeToPark = TimeToPark + ((float)TimeParkPlantsAtHome/10);
-			} else if (ArtificialPlantsInRobot == 2)
+				TimeToPark = TimeToPark + TimePark1PlantAtHome;
+			}
+			else if((PrivatePlantsInRobot - OpenParkPos) == 2)
 			{
-				TimeToPark = TimeToPark + (((float)TimeParkPlantsPlus1AtHome/10));
-			//
-			// !!! FRAGE: KANN ER AUCH 3 PFLANZEN ZUHAUSE ABSTELLEN ???
-			//            und was hat die Variable TimeParkPlantsMinus1AtHome zu bedeuten, muss ich die auch noch wo einbauen?
-			//
-		
+				TimeToPark = TimeToPark + TimePark2PlantsAtHome;
+			}
+			else if((PrivatePlantsInRobot - OpenParkPos) == 3)
+			{
+				TimeToPark = TimeToPark + TimePark3PlantsAtHome;
+			}
 		}
 		
-		ArtificialPlantsInRobot = ArtificialPlantsInRobot - 1; // counts how many plants are remaining in the robot for the for loop
 		aktpos = PlanterOrFieldPos;
-		PrivateKI_Task[IndexNextPlanter].Status = DONE;
+		
+		if(IndexNextPlanter != 0)
+		{
+			PrivateKI_Task[IndexNextPlanter].Status = DONE;
+		}
+		else
+		{
+			break;
+		}
 	}
 	
 	// LETZTER SCHRITT:
 	// devide a fixed Velocity by the total Distance
-	uint8_t spazi = 0;
-	
-	if (IndexNextPlanter == 16 || IndexNextPlanter == 26 ){
-		 TimeToPark = PlantsInRobot;
-	} else 
-	{
-		
-	}
-	 // 3 sec to park each plant
-	float TimeToPickUp = 0;
-	
-	if (IndexMaxPrioPflanze != 0)
-	{
-		TimeToPickUp = (float)TimeHandleNextPlant / 10; // if a next Plant is possible, add Time To Pick it up, divided by 10 bc TimeHandleNextPlant is already 20 (20 Zehntelsekunden?)
-	}
-	float fixedVelocity = 0.5; // in [m/s]
-	float timeToDrive = 10*(((totalDistance/1000) / fixedVelocity) + TimeToPickUp + TimeToPark +  spazi);
-	
-	//sprintf(text1, "Time: %d", timeToDrive);
-	//SendDebugMessage(text1,1);
+	uint16_t spazi = 0;
+	uint16_t timeHandlenextPlant = 0;
 
+	if(IndexMaxPrioPflanze != 0)
+	{
+		timeHandlenextPlant = TimeHandleNextPlant;
+	}
+	else
+	{
+		timeHandlenextPlant = 0;
+	}
+
+	uint16_t timeToDrive = ((uint16_t)((totalDistance/ STANDARD_VELOCITY)*10.0) + timeHandlenextPlant + TimeToPark +  spazi + waysToDrive*TimeForACCAndDCC);
 	
+	sprintf(text1, "TTP: %d Dis: %f", TimeToPark,totalDistance);
+	SendDebugMessage(text1,1);
 	
-	
-	return( (uint8_t) timeToDrive );
+	return(timeToDrive);
 }
-
 
 /**************************************************************************
 ***   FUNKTIONNAME: PrivateSearchNextPlanter		 					   ***
@@ -535,11 +532,7 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	float distance_Field3;
 	int enemyRobotInPlanter2;
 	
-	
-	
 	// Start Position to begin movement from
-	
-	
 	//Blue
 	if(SpielFarbe == BLUE )
 	{
@@ -592,11 +585,11 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	//Detect if Enemy is in Area Planter 2
 	if(SpielFarbe == BLUE)
 	{
-		 enemyRobotInPlanter2 = Path_IsInArea(0,1000,600,2000); 
+		enemyRobotInPlanter2 = Path_IsInArea(0,1000,600,2000);
 	}
 	if(SpielFarbe == Yellow)
 	{
-		 enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000); 
+		enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
 	}
 	//Planter 2
 	if((PrivateKI_Task[15].Status == OPEN || PrivateKI_Task[25].Status == OPEN)
@@ -642,14 +635,13 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	}
 	
 	int MaxPlanterPrio = 0;
-	int IndexMaxPrioPlanter;
+	uint8_t IndexMaxPrioPlanter = 0;
 	
-	for(int i= 11; i<=26;i++)
+	for(uint8_t i= 11; i<=26;i++)
 	{
 		if((i<=16 || i>=21) && i != 24 && i!= 14 && PrivateKI_Task[i].Status == OPEN &&
 		PrivateKI_Task[i].Priority > MaxPlanterPrio)
 		{
-			
 			MaxPlanterPrio = PrivateKI_Task[i].Priority;
 			IndexMaxPrioPlanter = i;
 		}
@@ -658,15 +650,7 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	//printf("%d", IndexMaxPrioPlanter);
 	//printf("\n");
 	
-	
-	
-	
-	
 	return IndexMaxPrioPlanter;
-	
-	
-	
-	
 }
 
 
@@ -677,81 +661,81 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 
 
 
-// ****************************************************
-// Dot2D, Norm2D, AngleToXAxis2D from path_math.c (ï¿½C2)
-// ****************************************************
-float Dot2D(float* vectorA, float* vectorB)
-{
-	return (vectorA[X_KOR] * vectorB[X_KOR] + vectorA[Y_KOR] * vectorB[Y_KOR]);
-}
-
-float Norm2D(float* vector)
-{
-	return ((float)(sqrt(pow(vector[X_KOR], 2.0) + pow(vector[Y_KOR], 2.0))));
-}
-
-float AngleToXAxis2D(float* vector)
-{
-	float phi;
-	float e_x[2] = {1, 0};
-	float delta_x, delta_y;
-	
-	// Calculating phi_max -> Angle between the X-axis and the vector: Initial point <-> Destination point
-	phi = acos(Dot2D(e_x, vector) / (Norm2D(e_x) * Norm2D(vector)));
-	
-	delta_y = vector[Y_KOR] - e_x[Y_KOR];
-	delta_x = vector[X_KOR] - e_x[X_KOR];
-	
-	// If necessary, correction of the angle
-	if((delta_y < 0.0) && (delta_x < 0.0))
-	phi = 2 * M_PI - phi;
-	if((delta_y < 0.0) && (delta_x > 0.0))
-	phi = 2 * M_PI - phi;
-
-	return (phi);
-}
-
-// ****************************************************
-// GetPx, GetPy for shooting the mammoth
-// ****************************************************
-int16_t GetPx(int16_t Mx, int16_t My)
-{
-	int16_t Px = 0;
-	float R = 11025.0;		// Rx = 10,5 cm
-	
-	float Mx_x = (float)(Mx - xPos);
-	float My_y = (float)(My - yPos);
-	float Mx_x2 = pow(Mx_x, 2.0);
-	float My_y2 = pow(My_y, 2.0);
-	
-	float result1 = R * Mx_x;
-	float result2 = (float)xPos * (Mx_x2 + My_y2);
-	float result3 = sqrt(R * (-R + Mx_x2 + My_y2) * My_y2);
-	float result4 = Mx_x2 + My_y2;
-	
-	Px = (int16_t)((result1 + result2 + result3) / result4);
-	
-	return(Px);
-}
-
-int16_t GetPy(int16_t Mx, int16_t My)
-{
-	int16_t Py = 0;
-	float R = 11025.0;		// Rx = 10,5 cm
-	
-	float Mx_x = (float)(Mx - xPos);
-	float My_y = (float)(My - yPos);
-	float Mx_x2 = pow(Mx_x, 2.0);
-	float My_y2 = pow(My_y, 2.0);
-	
-	float result1 = R * My_y2;
-	float result2 = Mx * sqrt(R * (-R + Mx_x2 + My_y2) * My_y2);
-	float result3 = (float)xPos * sqrt(R * (-R + Mx_x2 + My_y2) * My_y2);
-	float result4 = (Mx_x2 + My_y2) * My_y * (float)yPos;
-	float result5 = (Mx_x2 + My_y2) * My_y;
-	
-	Py = (int16_t)((result1 - result2 + result3 + result4) / result5);
-	
-	return(Py);
-}
-
+//// ****************************************************
+//// Dot2D, Norm2D, AngleToXAxis2D from path_math.c (ï¿½C2)
+//// ****************************************************
+//float Dot2D(float* vectorA, float* vectorB)
+//{
+//return (vectorA[X_KOR] * vectorB[X_KOR] + vectorA[Y_KOR] * vectorB[Y_KOR]);
+//}
+//
+//float Norm2D(float* vector)
+//{
+//return ((float)(sqrt(pow(vector[X_KOR], 2.0) + pow(vector[Y_KOR], 2.0))));
+//}
+//
+//float AngleToXAxis2D(float* vector)
+//{
+//float phi;
+//float e_x[2] = {1, 0};
+//float delta_x, delta_y;
+//
+//// Calculating phi_max -> Angle between the X-axis and the vector: Initial point <-> Destination point
+//phi = acos(Dot2D(e_x, vector) / (Norm2D(e_x) * Norm2D(vector)));
+//
+//delta_y = vector[Y_KOR] - e_x[Y_KOR];
+//delta_x = vector[X_KOR] - e_x[X_KOR];
+//
+//// If necessary, correction of the angle
+//if((delta_y < 0.0) && (delta_x < 0.0))
+//phi = 2 * M_PI - phi;
+//if((delta_y < 0.0) && (delta_x > 0.0))
+//phi = 2 * M_PI - phi;
+//
+//return (phi);
+//}
+//
+//// ****************************************************
+//// GetPx, GetPy for shooting the mammoth
+//// ****************************************************
+//int16_t GetPx(int16_t Mx, int16_t My)
+//{
+//int16_t Px = 0;
+//float R = 11025.0;		// Rx = 10,5 cm
+//
+//float Mx_x = (float)(Mx - xPos);
+//float My_y = (float)(My - yPos);
+//float Mx_x2 = pow(Mx_x, 2.0);
+//float My_y2 = pow(My_y, 2.0);
+//
+//float result1 = R * Mx_x;
+//float result2 = (float)xPos * (Mx_x2 + My_y2);
+//float result3 = sqrt(R * (-R + Mx_x2 + My_y2) * My_y2);
+//float result4 = Mx_x2 + My_y2;
+//
+//Px = (int16_t)((result1 + result2 + result3) / result4);
+//
+//return(Px);
+//}
+//
+//int16_t GetPy(int16_t Mx, int16_t My)
+//{
+//int16_t Py = 0;
+//float R = 11025.0;		// Rx = 10,5 cm
+//
+//float Mx_x = (float)(Mx - xPos);
+//float My_y = (float)(My - yPos);
+//float Mx_x2 = pow(Mx_x, 2.0);
+//float My_y2 = pow(My_y, 2.0);
+//
+//float result1 = R * My_y2;
+//float result2 = Mx * sqrt(R * (-R + Mx_x2 + My_y2) * My_y2);
+//float result3 = (float)xPos * sqrt(R * (-R + Mx_x2 + My_y2) * My_y2);
+//float result4 = (Mx_x2 + My_y2) * My_y * (float)yPos;
+//float result5 = (Mx_x2 + My_y2) * My_y;
+//
+//Py = (int16_t)((result1 - result2 + result3 + result4) / result5);
+//
+//return(Py);
+//}
+//

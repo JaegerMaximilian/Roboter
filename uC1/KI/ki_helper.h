@@ -23,7 +23,7 @@ void RePrioritisePlantTasks(void);
 void CalcOpenPlants(void);
 void CalcOpenParkPositions(void);
 void CalcOpenPlanter(void);
-uint8_t CalcTimeRemainingPlants(void);
+uint16_t CalcTimeRemainingPlants(void);
 uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[]);
 
 
