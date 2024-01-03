@@ -409,19 +409,25 @@ uint8_t CalcTimeRemainingPlants(void)
 	//sprintf(text1, "Plants in Robot: %d", PlantsInRobot);
 	//SendDebugMessage(text1,1);
 	
-	int PrivatePlantsInRobot = PlantsInRobot;
-	
+	uint8_t PrivatePlantsInRobot = PlantsInRobot;
+	uint8_t ArtificialPlantsInRobot = PlantsInRobot;
 	
 	if (IndexMaxPrioPflanze != 0){ // DIESES IF NOCH ÜBERPRÜFEN OB SINN ERGIBT!!!!!!!!!
 		PrivatePlantsInRobot = PrivatePlantsInRobot + 1;
+		ArtificialPlantsInRobot = PrivatePlantsInRobot + 1;
 	} 
 	
 
 	// SCHRITT 4:
 	// Berechne Zeit die es dauert, um alle Pflanzen der Reihe nach bei versch. Plantern abzustellen!!
+	
+	uint8_t IndexNextPlanter;
+	uint8_t AnzahlNextPlanters = 0;
+	float TimeToPark = 0;
+	
 	for(int i = 0; i< PrivatePlantsInRobot; i++){
 		
-		uint8_t IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
+		IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
 		
 		//sprintf(text1, "Planned Planter: %d", IndexNextPlanter);
 		//SendDebugMessage(text1,1);
@@ -450,7 +456,33 @@ uint8_t CalcTimeRemainingPlants(void)
 			PlanterOrFieldPos = PosFieldR3;
 		}
 		
-		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos);
+		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
+		
+		
+		AnzahlNextPlanters = AnzahlNextPlanters + 1;
+		if (IndexNextPlanter == 12 || IndexNextPlanter == 14 || IndexNextPlanter == 22 || IndexNextPlanter == 24 ) // if park at fields
+		{
+			TimeToPark = TimeToPark + ((float)TimeParkNextPlantInField/10); 
+		} else if (IndexNextPlanter ==  11 || IndexNextPlanter ==  13 || IndexNextPlanter ==  15 || IndexNextPlanter ==  21 ||
+		 IndexNextPlanter ==  23 || IndexNextPlanter ==  25 ) // if park at planters
+		{
+			TimeToPark = TimeToPark + ((float)TimeParkNextPlantInPlanter/10);
+		} else if (IndexNextPlanter == 16 || IndexNextPlanter == 26) // if park at home
+		{
+			if (ArtificialPlantsInRobot == 1)
+			{
+				TimeToPark = TimeToPark + ((float)TimeParkPlantsAtHome/10);
+			} else if (ArtificialPlantsInRobot == 2)
+			{
+				TimeToPark = TimeToPark + (((float)TimeParkPlantsPlus1AtHome/10));
+			//
+			// !!! FRAGE: KANN ER AUCH 3 PFLANZEN ZUHAUSE ABSTELLEN ???
+			//            und was hat die Variable TimeParkPlantsMinus1AtHome zu bedeuten, muss ich die auch noch wo einbauen?
+			//
+		
+		}
+		
+		ArtificialPlantsInRobot = ArtificialPlantsInRobot - 1; // counts how many plants are remaining in the robot for the for loop
 		aktpos = PlanterOrFieldPos;
 		PrivateKI_Task[IndexNextPlanter].Status = DONE;
 	}
@@ -458,15 +490,22 @@ uint8_t CalcTimeRemainingPlants(void)
 	// LETZTER SCHRITT:
 	// devide a fixed Velocity by the total Distance
 	uint8_t spazi = 0;
-	uint8_t TimeToPark = PlantsInRobot * 2; // 3 sec to park each plant
-	uint8_t TimeToPickUp = 0;
+	
+	if (IndexNextPlanter == 16 || IndexNextPlanter == 26 ){
+		 TimeToPark = PlantsInRobot;
+	} else 
+	{
+		
+	}
+	 // 3 sec to park each plant
+	float TimeToPickUp = 0;
 	
 	if (IndexMaxPrioPflanze != 0)
 	{
-		TimeToPickUp = 2; // if a next Plant is possible, add Time To Pick it up
+		TimeToPickUp = (float)TimeHandleNextPlant / 10; // if a next Plant is possible, add Time To Pick it up, divided by 10 bc TimeHandleNextPlant is already 20 (20 Zehntelsekunden?)
 	}
 	float fixedVelocity = 0.5; // in [m/s]
-	float timeToDrive = ((totalDistance/1000) / fixedVelocity) + TimeToPickUp + TimeToPark +  spazi;
+	float timeToDrive = 10*(((totalDistance/1000) / fixedVelocity) + TimeToPickUp + TimeToPark +  spazi);
 	
 	//sprintf(text1, "Time: %d", timeToDrive);
 	//SendDebugMessage(text1,1);
