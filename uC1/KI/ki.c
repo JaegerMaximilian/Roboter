@@ -874,7 +874,10 @@ uint8_t KiTask(void)
 				KI_State = 20;
 			}
 			else if(OpenPlants > 0 && PlantsInRobot < 3 && (spielZeit > (time + TimeAllSolarPanelsHome))
-			&& ((PlantsInRobot < OpenParkPos) || (OpenParkPos == 0)))
+			&& ((OpenParkPos == 0) 
+			|| (ParkedPlants == 1 && (KI_Task[15].Status == DONE || KI_Task[15].Status == LOCKED) && (KI_Task[25].Status == DONE || KI_Task[25].Status == LOCKED))
+			|| (ParkedPlants == 0 && PlantsInRobot < planedPlants)
+			|| ((KI_Task[15].Status == OPEN || KI_Task[15].Status == PENDING || KI_Task[25].Status == OPEN || KI_Task[25].Status == PENDING) && ParkedPlants == planedPlants)))
 			{
 				KI_State = 20;
 				StateOfGame = GetPlants;
@@ -4576,12 +4579,11 @@ uint8_t KiTask(void)
 	//sprintf(text1, "Side: %d Front: %d", observationDisSide , observationDisFront);
 	//SendDebugMessage(text1,1);
 	//Write Message to Logger
-	if(KI_State != OldKI_State)
-	{
-		sprintf(text1, "State: %6ld PIR: %d OPP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos);
-		SendDebugMessage(text1,1);
-	}
-	OldKI_State = KI_State;
+
+		//sprintf(text1, "State: %6ld PIR: %d OPP: %d PP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, planedPlants, ParkedPlants);
+		//SendDebugMessage(text1,1);
+	
+
 
 	return(CYCLE);
 }

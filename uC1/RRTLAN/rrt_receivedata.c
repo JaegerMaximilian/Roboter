@@ -189,10 +189,10 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			}
 			else
 			{
-				counter = ((++counter > 5) ? 5 : counter);
+				counter = ((++counter > 10) ? 10 : counter);
 			}
 			
-			if(x[i].uint16[0] == 10000 && counter >= 5)
+			if(x[i].uint16[0] == 10000 && counter >= 10)
 			{
 				enemyRobot[i].Xpos = x[i].uint16[0];
 				enemyRobot[i].Ypos = y[i].uint16[0];

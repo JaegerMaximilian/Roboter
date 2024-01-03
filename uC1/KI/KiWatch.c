@@ -21,6 +21,7 @@
 #include "multitask.h"
 #include "logger.h"
 #include "nextion.h"
+#include "observation.h"
 
 void InitKiWatch(void)
 {
@@ -40,9 +41,6 @@ uint8_t KiWatchTask(void)
 {
 	// zyklischer Task - Zykluszeit: 200 ms
 	SET_CYCLE(KI_WATCH_TASKNBR, 100);
-	
-	
-	
 
 	static uint8_t CounterArea1000 = 0;
 	static uint8_t CounterArea2000 = 0;
@@ -443,9 +441,74 @@ uint8_t KiWatchTask(void)
 		KI_Task[32].Status = DONE;
 	}
 	
-
+	/**************************************************************************
+	***   Calculate Velocity of Enemy									    ***
+	**************************************************************************/
 	
+	//Überwachung wenn Positionsänderung größer als 0,5 m ist ==> fail
+	//Position g
+	point_t aktPoint, oldPoint;
+	float distance;
+	uint16_t timedif;
+	static uint8_t started = 0;
+	static uint16_t oldTime = 1000;
+	static uint16_t enemyStandstillCounter = 0;
+	
+	
+	//Init
+	if(started == 0)
+	{
+		started = 1;
+		oldPoint.Xpos = enemyRobot[0].Xpos;
+		oldPoint.Ypos = enemyRobot[0].Ypos;
+	}
+	
+	aktPoint.Xpos = enemyRobot[0].Xpos;
+	aktPoint.Ypos = enemyRobot[0].Ypos;
+	
+	if((aktPoint.Xpos == oldPoint.Xpos) && (aktPoint.Ypos == oldPoint.Ypos))
+	{
+		enemyStandstillCounter = enemyStandstillCounter <= 5 ? enemyStandstillCounter++ : 5;
+	}
+	else
+	{
+		enemyStandstillCounter = 0;
+	}
+	
+	//Calcualte Enemy Speed
+	if(aktPoint.Xpos != 10000 && oldPoint.Xpos != 10000 && (oldTime != spielZeit)
+	&& ((enemyStandstillCounter >= 5) || (aktPoint.Xpos != oldPoint.Xpos) || (aktPoint.Ypos != oldPoint.Ypos)))
+	{
+		distance = CalcDistance(aktPoint,oldPoint);
+		timedif = oldTime - spielZeit;
+		
+		oldTime = spielZeit;
+		
+		VelocityEnemy = distance / (float)timedif;
+		
+		VelocityEnemy = ((VelocityEnemy>700) ? 700 : VelocityEnemy);
+		
+	}
 
+	if(aktPoint.Xpos != oldPoint.Xpos)
+	{
+		oldPoint.Xpos = aktPoint.Xpos;
+	}
+	if(aktPoint.Ypos != oldPoint.Ypos)
+	{
+		oldPoint.Ypos = aktPoint.Ypos;
+	}
+	
+	/**************************************************************************
+	***   Show Change of State												***
+	**************************************************************************/
+	if(KI_State != OldKI_State)
+	{
+		sprintf(text1, "State: %6ld PIR: %d OPP: %d PP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, planedPlants, ParkedPlants);
+		SendDebugMessage(text1,1);
+	}
+
+	OldKI_State = KI_State;
 	
 	return(CYCLE);
 }
