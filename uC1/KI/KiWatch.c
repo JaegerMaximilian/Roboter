@@ -486,7 +486,7 @@ uint8_t KiWatchTask(void)
 		
 		VelocityEnemy = distance / (float)timedif;
 		
-		VelocityEnemy = ((VelocityEnemy>700) ? 700 : VelocityEnemy);
+		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy);
 		
 		//sprintf(text1, "Velocity: %f", VelocityEnemy);
 		//SendDebugMessage(text1,1);

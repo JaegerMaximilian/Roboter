@@ -1057,7 +1057,10 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 1020;
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					break;
 				}
 			}
@@ -1222,7 +1225,10 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 2020;
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					break;
 				}
 			}
@@ -1386,7 +1392,10 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 3020;
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					break;
 				}
 			}
@@ -1552,7 +1561,10 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 4020;
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					break;
 				}
 			}
@@ -1714,7 +1726,10 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 5020;
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					break;
 				}
 			}
@@ -1876,7 +1891,10 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_ERROR:
 				{
 					KI_State = 6020;
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					break;
 				}
 			}
@@ -2180,7 +2198,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 11020;
 					break;
 				}
@@ -2287,7 +2308,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
-					Points = Points + 18;
+					Points = Points + 6;
 					
 					KI_State = 12012;
 					break;
@@ -2295,7 +2316,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 12020;
 					break;
 				}
@@ -2450,7 +2474,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 13020;
 					break;
 				}
@@ -2604,7 +2631,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 15020;
 					break;
 				}
@@ -2717,7 +2747,7 @@ uint8_t KiTask(void)
 					{
 						PlantsInRobot--;
 						ParkedPlants++;
-						Points = Points + 18;
+						Points = Points + 6;
 					}
 
 					
@@ -2727,7 +2757,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 16020;
 					break;
 				}
@@ -2933,7 +2966,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 21020;
 					break;
 				}
@@ -3041,7 +3077,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
-					Points = Points + 18;
+					Points = Points + 6;
 					
 					KI_State = 22012;
 					break;
@@ -3049,7 +3085,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 22020;
 					break;
 				}
@@ -3207,7 +3246,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 23020;
 					break;
 				}
@@ -3361,7 +3403,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 25020;
 					break;
 				}
@@ -3474,7 +3519,7 @@ uint8_t KiTask(void)
 					{
 						PlantsInRobot--;
 						ParkedPlants++;
-						Points = Points + 18;
+						Points = Points + 6;
 					}
 					
 					KI_State = 26012;
@@ -3483,7 +3528,10 @@ uint8_t KiTask(void)
 				/* error happened during the motion */
 				case OBSERVATION_MOTION_ERROR:
 				{
-					velocity = ENEMY_VELOCITY;
+					if(motionFailureCount > 0)
+					{
+						velocity = ENEMY_VELOCITY;
+					}
 					KI_State = 26020;
 					break;
 				}

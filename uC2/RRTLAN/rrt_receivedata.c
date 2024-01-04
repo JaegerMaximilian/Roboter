@@ -528,8 +528,8 @@ unsigned char rrtlanSetSchleppfehler_Task(void)
 }
 
 /**************************************************************************
-***   FUNCTIONNAME:        rrtlanPosition_Task                          ***
-***   FUNCTION:            empfängt Daten von uC1 -> Position           ***
+***   FUNCTIONNAME:        rrtlanACC_Task								***
+***   FUNCTION:            empfängt Daten von uC1 -> Acceleration       ***
 ***   TRANSMIT-PARAMETER:  NO                                           ***
 ***   RECEIVE-PARAMETER:   NO                                           ***
 **************************************************************************/

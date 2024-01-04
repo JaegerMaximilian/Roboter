@@ -121,7 +121,7 @@ typedef union
 _GLOBAL_EXTERN float Winkel_motor1, Winkel_motor2, Winkel_motor3;
 _GLOBAL_EXTERN float geschwindigkeitsVorzeichen;
 
-_GLOBAL_EXTERN uint8_t spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte, Punkte_SlaveRobot;
+_GLOBAL_EXTERN uint8_t spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte_SlaveRobot;
 _GLOBAL_EXTERN uint16_t spielZeit;
 
 _GLOBAL_EXTERN uint8_t PlantsInRobot;

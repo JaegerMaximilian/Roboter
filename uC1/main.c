@@ -212,10 +212,8 @@ void initDevice ()
 	/* sensor fusion */
 	//usDataFusion_Init();
 	
-	Punkte = 0;
-	Punkte_Kirschen=0;
-	Punkte_SlaveRobot=0;
-	
+	Points = 0;
+
 
 	// *********************************
 	// enable all interrupts
