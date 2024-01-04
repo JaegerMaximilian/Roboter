@@ -159,6 +159,8 @@ void InitKI(void)
 	PosSolarPanelsMiddle.Xpos = 1500;
 	PosSolarPanelsMiddle.Ypos = 1700;
 	
+	Points = 0;
+	
 	PosHome = ((SpielFarbe = BLUE) ? PosFieldL3 : PosFieldR3);
 
 	//Set Gamecolors
@@ -2169,6 +2171,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 24;
 					
 					KI_State = 500;
 
@@ -2284,6 +2287,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 18;
 					
 					KI_State = 12012;
 					break;
@@ -2438,6 +2442,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 24;
 					
 					KI_State = 500;
 					break;
@@ -2582,6 +2587,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 24;
 					
 					KI_State = 500;
 					//if(PlantsInRobot < 3 || OpenParkPos == 0)
@@ -2711,6 +2717,7 @@ uint8_t KiTask(void)
 					{
 						PlantsInRobot--;
 						ParkedPlants++;
+						Points = Points + 18;
 					}
 
 					
@@ -2918,6 +2925,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 24;
 					
 					KI_State = 500;
 					break;
@@ -3033,6 +3041,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 18;
 					
 					KI_State = 22012;
 					break;
@@ -3190,6 +3199,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 24;
 					
 					KI_State = 500;
 					break;
@@ -3334,6 +3344,7 @@ uint8_t KiTask(void)
 					//Count up Plants in Robot
 					PlantsInRobot--;
 					ParkedPlants++;
+					Points = Points + 24;
 					
 					//if(PlantsInRobot < 3 || OpenParkPos == 0)
 					//{
@@ -3463,6 +3474,7 @@ uint8_t KiTask(void)
 					{
 						PlantsInRobot--;
 						ParkedPlants++;
+						Points = Points + 18;
 					}
 					
 					KI_State = 26012;
@@ -3686,12 +3698,14 @@ uint8_t KiTask(void)
 			else if(SolarpanelsHomePosDone == 0)
 			{
 				SolarpanelsHomePosDone++;
+				Points = Points + 5;
 				SET_CYCLE(KI_TASKNBR, (TimeSetPosAtSolarPanels+TimeSolarpanels)*100);
 				KI_State = 30016;
 			}
 			else if (SolarpanelsHomePosDone < 2)
 			{
 				SolarpanelsHomePosDone++;
+				Points = Points + 5;
 				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
 				KI_State = 30016;
 			}
@@ -3699,6 +3713,7 @@ uint8_t KiTask(void)
 			{
 				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
 				SolarpanelsHomePosDone++;
+				Points = Points + 5;
 				//Set Task to Done
 				KI_Task[30].Status = DONE;
 				KI_State = 60000;
@@ -3845,12 +3860,14 @@ uint8_t KiTask(void)
 			else if(SolarpanelsMiddleDone == 0)
 			{
 				SolarpanelsMiddleDone++;
+				Points = Points + 5;
 				SET_CYCLE(KI_TASKNBR, (TimeSetPosAtSolarPanels+TimeSolarpanels)*100);
 				KI_State = 31016;
 			}
 			else if (SolarpanelsMiddleDone < 2)
 			{
 				SolarpanelsMiddleDone++;
+				Points = Points + 5;
 				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
 				KI_State = 31016;
 			}
@@ -3858,6 +3875,7 @@ uint8_t KiTask(void)
 			{
 				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
 				SolarpanelsMiddleDone++;
+				Points = Points + 5;
 				//Set Task to Done
 				KI_Task[31].Status = DONE;
 				KI_State = 500;
@@ -4001,12 +4019,14 @@ uint8_t KiTask(void)
 			else if(SolarpanelsHomePosDone == 0 )
 			{
 				SolarpanelsHomePosDone++;
+				Points = Points + 5;
 				SET_CYCLE(KI_TASKNBR, (TimeSetPosAtSolarPanels+TimeSolarpanels)*100);
 				KI_State = 32016;
 			}
 			else if (SolarpanelsHomePosDone < 2 )
 			{
 				SolarpanelsHomePosDone++;
+				Points = Points + 5;
 				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
 				KI_State = 32016;
 			}
@@ -4014,6 +4034,7 @@ uint8_t KiTask(void)
 			{
 				SET_CYCLE(KI_TASKNBR, TimeSolarpanels*100);
 				SolarpanelsHomePosDone++;
+				Points = Points + 5;
 				//Set Task to Done
 				KI_Task[32].Status = DONE;
 				KI_State = 60000;
@@ -4524,6 +4545,7 @@ uint8_t KiTask(void)
 		case 60010:
 		{
 			//Ende im Gelände
+			Points = Points + 10;
 		}
 
 		

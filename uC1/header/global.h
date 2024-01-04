@@ -149,7 +149,9 @@ _GLOBAL_EXTERN uint16_t TimeHandleNextPlant, TimeForPlant1000, TimeForPlant2000,
 _GLOBAL_EXTERN uint16_t TimeParkNextPlantInPlanter, TimeParkNextPlantInField, TimeParkFieldL1, TimeParkPlanterL1, TimeParkPlanterL2, TimeParkPlanterLMiddle;
 _GLOBAL_EXTERN uint16_t TimeParkFieldR1, TimeParkPlanterR1, TimeParkPlanterR2, TimeParkPlanterRMiddle, TimeParkNextPlant;
 _GLOBAL_EXTERN uint8_t SolarpanelsHomePosDone, SolarpanelsMiddleDone;
+_GLOBAL_EXTERN uint16_t Points;
 _GLOBAL_EXTERN float VelocityEnemy;
+
 
 //_GLOBAL_EXTERN point_t startPos;
 
