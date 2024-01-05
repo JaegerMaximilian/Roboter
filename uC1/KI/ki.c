@@ -88,6 +88,9 @@ uint8_t wpNbr;
 **************************************************************************/
 void InitKI(void)
 {
+	
+	
+	
 	// zyklischer Task - Zykluszeit: 100 ms
 	SET_TASK(KI_TASKNBR, CYCLE);
 	SET_CYCLE(KI_TASKNBR, 100);
@@ -851,12 +854,15 @@ uint8_t KiTask(void)
 			uint16_t TimeGetAndParkNextPlant;
 			RePrioritisePlantTasks();
 			CalcOpenPlanter();
+			CalcOpenPlants();
 			if (OpenPlants != 0 && PlantsInRobot < 3)
 			{
 				TimeGetAndParkNextPlant = CalcTimeRemainingPlants();
 				
 				sprintf(text1, "Time: %d", TimeGetAndParkNextPlant);
 				SendDebugMessage(text1,1);
+				
+				
 			}
 			else
 			{
@@ -1032,6 +1038,7 @@ uint8_t KiTask(void)
 					PlantsInRobot++;
 					
 					CalcOpenPlants();
+					
 					if(((spielZeit < (TimeAllSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)) && OpenPlanter == 0)
 					|| ((spielZeit < (TimeToHome + TimeParkNextPlant)) && OpenPlanter > 0)) //Time to Park Plant in Planter statt TimeParkPlantsAtHome
 					{
@@ -4092,7 +4099,7 @@ uint8_t KiTask(void)
 		case 32016:
 		{
 			//später löschen ==> fake task
-			KI_State = 30015;
+			KI_State = 32015;
 			break;
 		}
 

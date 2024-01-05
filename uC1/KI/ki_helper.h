@@ -25,6 +25,7 @@ void CalcOpenParkPositions(void);
 void CalcOpenPlanter(void);
 uint16_t CalcTimeRemainingPlants(void);
 uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[]);
+point_t FindRobotPosition(float d1, float d2, float d3 );
 
 
 // ****************************************************

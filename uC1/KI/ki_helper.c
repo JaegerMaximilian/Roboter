@@ -654,12 +654,125 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 }
 
 
+/**************************************************************************
+***   FUNKTIONNAME: FindRobotPosition		 									***
+***   FUNKTION: Find Position of Robot again with the 3 Beacons					***
+***   TRANSMIT PARAMETER: point_t                                               ***
+***   RECEIVE PARAMETER.:	uint16_t d1 : distance to first beacon in mm		***
+							uint16_t d2 : distance to second beacon	in mm		***
+							uint16_t d3 : distance to third beacon	in mm		***
+							double a1 : angle to third beacon	in rad			***
+							double a2 : angle to third beacon	in rad			***
+							double a3 : angle to third beacon	in rad		    ***
+**************************************************************************/
+point_t FindRobotPosition(float d1, float d2, float d3)
+{
+	// kann ich mal testen mit Testpunkten die ich weiss, zB von Position 0/0 alle Distanzen zu den Beacons, dann soll die Funktion wieder 0/0 ausgeben
+	
+	point_t returnPoint;
+	returnPoint.Xpos = 0;
+	returnPoint.Ypos = 0;
+	
+	float x1;
+	float y1;
+	float x2;
+	float y2;
+	float x3;
+	float y3;
+	int SpielFarbe = BLUE;
+	
+	// !!! WICHTIG: DER LIDAR MUSS DIE DISTANZEN AUCH ABHÄNGIG VON DER SPIELFARBE UND IN DER REIHENFOLGE WIE IM "if-else" unterhalb SCHICKEN!!!!
+	if (SpielFarbe == Yellow)
+	{
+		//Beacon 1
+		x1 = 0;
+		y1 = 0;
+		//Beacon2
+		x2 = 0;
+		y2= 2;
+		//Beacon 3
+		x3=3;
+		y3=1;
+	}
+	else if (SpielFarbe == BLUE)
+	{
+		//Beacon 1
+		x1 = 3;
+		y1 = 0;
+		//Beacon2
+		x2 = 3;
+		y2= 2;
+		//Beacon 3
+		x3=0;
+		y3=1;
+	}
+	
+	if (d1!= 0 && d2 !=0 && d3 != 0)
+	// wenn alle 3 Beacons von Lidar erkannt
+	{
+		float A =  (2*x2 - 2*x1);
+		float B =  (2*y2 - 2*y1);
+		float D =  (2*x3 - 2*x2);
+		float E =  (2*y3 - 2*y2);
+		
+		float C =(float) ( pow((double)d1,2) - pow((double)d2,2) - pow((double)x1,2) + pow((double)x2,2) - pow((double)y1,2) + pow((double)y2,2) );
+		float F =(float) ( pow((double)d2,2) - pow((double)d3,2) - pow((double)x2,2) + pow((double)x3,2) - pow((double)y2,2) + pow((double)y3,2) );
+		
+		returnPoint.Xpos = (int16_t) (1000* ((C*E-F*B) / (E*A-B*D)) );
+		returnPoint.Ypos = (int16_t)(1000*  ((C*D-A*F) / (B*D-A*E)) );
+	}
+	else if ((d1==0 && d2!=0 && d3!=0) || (d2==0 && d1!=0 && d3!=0) || (d3==0 && d2!=0 && d1!=0))
+	// wenn nur 2 Beacons vom Lidar erkannt: berechne die 2 Möglichen Lösungspunkte und schließe einen aus falls er außerhalb des Tisches liegt
+	
+	// !!! DIESER ZWEIG WURDE NOCH NICHT GETESTET!!! NOCH TESTEN !!!
+	{
+		if (d1 == 0)
+		{
+			x1 = x3;
+			y1 = y3;
 
+		}
+		else if (d2==0)
+		{
+			x2 = x3;
+			y2= y3;
+		}
+		
+		
+		float d = (float) sqrt((double) (pow((double)(x1-x2),2) + pow((double)(y1-y2),2)) );
+		float l = (float) ( (pow((double)d1,2)-pow((double)d2,2)+pow((double)d,2)) / ((double)2*d) );
+		
+		float h = (float) sqrt(pow((double)d1,2)-pow((double)l,2));
+		
+		float Xpos1 = (float) ( ((l/d)*(x2-x1)) + ((h/d)*(y2-y1)) + x1 );
+		float Ypos1 = (float) ( ((l/d)*(y2-y1)) - ((h/d)*(x2-x1)) + y1 );
+		
+		float Xpos2 = (float) ( ((l/d)*(x2-x1)) - ((h/d)*(y2-y1)) + x1 );
+		float Ypos2 = (float) ( ((l/d)*(y2-y1)) + ((h/d)*(x2-x1)) + y1 );
+		
+		// wenn einer der beiden möglichen Punkte ausserhalb des Spielfeldes liegt -> den anderen nehmen (Plausibilität)
+		if(Xpos1 > 3.0 || Ypos1 > 2.0)
+		{
+			returnPoint.Xpos = (int16_t)(1000*Xpos2);
+			returnPoint.Ypos = (int16_t)(1000*Ypos2);
+		}
+		else if (Xpos2 > 3.0 || Ypos2 > 2.0)
+		{
+			returnPoint.Xpos = (int16_t)(1000*Xpos1);
+			returnPoint.Ypos = (int16_t)(1000*Ypos1);
+		}
+		
+		
+	}
+	
+	
+	
+	
+	return returnPoint;
 
-
-
-
-
+	
+	
+}
 
 //// ****************************************************
 //// Dot2D, Norm2D, AngleToXAxis2D from path_math.c (ï¿½C2)
