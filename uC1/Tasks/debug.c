@@ -139,7 +139,6 @@ uint8_t DebugTask(void)
 {
 	static uint8_t State = 0;
 
-	static uint8_t Points = 0;
 	static uint8_t Time = 0;
 	uint8_t text1[150];//, text2[150], data[50] = {0,1,2,3,4,5,6,7};
 	//static convData_t d;
@@ -162,14 +161,13 @@ uint8_t DebugTask(void)
 
 	
 	SET_CYCLE(DEBUG_TASKNBR, 500);
-	Points++;
 	Time++;
 	//if(Time>100)
 	//{
 		//Time=0;
 	//}
 	
-	NextionSetPoints(spielZeit/10);
+	NextionSetPoints(Points);
 	NextionSetTime(spielZeit/10);
 	//    LED_PORT.OUT ^= ledBit;
 	// //   ledBit = (ledBit != 0x40) ? ledBit << 1 : 0x20;
