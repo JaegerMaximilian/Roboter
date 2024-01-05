@@ -488,8 +488,8 @@ uint8_t KiWatchTask(void)
 		
 		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy);
 		
-		//sprintf(text1, "Velocity: %f", VelocityEnemy);
-		//SendDebugMessage(text1,1);
+		sprintf(text1, "Velocity: %f", VelocityEnemy);
+		SendDebugMessage(text1,2);
 		
 	}
 
