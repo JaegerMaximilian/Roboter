@@ -849,6 +849,10 @@ uint8_t KiTask(void)
 		// *****************************************
 		case 500:
 		{
+			
+				
+				
+
 			uint8_t done = 0;
 			uint8_t panelsMiddleNotFree = Path_IsInArea(1000,1600,2000,1600);
 			uint16_t TimeGetAndParkNextPlant;
@@ -859,7 +863,8 @@ uint8_t KiTask(void)
 			{
 				TimeGetAndParkNextPlant = CalcTimeRemainingPlants();
 				
-				sprintf(text1, "Time: %d", TimeGetAndParkNextPlant);
+				
+				sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + TimeAllSolarPanelsHome + TimeParkPlantsAtHome);
 				SendDebugMessage(text1,1);
 				
 				
@@ -875,6 +880,7 @@ uint8_t KiTask(void)
 			&& (spielZeit > (TimeSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome))
 			||((OpenPlanter > 0) && PlantsInRobot > 0 && (spielZeit < (TimeParkNextPlant + TimeSolarPanelsHome + TimeToHome))))
 			{
+				
 				KI_State = 20;
 				StateOfGame = SolarPanels;
 			}
@@ -2787,8 +2793,11 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
+					
 					if(PlantsInRobot == 0)
 					{
+						
+						
 						KI_State = 60010;
 						KI_Task[16].Status = DONE;
 					}
@@ -4601,6 +4610,13 @@ uint8_t KiTask(void)
 		{
 			//Ende im Gelände
 			Points = Points + 10;
+			
+			sprintf(text1, "Stoppuhr: %d", Stoppuhr);
+			SendDebugMessage(text1,1);
+			Stoppuhr_Start = 0;
+			
+			
+			
 		}
 
 		

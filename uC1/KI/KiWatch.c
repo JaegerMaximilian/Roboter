@@ -80,6 +80,31 @@ uint8_t KiWatchTask(void)
 	InArea5000 = Path_IsInArea(1700, 1000, 2300, 1600);
 	InArea6000 = Path_IsInArea(1700, 400, 2300, 1000);
 	
+	
+	static uint16_t oldSpielZeit = 0;
+	static uint16_t oldStoppuhr_Start = 0;
+	
+	if(Stoppuhr_Start == 1)
+	{
+		if(oldSpielZeit != 0)
+		{
+			Stoppuhr = Stoppuhr + (oldSpielZeit - spielZeit);
+		}
+		
+		oldSpielZeit = spielZeit;
+		
+	}
+	else if (Stoppuhr_Start == 0 && oldStoppuhr_Start == 1)
+	{
+		sprintf(text1, "Stoppuhr: %d", Stoppuhr);
+		SendDebugMessage(text1,1);
+		Stoppuhr = 0;
+		oldSpielZeit = 0;
+		
+	}
+	oldStoppuhr_Start = Stoppuhr_Start;
+	
+	
 	//Position 1000
 	if(InArea1000)
 	{
@@ -456,6 +481,7 @@ uint8_t KiWatchTask(void)
 	
 	
 	//Init
+	
 	if(started == 0)
 	{
 		started = 1;

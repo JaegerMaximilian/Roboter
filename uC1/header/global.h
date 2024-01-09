@@ -124,6 +124,9 @@ _GLOBAL_EXTERN float geschwindigkeitsVorzeichen;
 _GLOBAL_EXTERN uint8_t spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte_SlaveRobot;
 _GLOBAL_EXTERN uint16_t spielZeit;
 
+_GLOBAL_EXTERN uint16_t Stoppuhr_Start; // zum Stoppen der Zeitfunktion ob sie mit der Realität übereinstimmt, nur zum testen benötigt
+_GLOBAL_EXTERN uint16_t Stoppuhr;
+
 _GLOBAL_EXTERN uint8_t PlantsInRobot;
 _GLOBAL_EXTERN uint8_t OpenParkPos;
 _GLOBAL_EXTERN uint8_t OpenPlanter;

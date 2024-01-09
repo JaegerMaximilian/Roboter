@@ -407,7 +407,8 @@ uint16_t CalcTimeRemainingPlants(void)
 	uint16_t waysToDrive = 0;
 	//uint8_t ArtificialPlantsInRobot = PlantsInRobot;
 	//
-	if (IndexMaxPrioPflanze != 0){ // DIESES IF NOCH ÜBERPRÜFEN OB SINN ERGIBT!!!!!!!!!
+	if (IndexMaxPrioPflanze != 0)
+	{ 
 		PrivatePlantsInRobot = PrivatePlantsInRobot + 1;
 		waysToDrive = 1;
 		//ArtificialPlantsInRobot = PrivatePlantsInRobot + 1;
@@ -420,9 +421,16 @@ uint16_t CalcTimeRemainingPlants(void)
 	uint8_t IndexNextPlanter;
 	uint16_t TimeToPark = 0;
 	
+	
+	
+	
+	
 	for(int i = 0; i< PrivatePlantsInRobot; i++)
 	{
 		IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
+		
+		
+	
 		
 		//sprintf(text1, "Planned Planter: %d PIR: %d", IndexNextPlanter,PrivatePlantsInRobot);
 		//SendDebugMessage(text1,1);
@@ -451,9 +459,65 @@ uint16_t CalcTimeRemainingPlants(void)
 			PlanterOrFieldPos = PosFieldR3;
 		}
 		
-		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
 		
+		if (IndexNextPlanter == 16 || IndexNextPlanter == 26)
+		{
+			Stoppuhr_Start = 1;
+			sprintf(text1, "Stoppuhr gestartet");
+			SendDebugMessage(text1,1);
+		}
+		
+		/*
+		// wenn der nächste Planter == Home und SolarPanelsMitte OPEN -> Wege der SolarPanels dazurechnen!
+		if ((IndexNextPlanter == 16 || IndexNextPlanter == 26) && KI_Task[31].Status == OPEN)
+		{
+			Stoppuhr_Start = 1;
+			sprintf(text1, "Stoppuhr gestartet");
+			SendDebugMessage(text1,1);
+			
+			//totalDistance = totalDistance + CalcDistance(aktpos, PosSolarPanelsMiddle);
+			
+			if (SpielFarbe == BLUE)
+			{
+				totalDistance = totalDistance + CalcDistance(PosSolarPanelsMiddle, PosSolarPanelsBlue) + CalcDistance(PosSolarPanelsBlue, PlanterOrFieldPos);
+				
+			}
+			else if (SpielFarbe == Yellow)
+			{
+				totalDistance = totalDistance + CalcDistance(PosSolarPanelsMiddle, PosSolarPanelsYellow) + CalcDistance(PosSolarPanelsYellow, PlanterOrFieldPos);
+			}
+			waysToDrive = waysToDrive + 3;
+		} // wenn nächster Planter == Home aber nur SolarPanelsHome machen!!
+		else if ((IndexNextPlanter == 16 || IndexNextPlanter == 26)) // die SolarPanelsHome machen wir eh in jedem Fall oder? 
+		{
+			Stoppuhr_Start = 1;
+			sprintf(text1, "Stoppuhr gestartet");
+			SendDebugMessage(text1,1);
+			
+			if (SpielFarbe == BLUE)
+			{
+				totalDistance = totalDistance + CalcDistance(aktpos, PosSolarPanelsBlue) + CalcDistance(PosSolarPanelsBlue, PlanterOrFieldPos);
+				
+			}
+			else if (SpielFarbe == Yellow)
+			{
+				totalDistance = totalDistance + CalcDistance(aktpos, PosSolarPanelsYellow) + CalcDistance(PosSolarPanelsYellow, PlanterOrFieldPos);
+			}
+			waysToDrive = waysToDrive + 2;
+		} 
+		else
+		{ 
+			totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
+			waysToDrive = waysToDrive + 1;
+		}*/
+		
+		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
 		waysToDrive = waysToDrive + 1;
+		
+		
+		
+		
+		
 		
 		if (IndexNextPlanter == 12 || IndexNextPlanter == 14 || IndexNextPlanter == 22 || IndexNextPlanter == 24 ) // if park at fields
 		{
@@ -466,19 +530,32 @@ uint16_t CalcTimeRemainingPlants(void)
 		}
 		else if (PrivatePlantsInRobot > OpenParkPos) // if park at home
 		{
-			if((PrivatePlantsInRobot - OpenParkPos) == 1)
+			
+			
+			// ANMERKUNGEN FÜR NÄCHSTES MAL: 
+			
+			// wir zählen ja die Wege nicht mit die der Roboter von der letzten Pflanze zu den SolarPanelsMitte braucht
+			// und auch nicht den Weg von SolarPanelsMitte zu SolarPanelsHome, sondern nur den Weg von der letzten Pflanze zum Home
+			// -> gemacht aber auskommentiert, da geben wir so hohe Zeiten zurück!
+			// was ist wenn wir nicht nur noch die eine Abstellstation Home haben, sondern noch mehrere vor uns? Müssten wir dafür nicht
+			// OpenParkPos zu zB PrivateOpenParkPos machen und in die Zukunft vorrechnen?
+			
+			
+			// ZÄHLEN WIR DIESE ZEIT NICHT SCHON BEI DER ABFRAGE IM CASE 500 als "TimeParkPlantsAtHome" mit???
+			if((PrivatePlantsInRobot - OpenParkPos) == 0)
 			{
 				TimeToPark = TimeToPark + TimePark1PlantAtHome;
 			}
-			else if((PrivatePlantsInRobot - OpenParkPos) == 2)
+			else if((PrivatePlantsInRobot - OpenParkPos) == 1)
 			{
 				TimeToPark = TimeToPark + TimePark2PlantsAtHome;
 			}
-			else if((PrivatePlantsInRobot - OpenParkPos) == 3)
+			else if((PrivatePlantsInRobot - OpenParkPos) == 2)
 			{
 				TimeToPark = TimeToPark + TimePark3PlantsAtHome;
 			}
-		}
+			
+		} 
 		
 		aktpos = PlanterOrFieldPos;
 		
@@ -508,8 +585,8 @@ uint16_t CalcTimeRemainingPlants(void)
 
 	uint16_t timeToDrive = ((uint16_t)((totalDistance/ STANDARD_VELOCITY)*10.0) + timeHandlenextPlant + TimeToPark +  spazi + waysToDrive*TimeForACCAndDCC);
 	
-	sprintf(text1, "TTP: %d Dis: %f", TimeToPark,totalDistance);
-	SendDebugMessage(text1,1);
+	//sprintf(text1, "TTP: %d Dis: %f", TimeToPark,totalDistance);
+	//SendDebugMessage(text1,1);
 	
 	return(timeToDrive);
 }
@@ -658,12 +735,9 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 ***   FUNKTIONNAME: FindRobotPosition		 									***
 ***   FUNKTION: Find Position of Robot again with the 3 Beacons					***
 ***   TRANSMIT PARAMETER: point_t                                               ***
-***   RECEIVE PARAMETER.:	uint16_t d1 : distance to first beacon in mm		***
-							uint16_t d2 : distance to second beacon	in mm		***
-							uint16_t d3 : distance to third beacon	in mm		***
-							double a1 : angle to third beacon	in rad			***
-							double a2 : angle to third beacon	in rad			***
-							double a3 : angle to third beacon	in rad		    ***
+***   RECEIVE PARAMETER.:	float d1 : distance to first beacon in m			***
+							float d2 : distance to second beacon	in m		***
+							float d3 : distance to third beacon	in m		***
 **************************************************************************/
 point_t FindRobotPosition(float d1, float d2, float d3)
 {
@@ -709,6 +783,7 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 	
 	if (d1!= 0 && d2 !=0 && d3 != 0)
 	// wenn alle 3 Beacons von Lidar erkannt
+	// Quelle fuer Berechnung: https://math.stackexchange.com/questions/884807/find-x-location-using-3-known-x-y-location-using-trilateration
 	{
 		float A =  (2*x2 - 2*x1);
 		float B =  (2*y2 - 2*y1);
@@ -723,8 +798,9 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 	}
 	else if ((d1==0 && d2!=0 && d3!=0) || (d2==0 && d1!=0 && d3!=0) || (d3==0 && d2!=0 && d1!=0))
 	// wenn nur 2 Beacons vom Lidar erkannt: berechne die 2 Möglichen Lösungspunkte und schließe einen aus falls er außerhalb des Tisches liegt
+	// Quelle fuer Berechnung: https://math.stackexchange.com/questions/4629840/find-position-knowing-2-points-and-distances-to-those-points
 	
-	// !!! DIESER ZWEIG WURDE NOCH NICHT GETESTET!!! NOCH TESTEN !!!
+	
 	{
 		if (d1 == 0)
 		{
@@ -756,11 +832,14 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 			returnPoint.Xpos = (int16_t)(1000*Xpos2);
 			returnPoint.Ypos = (int16_t)(1000*Ypos2);
 		}
-		else if (Xpos2 > 3.0 || Ypos2 > 2.0)
+		// diese Grenzen mit 3.0 und 2.0 Meter sind keine harten Grenzen, kann man auch nach innen verschieben weil die Robotermitte ja nie bei 3.0 oder 2.0 metern ist!!
+		// -> d.h. kann man noch anpassen empirisch!!! wenn neuer LIDAR da ist.
+		else if (Xpos2 > 3.0 || Ypos2 > 2.0) 
 		{
 			returnPoint.Xpos = (int16_t)(1000*Xpos1);
 			returnPoint.Ypos = (int16_t)(1000*Ypos1);
 		}
+		
 		
 		
 	}
