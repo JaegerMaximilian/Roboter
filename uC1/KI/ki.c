@@ -162,6 +162,14 @@ void InitKI(void)
 	PosSolarPanelsMiddle.Xpos = 1500;
 	PosSolarPanelsMiddle.Ypos = 1700;
 	
+	PosFieldL2.Xpos = 2700;
+	PosFieldL2.Ypos = 1000;
+	
+	PosFieldR2.Xpos = 300;
+	PosFieldR2.Ypos = 1000;
+	
+	
+	
 	Points = 0;
 	
 	PosHome = ((SpielFarbe = BLUE) ? PosFieldL3 : PosFieldR3);
@@ -4285,6 +4293,7 @@ uint8_t KiTask(void)
 		case 40000:
 		{
 			KI_State = 40000;
+			
 
 			break;
 		}
@@ -4329,7 +4338,133 @@ uint8_t KiTask(void)
 		// ********************************************************************
 		case 43000:
 		{
-			KI_State = 43000;
+			
+				//
+				// FÜR DIESEN STEHL-CASE mal ausprogrammiert, wenn Pflanze gestohlen ist gehen wir wieder in Case 500 für Parken
+				// wenn in diesem Case alles stimmt, können wir es für die anderen Stehl-Cases kopieren
+				//
+				
+				point_t start , goal;
+				
+				
+				// Start Position to begin from movement
+				start.Xpos = xPos;
+				start.Ypos = yPos;
+				
+				//Check if Enemy Robot is in Area Next to Planter
+				goal.Xpos = PosPlanterL1.Xpos;
+				goal.Ypos = PosPlanterL1.Ypos;
+				
+				if(Path_IsInArea(2550,775,3000,1225))
+				{
+					goal.Ypos = 562.5;
+					velocity = ENEMY_VELOCITY;
+				}
+				else
+				{
+					velocity = STANDARD_VELOCITY;
+					goal.Ypos = PosPlanterL1.Ypos;
+				}
+				
+				if (PATH_DriveToAbsPos(start,goal, wp_KI, &wpNbr))
+				{
+					cmd_Drive(0,0,velocity,0,0,0,0,0,0,ON,wp_KI,wpNbr,STANDARD_ACC,STANDARD_ACC);
+					KI_State = 43010;
+				}
+				else
+				{
+					KI_State = 43030;
+				}
+				velocity = STANDARD_VELOCITY;
+				break;
+			
+
+			case 43010:
+			{
+				/* check observation-result */
+				switch (GetObservationResult())
+				{
+					/* motion was OK */
+					case OBSERVATION_MOTION_OK:
+					{
+						velocity = STANDARD_VELOCITY;
+						//Set Task to Done
+						KI_Task[43].Status = DONE;
+						CalcOpenParkPositions();
+						//Wait specific time
+						SET_CYCLE(KI_TASKNBR, 3000);
+						
+						//Count up Plants in Robot
+						PlantsInRobot++;
+						KI_State = 500;
+						break;
+					}
+					/* error happened during the motion */
+					case OBSERVATION_MOTION_ERROR:
+					{
+						if(motionFailureCount > 0)
+						{
+							velocity = ENEMY_VELOCITY;
+						}
+						KI_State = 43020;
+						break;
+					}
+				}
+				break;
+			}
+			
+			case 43020:
+			{
+				motionFailureCount++;
+				SET_CYCLE(KI_TASKNBR, 500);
+				
+				//Drive Back
+				if(DriveBack(100,200))
+				{
+					KI_State = 43025;
+				}
+				else
+				{
+					KI_State = 43000;
+				}
+				break;
+			}
+			
+			case 43025:
+			{
+				/* check observation-result */
+				switch (GetObservationResult())
+				{
+					/* motion was OK */
+					case OBSERVATION_MOTION_OK:
+					{
+						if(motionFailureCount<3 && KI_Task[43].Status == OPEN && (spielZeit > TimeParkPlanterL1))
+						{
+							KI_State = 43000;
+						}
+						else
+						{
+							KI_State = 500;
+
+							velocity = STANDARD_VELOCITY;
+						}
+						break;
+					}
+					/* error happened during the motion */
+					case OBSERVATION_MOTION_ERROR:
+					{
+						KI_State = 43020;
+						break;
+					}
+				}
+				break;
+			}
+			
+			case 430:
+			{
+				KI_State = 43020;
+				break;
+			}
 			
 			break;
 		}
