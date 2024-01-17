@@ -83,6 +83,10 @@
 #include "rrt_serialconfig.h"
 #include "Pfadplanung.h"
 #include "command.h"
+#include "ki.h"
+#include "nextion.h"
+#include "logger.h"
+#include "observation.h"
 
 /* index to receive-array */
 uint8_t pIndex = 0;
@@ -184,13 +188,14 @@ uint8_t ParserTask(void)
 	volatile int16_t angle;
 	static uint8_t receiveEnable = FALSE;
 	
+
 	
 	SET_CYCLE(PARSER_TASKNBR, 10);
 	
 	while (1)
 	{
 		/* readout debug-interface */
-		p = getChar_uart(&WIFI_IF);
+		p = getChar_uart(USART_EUROBOTLOGGER);
 		
 		/* if valid data received */
 		if (p.Status == USART_REC_OK)
@@ -198,6 +203,8 @@ uint8_t ParserTask(void)
 			/* #S01+120*   */
 			
 			/* start receiption -> # */
+
+			
 			if (p.Data == BS)
 			{
 				pIndex = 0;
@@ -206,6 +213,7 @@ uint8_t ParserTask(void)
 			/* receiption complete -> * */
 			else if (p.Data == BE)
 			{
+				
 				receiveEnable = FALSE;
 				
 				if((pArray[1] == CHECK_ROBOT_TYPE(ADR_MASTER_ID,ADR_SLAVE_ID)) || (pArray[1] == ADR_BROADCAST_ID))
@@ -247,28 +255,48 @@ uint8_t ParserTask(void)
 						uint8_t val = ASCII2Num(pArray[3]);
 						cmd_CtrlVacuum(nbr, val);
 					}
-					
 					else if(pArray[2] == CMD_TEILE && pArray[0] == ADR_VISION_ID_V)
 					{
-						uint8_t countElements = ASCII2Num(pArray[3]) * 10 + ASCII2Num(pArray[4]);
+
 						
-						
-// 						for (int i=0; i<(sizeof(visionElements_1) / sizeof(visionElement_t)); i++)
-// 						{
-// 							visionElements_1[i].id=0;
-// 						}
-// 						
-// 						for (int i=0; i<countElements ; i++)
-// 						{
-// 							visionElements_1[i].id=ASCII2Num(pArray[i*11+5]) * 10 + ASCII2Num(pArray[i*11+6]);
-// 							visionElements_1[i].Xpos=ASCII2Num(pArray[i*11+7]) * 1000 + ASCII2Num(pArray[i*11+8])*100+ASCII2Num(pArray[i*11+9]) * 10 + ASCII2Num(pArray[i*11+10]);
-// 							visionElements_1[i].Ypos=ASCII2Num(pArray[i*11+11]) * 1000 + ASCII2Num(pArray[i*11+12])*100+ASCII2Num(pArray[i*11+13]) * 10 + ASCII2Num(pArray[i*11+14]);
-// 						}
-// 						
-// 						uint8_t text2[150];
-// 						sprintf(text2, "#%dTT Last Received Element: %d\r\n %d\r\n*", CHECK_ROBOT_TYPE(ADR_MASTER_ID,ADR_SLAVE_ID),
-// 						visionElements_1[countElements-1].id, visionElements_1[countElements-1].Ypos);
-// 						writeString_usart(&WIFI_IF, text2);
+						uint8_t ownPosCount = 0;
+						uint8_t enemyPosCount = 0;
+						for (int i = 3; i < 400; i++ )
+						{
+							if(pArray[i] == NULL)
+							{
+								break;
+							}
+							
+							if (pArray[i] != DEL)
+							{
+
+								
+								uint8_t ID = ASCII2Num(pArray[i]) * 10 + ASCII2Num(pArray[i+1]);
+								uint16_t xpos = ASCII2Num(pArray[i+2]) * 1000 + ASCII2Num(pArray[i+3]) * 100 + ASCII2Num(pArray[i+4]) * 10 + ASCII2Num(pArray[i+5]);
+								uint16_t ypos = ASCII2Num(pArray[i+6]) * 1000 + ASCII2Num(pArray[i+7]) * 100 + ASCII2Num(pArray[i+8]) * 10 + ASCII2Num(pArray[i+9]);
+								i = i + 9;
+								
+								//Own Position
+								if(((ID >= 1 && ID <= 5) && SpielFarbe == BLUE) || ((ID >= 6 && ID <= 10) && SpielFarbe == Yellow))
+								{
+									ownPosKamera[ownPosCount].Xpos = (int16_t)xpos;
+									ownPosKamera[ownPosCount].Ypos = ypos;
+									ownPosCount++;
+								}
+								//Enemy Position
+								else if(((ID >= 1 && ID <= 5) && SpielFarbe == Yellow) || ((ID >= 6 && ID <= 10) && SpielFarbe == BLUE))
+								{
+									enemyPosRobotKamera[enemyPosCount].Xpos = (int16_t)xpos;
+									enemyPosRobotKamera[enemyPosCount].Ypos = (int16_t)ypos;
+									enemyPosCount++;
+								}
+								
+								enemyRobot[0].Xpos = enemyPosRobotKamera[0].Xpos;
+								enemyRobot[0].Ypos = enemyPosRobotKamera[0].Ypos;
+								
+							}
+						}
 					}
 					
 					else if(pArray[2] == CMD_TEILE && pArray[0] == ADR_VISION_ID_W)
@@ -276,22 +304,22 @@ uint8_t ParserTask(void)
 						uint8_t countElements = ASCII2Num(pArray[3]) * 10 + ASCII2Num(pArray[4]);
 						
 						
-// 						for (int i=0; i<(sizeof(visionElements_2) / sizeof(visionElement_t)); i++)
-// 						{
-// 							visionElements_2[i].id=0;
-// 						}
-// 						
-// 						for (int i=0; i<countElements ; i++)
-// 						{
-// 							visionElements_2[i].id=ASCII2Num(pArray[i*11+5]) * 10 + ASCII2Num(pArray[i*11+6]);
-// 							visionElements_2[i].Xpos=ASCII2Num(pArray[i*11+7]) * 1000 + ASCII2Num(pArray[i*11+8])*100+ASCII2Num(pArray[i*11+9]) * 10 + ASCII2Num(pArray[i*11+10]);
-// 							visionElements_2[i].Ypos=ASCII2Num(pArray[i*11+11]) * 1000 + ASCII2Num(pArray[i*11+12])*100+ASCII2Num(pArray[i*11+13]) * 10 + ASCII2Num(pArray[i*11+14]);
-// 						}
-// 						
-// 						uint8_t text2[150];
-// 						sprintf(text2, "#%dTT Last Received Element: %d\r\n %d\r\n*", CHECK_ROBOT_TYPE(ADR_MASTER_ID,ADR_SLAVE_ID),
-// 						visionElements_2[countElements-1].id, visionElements_2[countElements-1].Ypos);
-// 						writeString_usart(&WIFI_IF, text2);
+						// 						for (int i=0; i<(sizeof(visionElements_2) / sizeof(visionElement_t)); i++)
+						// 						{
+						// 							visionElements_2[i].id=0;
+						// 						}
+						//
+						// 						for (int i=0; i<countElements ; i++)
+						// 						{
+						// 							visionElements_2[i].id=ASCII2Num(pArray[i*11+5]) * 10 + ASCII2Num(pArray[i*11+6]);
+						// 							visionElements_2[i].Xpos=ASCII2Num(pArray[i*11+7]) * 1000 + ASCII2Num(pArray[i*11+8])*100+ASCII2Num(pArray[i*11+9]) * 10 + ASCII2Num(pArray[i*11+10]);
+						// 							visionElements_2[i].Ypos=ASCII2Num(pArray[i*11+11]) * 1000 + ASCII2Num(pArray[i*11+12])*100+ASCII2Num(pArray[i*11+13]) * 10 + ASCII2Num(pArray[i*11+14]);
+						// 						}
+						//
+						// 						uint8_t text2[150];
+						// 						sprintf(text2, "#%dTT Last Received Element: %d\r\n %d\r\n*", CHECK_ROBOT_TYPE(ADR_MASTER_ID,ADR_SLAVE_ID),
+						// 						visionElements_2[countElements-1].id, visionElements_2[countElements-1].Ypos);
+						// 						writeString_usart(&WIFI_IF, text2);
 					}
 					
 					else if(pArray[2] == CMD_CHERRY && pArray[0] == ADR_CHERRY_ID)

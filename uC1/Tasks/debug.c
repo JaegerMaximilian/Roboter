@@ -164,19 +164,20 @@ uint8_t DebugTask(void)
 	Time++;
 	//if(Time>100)
 	//{
-		//Time=0;
+	//Time=0;
 	//}
 	
 	NextionSetPoints(Points);
-	NextionSetTime(spielZeit/10);
+	NextionSetTime(spielZeit/10);	
+	
 	//    LED_PORT.OUT ^= ledBit;
 	// //   ledBit = (ledBit != 0x40) ? ledBit << 1 : 0x20;
 	//    ledBit = (ledBit != 0x80) ? ledBit << 1 : 0x20;
 
 	TOGGLE_PIN(LED_PORT1, LED1);
-// 	TOGGLE_PIN(LED_PORT1, LED2);
-// 	TOGGLE_PIN(LED_PORT1, LED3);
-// 	TOGGLE_PIN(LED_PORT2, LED4);
+	// 	TOGGLE_PIN(LED_PORT1, LED2);
+	// 	TOGGLE_PIN(LED_PORT1, LED3);
+	// 	TOGGLE_PIN(LED_PORT2, LED4);
 	
 	
 	//	se_array[SE_RES1_NBR].Phi = 0;
@@ -185,8 +186,8 @@ uint8_t DebugTask(void)
 	
 	//Home position reached
 	uint8_t homePosition[50];
-// 	sprintf(homePosition, "#12H%d\n\r*", HomePositionReached);
-// 	writeString_usart(&WIFI_IF, homePosition);
+	// 	sprintf(homePosition, "#12H%d\n\r*", HomePositionReached);
+	// 	writeString_usart(&WIFI_IF, homePosition);
 	
 	//uint8_t points_MasterRobot[30];
 	//uint8_t punkte_Master=Punkte+punkte_Kirschen_Zusatz+Punkte_Kirschen;

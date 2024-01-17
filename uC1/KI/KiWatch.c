@@ -521,8 +521,8 @@ uint8_t KiWatchTask(void)
 		
 	}
 
-		oldPoint.Xpos = aktPoint.Xpos;
-		oldPoint.Ypos = aktPoint.Ypos;
+	oldPoint.Xpos = aktPoint.Xpos;
+	oldPoint.Ypos = aktPoint.Ypos;
 	
 	
 	/**************************************************************************
@@ -537,9 +537,22 @@ uint8_t KiWatchTask(void)
 		//SendDebugMessage(text1,1);
 	}
 	
-	
-
 	OldKI_State = KI_State;
+	
+	
+	robot_t enemySend [5];
+	uint8_t index [] = {1,2,3,4,5,6};
+
+	for (uint8_t i = 0; i < 5; i++)
+	{
+		enemySend[i].Xpos = ((enemyRobot[i].Xpos == 10000) ? 9999.0 : enemyRobot[i].Xpos);
+		enemySend[i].Ypos = ((enemyRobot[i].Ypos == 10000) ? 9999.0 : enemyRobot[i].Ypos);
+	}
+	uint16_t XPosition[] = { xPos, enemySend[0].Xpos,enemySend[1].Xpos,enemySend[2].Xpos,enemySend[3].Xpos,enemySend[4].Xpos};
+	uint16_t YPosition[] = {yPos, enemySend[0].Ypos,enemySend[1].Ypos,enemySend[2].Ypos,enemySend[3].Ypos,enemySend[4].Ypos};
+	SendPlaygroundPositionMessage(index, XPosition,YPosition,6);
 	
 	return(CYCLE);
 }
+
+

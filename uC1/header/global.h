@@ -59,6 +59,7 @@
 #include <math.h>
 #include <stdint.h>
 #include "Pfadplanung.h"
+#include "ki.h"
 
 /* intern/extern switch */
 #ifndef _GLOBAL_EXTERN
@@ -156,6 +157,8 @@ _GLOBAL_EXTERN point_t PosFieldL2, PosFieldR2;
 _GLOBAL_EXTERN uint8_t SolarpanelsHomePosDone, SolarpanelsMiddleDone;
 _GLOBAL_EXTERN uint16_t Points;
 _GLOBAL_EXTERN float VelocityEnemy;
+_GLOBAL_EXTERN point_t enemyPosRobotKamera[5],ownPosKamera[5];
+
 
 
 //_GLOBAL_EXTERN point_t startPos;

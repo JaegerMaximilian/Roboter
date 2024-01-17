@@ -16,6 +16,8 @@
 #define BS		'#'
 /* character for block-end */
 #define BE		'*'
+
+#define DEL		'|'
 /* servo-command */
 #define CMD_SERVO		'S'
 /* motor-command */

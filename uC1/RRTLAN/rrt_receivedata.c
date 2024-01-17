@@ -183,8 +183,8 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			//Erst wenn Gengererkennung öfter als 5 mal nichts sieht als kein Gegner werten
 			//if(x[i].uint16[0] != 10000 )
 			//{
-				enemyRobot[i].Xpos = x[i].uint16[0];
-				enemyRobot[i].Ypos = y[i].uint16[0];
+				//enemyRobot[i].Xpos = x[i].uint16[0];
+				//enemyRobot[i].Ypos = y[i].uint16[0];
 				//counter = 0;
 			//}
 			//else

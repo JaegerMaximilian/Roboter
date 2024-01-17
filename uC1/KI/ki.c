@@ -705,15 +705,7 @@ uint8_t KiTask(void)
 	
 	//Position of enemy and my own robot
 	uint8_t index [] = {1,2,3,4,5,6};
-	robot_t enemySend [5];
-	for (uint8_t i = 0; i < 5; i++)
-	{
-		enemySend[i].Xpos = ((enemyRobot[i].Xpos == 10000) ? 9999.0 : enemyRobot[i].Xpos);
-		enemySend[i].Ypos = ((enemyRobot[i].Ypos == 10000) ? 9999.0 : enemyRobot[i].Ypos);
-	}
-	uint16_t XPosition[] = { xPos, enemySend[0].Xpos,enemySend[1].Xpos,enemySend[2].Xpos,enemySend[3].Xpos,enemySend[4].Xpos};
-	uint16_t YPosition[] = {yPos, enemySend[0].Ypos,enemySend[1].Ypos,enemySend[2].Ypos,enemySend[3].Ypos,enemySend[4].Ypos};
-	SendPlaygroundPositionMessage(index, XPosition,YPosition,6);
+
 	
 	//State and Priority of Tasks
 	uint8_t index1 [] = {1,2,3,4,5,6,11,12,13,15,16,21,22,23,25,26,30,31,32};
