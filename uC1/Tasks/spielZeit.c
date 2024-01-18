@@ -35,7 +35,7 @@ void spielZeit_init()
    SET_TASK_HANDLE(SPIELZEIT_TASKNBR, spielZeitTask);
    
    /* set playing time to 100 sec */
-   spielZeit = 1000; //1000 1sec = 10
+   spielzeit_100telSek = 10000; //10000 1sec = 100
 }
 
 
@@ -51,14 +51,14 @@ void spielZeit_init()
 /* ************************************************************** */
 uint8_t spielZeitTask()
 {
-	SET_CYCLE(SPIELZEIT_TASKNBR, 100);
+	SET_CYCLE(SPIELZEIT_TASKNBR, 10);
 
 	/* update playing time (1 sec - interval) */
-	if (spielZeit > 0)
+	if (spielzeit_100telSek > 0)
 	{
-		spielZeit--;
+		spielzeit_100telSek--;
 	}
-	
+	spielZeit_10telSek = spielzeit_100telSek/10;
 	
 
 	return(CYCLE);

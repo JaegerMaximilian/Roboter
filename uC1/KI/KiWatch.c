@@ -88,10 +88,10 @@ uint8_t KiWatchTask(void)
 	{
 		if(oldSpielZeit != 0)
 		{
-			Stoppuhr = Stoppuhr + (oldSpielZeit - spielZeit);
+			Stoppuhr = Stoppuhr + (oldSpielZeit - spielZeit_10telSek);
 		}
 		
-		oldSpielZeit = spielZeit;
+		oldSpielZeit = spielZeit_10telSek;
 		
 	}
 	else if (Stoppuhr_Start == 0 && oldStoppuhr_Start == 1)
@@ -452,7 +452,7 @@ uint8_t KiWatchTask(void)
 	***   Set Solar Panels Middle to Done if not enought Time               ***
 	**************************************************************************/
 	
-	if (spielZeit < (4 *TimeSolarpanels + 2*TimeSetPosAtSolarPanels + TimeSolarPanelsMiddleToHome + TimeParkPlantsAtHome + TimeToSolarPanelsMiddle)) //Each Solor Panels + Get Position At Solar Panels + Time to drive
+	if (spielZeit_10telSek < (4 *TimeSolarpanels + 2*TimeSetPosAtSolarPanels + TimeSolarPanelsMiddleToHome + TimeParkPlantsAtHome + TimeToSolarPanelsMiddle)) //Each Solor Panels + Get Position At Solar Panels + Time to drive
 	{
 		KI_Task[31].Status = DONE;
 	}
@@ -460,7 +460,7 @@ uint8_t KiWatchTask(void)
 	/**************************************************************************
 	***   Set Solar Panels at Home Position to Done if not enought Time     ***
 	**************************************************************************/
-	if(spielZeit < TimeSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)
+	if(spielZeit_10telSek < TimeSolarPanelsHome + TimeToHome + TimeParkPlantsAtHome)
 	{
 		KI_Task[30].Status = DONE;
 		KI_Task[32].Status = DONE;
@@ -503,13 +503,13 @@ uint8_t KiWatchTask(void)
 	}
 	
 	//Calcualte Enemy Speed
-	if(aktPoint.Xpos != 10000 && oldPoint.Xpos != 10000 && (oldTime != spielZeit)
+	if(aktPoint.Xpos != 10000 && oldPoint.Xpos != 10000 && (oldTime != spielZeit_10telSek)
 	&& ((enemyStandstillCounter >= 5) || (aktPoint.Xpos != oldPoint.Xpos) || (aktPoint.Ypos != oldPoint.Ypos)))
 	{
 		distance = CalcDistance(aktPoint,oldPoint);
-		timedif = oldTime - spielZeit;
+		timedif = oldTime - spielZeit_10telSek;
 		
-		oldTime = spielZeit;
+		oldTime = spielZeit_10telSek;
 		
 		VelocityEnemy = distance / (float)timedif;
 		

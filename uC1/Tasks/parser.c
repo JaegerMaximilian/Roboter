@@ -280,21 +280,19 @@ uint8_t ParserTask(void)
 								//Own Position
 								if(((ID >= 1 && ID <= 5) && SpielFarbe == BLUE) || ((ID >= 6 && ID <= 10) && SpielFarbe == Yellow))
 								{
-									ownPosKamera[ownPosCount].Xpos = (int16_t)xpos;
-									ownPosKamera[ownPosCount].Ypos = ypos;
+									ownPosKamera[ownPosCount].point.Xpos = (int16_t)xpos;
+									ownPosKamera[ownPosCount].point.Ypos = ypos;
+									ownPosKamera[ownPosCount].time = spielzeit_100telSek;
 									ownPosCount++;
 								}
 								//Enemy Position
 								else if(((ID >= 1 && ID <= 5) && SpielFarbe == Yellow) || ((ID >= 6 && ID <= 10) && SpielFarbe == BLUE))
 								{
-									enemyPosRobotKamera[enemyPosCount].Xpos = (int16_t)xpos;
-									enemyPosRobotKamera[enemyPosCount].Ypos = (int16_t)ypos;
+									enemyPosRobotKamera[enemyPosCount].point.Xpos = (int16_t)xpos;
+									enemyPosRobotKamera[enemyPosCount].point.Ypos = (int16_t)ypos;
+									ownPosKamera[enemyPosCount].time = spielzeit_100telSek;
 									enemyPosCount++;
-								}
-								
-								enemyRobot[0].Xpos = enemyPosRobotKamera[0].Xpos;
-								enemyRobot[0].Ypos = enemyPosRobotKamera[0].Ypos;
-								
+								}								
 							}
 						}
 					}

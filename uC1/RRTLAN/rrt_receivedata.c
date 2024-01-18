@@ -164,8 +164,8 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			y[i].uint8[0] = 0;
 			y[i].uint8[1] = 0;
 			
-			enemyRobot[i].Xpos = 10000;
-			enemyRobot[i].Ypos = 10000;
+			enemyRobotLidar[i].point.Xpos = 10000;
+			enemyRobotLidar[i].point.Ypos = 10000;
 			
 		}
 		
@@ -180,26 +180,9 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			y[i].uint8[1] = receiveArray[j++];
 			
 			
-			//Erst wenn Gengererkennung öfter als 5 mal nichts sieht als kein Gegner werten
-			//if(x[i].uint16[0] != 10000 )
-			//{
-				//enemyRobot[i].Xpos = x[i].uint16[0];
-				//enemyRobot[i].Ypos = y[i].uint16[0];
-				//counter = 0;
-			//}
-			//else
-			//{
-				//counter = ((++counter > 10) ? 10 : counter);
-			//}
-			//
-			//if(x[i].uint16[0] == 10000 && counter >= 10)
-			//{
-				//enemyRobot[i].Xpos = x[i].uint16[0];
-				//enemyRobot[i].Ypos = y[i].uint16[0];
-			//}
-			
-
-
+			enemyRobotLidar[i].point.Xpos = x[i].uint16[0];
+			enemyRobotLidar[i].point.Ypos = y[i].uint16[0];
+			enemyRobotLidar[i].time = spielzeit_100telSek;
 		}
 
 

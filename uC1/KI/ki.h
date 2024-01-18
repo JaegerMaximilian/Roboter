@@ -88,6 +88,12 @@ Data Stack size     : 1024
 // Struktur der Roboter (Position)
 typedef point_t robot_t;
 
+typedef struct
+{
+	point_t point;
+	uint16_t time;
+} robot_time_t;
+
 // Struktur der Elemente (Position)
 typedef point_t element_t;
 

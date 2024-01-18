@@ -46,6 +46,8 @@ _OBSERVATION_EXTERN_ point_t observationStartPos, observationGoalPos;
 _OBSERVATION_EXTERN_ uint8_t motionIR;	
 
 _OBSERVATION_EXTERN_ robot_t enemyRobot[5];	
+_OBSERVATION_EXTERN_ robot_time_t enemyRobotLidar[5];	
+_OBSERVATION_EXTERN_ robot_time_t enemyPosRobotKamera[5],ownPosKamera[5];
 
 
 /* ***************************** */

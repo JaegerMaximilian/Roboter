@@ -123,7 +123,7 @@ _GLOBAL_EXTERN float Winkel_motor1, Winkel_motor2, Winkel_motor3;
 _GLOBAL_EXTERN float geschwindigkeitsVorzeichen;
 
 _GLOBAL_EXTERN uint8_t spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte_SlaveRobot;
-_GLOBAL_EXTERN uint16_t spielZeit;
+_GLOBAL_EXTERN uint16_t spielZeit_10telSek, spielzeit_100telSek;
 
 _GLOBAL_EXTERN uint16_t Stoppuhr_Start; // zum Stoppen der Zeitfunktion ob sie mit der Realität übereinstimmt, nur zum testen benötigt
 _GLOBAL_EXTERN uint16_t Stoppuhr;
@@ -157,7 +157,6 @@ _GLOBAL_EXTERN point_t PosFieldL2, PosFieldR2;
 _GLOBAL_EXTERN uint8_t SolarpanelsHomePosDone, SolarpanelsMiddleDone;
 _GLOBAL_EXTERN uint16_t Points;
 _GLOBAL_EXTERN float VelocityEnemy;
-_GLOBAL_EXTERN point_t enemyPosRobotKamera[5],ownPosKamera[5];
 
 
 

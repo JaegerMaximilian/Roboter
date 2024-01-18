@@ -86,6 +86,34 @@ uint8_t ObservationTask(void)
 	
 	/* set observertion-task intervall to 10ms */
 	SET_CYCLE(OBSERVATION_TASKNBR, 10);
+	
+	/**************************************************************************
+	***   merge Enemy Positions from Camera and Lidar                       ***
+	***   ---------------------------------------------------------------   ***
+	***   Date    :  23.05.2023                                             ***
+	***   Author  :  Michael Zauner							                ***
+	**************************************************************************/
+	uint16_t timedif = abs(enemyRobotLidar[0].time - enemyPosRobotKamera[0].time);
+	
+	if(timedif <= 5)
+	{
+		enemyRobot[0].Xpos = (enemyRobotLidar[0].point.Xpos + enemyPosRobotKamera[0].point.Xpos)/2;
+		enemyRobot[0].Ypos = (enemyRobotLidar[0].point.Ypos + enemyPosRobotKamera[0].point.Ypos)/2;
+	}
+	else
+	{
+		if(enemyRobotLidar[0].time < enemyPosRobotKamera[0].time)
+		{
+			enemyRobot[0].Xpos = enemyRobotLidar[0].point.Xpos;
+			enemyRobot[0].Ypos = enemyRobotLidar[0].point.Ypos;
+		}
+		else
+		{
+			enemyRobot[0].Xpos = enemyPosRobotKamera[0].point.Xpos;
+			enemyRobot[0].Ypos = enemyPosRobotKamera[0].point.Ypos;
+		}
+	}
+
 
 	/* observation is started -> observe the motion of the robot */
 	if (observationStarted == OBSERVATION_STARTED)
@@ -111,7 +139,7 @@ uint8_t ObservationTask(void)
 		/* set observation distance depending on the actual speed */
 		uint16_t Amax_DS_MI = 200;
 		
-// 		if (vIst > 0)
+		// 		if (vIst > 0)
 		{
 			float t_brake = 0.0;
 			float t_react = 0.2;
@@ -169,10 +197,10 @@ uint8_t ObservationTask(void)
 			
 			//observationDisFront = 370 + (int16_t)((float)(abs(vIst))*0.8);
 		}
-// 		else if (vIst < 0)
-// 		{
-// 			observationDisFront = 150 + abs(vIst);
-// 		}
+		// 		else if (vIst < 0)
+		// 		{
+		// 			observationDisFront = 150 + abs(vIst);
+		// 		}
 		
 
 		// ***************************************
