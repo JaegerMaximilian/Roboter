@@ -716,7 +716,7 @@ uint8_t KiTask(void)
 	uint8_t priority[] = {	KI_Task[1].Priority,KI_Task[2].Priority,KI_Task[3].Priority,KI_Task[4].Priority,KI_Task[5].Priority,KI_Task[6].Priority,
 		KI_Task[11].Priority,KI_Task[12].Priority,KI_Task[13].Priority,KI_Task[15].Priority,KI_Task[16].Priority,
 	KI_Task[21].Priority,KI_Task[22].Priority,KI_Task[23].Priority,KI_Task[25].Priority,KI_Task[26].Priority,KI_Task[30].Priority,KI_Task[31].Priority,KI_Task[32].Priority};
-	SendTaskInfo(index1,state,priority);
+	//SendTaskInfo(index1,state,priority);
 
 
 	
@@ -864,8 +864,8 @@ uint8_t KiTask(void)
 				TimeGetAndParkNextPlant = CalcTimeRemainingPlants();
 				
 				
-				sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + TimeAllSolarPanelsHome + TimeParkPlantsAtHome);
-				SendDebugMessage(text1,1);
+				//sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + TimeAllSolarPanelsHome + TimeParkPlantsAtHome);
+				//SendDebugMessage(text1,1);
 				
 				
 			}

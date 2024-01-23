@@ -516,8 +516,8 @@ uint8_t KiWatchTask(void)
 		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy);
 		
 		// !!! Das Problem ist der "old Point", er gibt immer ca "8875", der Wert ändert sich nie, warum???
-		sprintf(text1, "EnemyXposOld: %d", oldPoint.Xpos);
-		SendDebugMessage(text1,2);
+		//sprintf(text1, "EnemyXposOld: %d", oldPoint.Xpos);
+		//SendDebugMessage(text1,2);
 		
 	}
 
@@ -530,8 +530,8 @@ uint8_t KiWatchTask(void)
 	**************************************************************************/
 	if(KI_State != OldKI_State)
 	{
-		sprintf(text1, "State: %6ld PIR: %d OPP: %d OP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, OpenPlants, ParkedPlants);
-		SendDebugMessage(text1,1);
+		//sprintf(text1, "State: %6ld PIR: %d OPP: %d OP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, OpenPlants, ParkedPlants);
+		//SendDebugMessage(text1,1);
 		
 		//sprintf(text1, "TPNP: %d", TimeParkNextPlant);
 		//SendDebugMessage(text1,1);

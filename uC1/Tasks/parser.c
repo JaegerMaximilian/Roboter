@@ -257,7 +257,13 @@ uint8_t ParserTask(void)
 					}
 					else if(pArray[2] == CMD_TEILE && pArray[0] == ADR_VISION_ID_V)
 					{
-
+						for (uint8_t i = 0; i <= 5; i++)
+						{
+							ownPosKamera[i].point.Xpos = 10000;
+							ownPosKamera[i].point.Ypos = 10000;
+							enemyPosRobotKamera[i].point.Xpos = 10000;
+							enemyPosRobotKamera[i].point.Ypos = 10000;
+						}
 						
 						uint8_t ownPosCount = 0;
 						uint8_t enemyPosCount = 0;
@@ -290,9 +296,9 @@ uint8_t ParserTask(void)
 								{
 									enemyPosRobotKamera[enemyPosCount].point.Xpos = (int16_t)xpos;
 									enemyPosRobotKamera[enemyPosCount].point.Ypos = (int16_t)ypos;
-									ownPosKamera[enemyPosCount].time = spielzeit_100telSek;
+									enemyPosRobotKamera[enemyPosCount].time = spielzeit_100telSek;
 									enemyPosCount++;
-								}								
+								}
 							}
 						}
 					}
