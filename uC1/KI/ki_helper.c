@@ -464,7 +464,7 @@ uint16_t CalcTimeRemainingPlants(void)
 		{
 			Stoppuhr_Start = 1;
 			sprintf(text1, "Stoppuhr gestartet");
-			SendDebugMessage(text1,1);
+			SendDebugMessage(text1,2);
 		}
 		
 		/*

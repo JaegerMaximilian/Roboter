@@ -91,13 +91,16 @@ uint8_t KiWatchTask(void)
 			Stoppuhr = Stoppuhr + (oldSpielZeit - spielZeit_10telSek);
 		}
 		
+		sprintf(text1, "Stoppuhr: %d", Stoppuhr);
+		SendDebugMessage(text1,2);
+		
 		oldSpielZeit = spielZeit_10telSek;
 		
 	}
 	else if (Stoppuhr_Start == 0 && oldStoppuhr_Start == 1)
 	{
 		sprintf(text1, "Stoppuhr: %d", Stoppuhr);
-		SendDebugMessage(text1,1);
+		SendDebugMessage(text1,2);
 		Stoppuhr = 0;
 		oldSpielZeit = 0;
 		
@@ -514,15 +517,51 @@ uint8_t KiWatchTask(void)
 		VelocityEnemy = distance / (float)timedif;
 		
 		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy);
-		
-		// !!! Das Problem ist der "old Point", er gibt immer ca "8875", der Wert ändert sich nie, warum???
-		//sprintf(text1, "EnemyXposOld: %d", oldPoint.Xpos);
-		//SendDebugMessage(text1,2);
-		
-	}
 
+	}
+	
+	sprintf(text1, "APx: %d OPx: %d Vel: %f ", aktPoint.Xpos , oldPoint.Xpos, VelocityEnemy);
+	SendDebugMessage(text1,2);
+	
 	oldPoint.Xpos = aktPoint.Xpos;
 	oldPoint.Ypos = aktPoint.Ypos;
+	
+	
+	
+	/****************************************************************************************
+	***   Check for multiple Poition-Differences from Messräder, Lidar (Beacons) and Kamera		***
+	***			to run Positionsfindung															***
+	*****************************************************************************************/
+	
+	point_t MessraederPos, LidarPos, KameraPos, NewPos;
+	static uint16_t AbweichungCounter = 0;
+	
+	
+	// diese 4 nur der Vollständigkeit halber ausgeschrieben, beim weiterprogrammieren mit den direkten Variablen in den Abfragen arbeiten!!!
+	
+	//LidarPos = FindRobotPosition(1.0,1.0,3.0); // ACHTUNG!!! DUMMY INPUT DATA!!!
+	MessraederPos.Xpos = xPos;
+	MessraederPos.Ypos = yPos;
+	KameraPos.Xpos = ownPosKamera[0].point.Xpos;
+	KameraPos.Ypos = ownPosKamera[0].point.Ypos;
+	
+	/* BEDINGUNG NOCH AUSPROGRAMMIEREN
+	if()
+	{
+		AbweichungCounter = AbweichungCounter + 1;
+	}
+	*/
+	
+	if (AbweichungCounter == 5)
+	{
+		// hier noch entscheiden ob zur neuen Positionsfindung die Position von Lidar (mit Beacons) oder die von der Kamera verwendet werden soll!!!
+		
+		//xPos = LidarPos.Xpos;
+		//yPos = LidarPos.Ypos;
+		
+		AbweichungCounter = 0;
+	}
+	
 	
 	
 	/**************************************************************************
@@ -530,8 +569,8 @@ uint8_t KiWatchTask(void)
 	**************************************************************************/
 	if(KI_State != OldKI_State)
 	{
-		//sprintf(text1, "State: %6ld PIR: %d OPP: %d OP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, OpenPlants, ParkedPlants);
-		//SendDebugMessage(text1,1);
+		sprintf(text1, "State: %6ld PIR: %d OPP: %d OP: %d ParP: %d", (uint32_t)KI_State, PlantsInRobot , OpenParkPos, OpenPlants, ParkedPlants);
+		SendDebugMessage(text1,1);
 		
 		//sprintf(text1, "TPNP: %d", TimeParkNextPlant);
 		//SendDebugMessage(text1,1);
