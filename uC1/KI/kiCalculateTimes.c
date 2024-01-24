@@ -142,42 +142,45 @@ uint8_t KiCalculateTimesTask(void)
 	float distancePlanterR2 = CalcDistance(start,PosPlanterR2);
 	float distancePlanterR2ToHome = CalcDistance(PosPlanterR2,PosFieldR3);
 	
-	/**************************************************************************
-	***   Calculate Time to Steal					                    ***
-	**************************************************************************/
 	float distanceFieldL2 = CalcDistance(start, PosFieldL2);
-	float distanceFieldL2ToHome = CalcDistance(PosFieldL2, PosFieldL3); // gilt nur im Fall vom Stehlen, weil wir sind ja blau in diesem Fall: ob wir bei PosFieldL2 noch irgendwann etwas abstellen -> noch entscheiden!
-	float distanceFieldL3 = CalcDistance(start, PosFieldL3);
-	float distanceFieldL3ToHome = CalcDistance(PosFieldL3, PosFieldR3);
+	float distanceFieldL2ToHome = CalcDistance(PosFieldL2, PosFieldR3);
 	float distanceFieldR2 = CalcDistance(start, PosFieldR2);
-	float distanceFieldR2ToHome = CalcDistance(PosFieldR2, PosFieldR3); // gilt nur im Fall vom Stehlen, nicht wenn wir etwas hier parken, weil sonst ist ja Home umgekehrt!
-	float distanceFieldR3 = CalcDistance(start, PosFieldR3);
-	float distanceFieldR3ToHome = CalcDistance(PosFieldR3, PosFieldL3);
-
-	
+	float distanceFieldR2ToHome = CalcDistance(PosFieldR2, PosFieldL3);
 	
 	TimeParkPlanterLMiddle = (uint16_t)((distancePlanterLMiddle+distancePlanterLMiddleToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeParkFieldL1 = (uint16_t)((distanceFieldL1+distanceFieldL1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
+	TimeParkFieldL2 = (uint16_t)((distanceFieldL2+distanceFieldL2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeParkPlanterL1 = (uint16_t)((distancePlanterL1+distancePlanterL1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeParkPlanterL2 = (uint16_t)((distancePlanterL2+distancePlanterL2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeParkPlanterRMiddle = (uint16_t)((distancePlanterRMiddle+distancePlanterRMiddleToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeParkFieldR1 = (uint16_t)((distanceFieldR1+distanceFieldR1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
+	TimeParkFieldR2 = (uint16_t)((distanceFieldR2+distanceFieldR2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeParkPlanterR1 = (uint16_t)((distancePlanterR1+distancePlanterR1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeParkPlanterR2 = (uint16_t)((distancePlanterR2+distancePlanterR2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	
+	/**************************************************************************
+	***   Calculate Time to Steal					                    ***
+	**************************************************************************/
+
+	float distanceFieldL2ToHomeSteal = CalcDistance(PosFieldL2, PosFieldL3); // gilt nur im Fall vom Stehlen, weil wir sind ja blau in diesem Fall: ob wir bei PosFieldL2 noch irgendwann etwas abstellen -> noch entscheiden!
+	float distanceFieldL3 = CalcDistance(start, PosFieldL3);
+	float distanceFieldL3ToHome = CalcDistance(PosFieldL3, PosFieldR3);
+	float distanceFieldR2ToHomeSteal = CalcDistance(PosFieldR2, PosFieldR3); // gilt nur im Fall vom Stehlen, nicht wenn wir etwas hier parken, weil sonst ist ja Home umgekehrt!
+	float distanceFieldR3 = CalcDistance(start, PosFieldR3);
+	float distanceFieldR3ToHome = CalcDistance(PosFieldR3, PosFieldL3);
+	
 	
 	//FÜR STEHLEN: TimeStealPlanterL1, TimeStealFieldL2, TimeStealPlanterL2, TimeStealFieldL3, TimeStealPlanterR1, TimeStealFieldR2, TimeStealPlanterR2, TimeStealFieldR3;
-		TimeStealPlanterL1 = (uint16_t)((distancePlanterL1+distancePlanterL1ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC; // evtl + TimeParkPlant, aber eigentl. nicht, weil hauptsache wir haben die Pflanze gestohlen;
-	TimeStealFieldL2 = (uint16_t)((distanceFieldL2+distanceFieldL2ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
+	TimeStealPlanterL1 = (uint16_t)((distancePlanterL1+distancePlanterL1ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC; // evtl + TimeParkPlant, aber eigentl. nicht, weil hauptsache wir haben die Pflanze gestohlen;
+	TimeStealFieldL2 = (uint16_t)((distanceFieldL2+distanceFieldL2ToHomeSteal)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeStealPlanterL2 = (uint16_t)((distancePlanterL2+distancePlanterL2ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeStealFieldL3 = (uint16_t)((distanceFieldL3+distanceFieldL3ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeStealPlanterR1 = (uint16_t)((distanceFieldR1+distanceFieldR1ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeStealFieldR2 = (uint16_t)((distanceFieldR2+distanceFieldR2ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
+	TimeStealFieldR2 = (uint16_t)((distanceFieldR2+distanceFieldR2ToHomeSteal)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeStealPlanterR2 = (uint16_t)((distancePlanterR2+distancePlanterR2ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	TimeStealFieldR3 =  (uint16_t)((distanceFieldR3+distanceFieldR3ToHome)/(float)STANDARD_VELOCITY)  + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	
-	
-	
+
 	/**************************************************************************
 	***   Calculate Times SolarPanelsMiddle					             ***
 	**************************************************************************/
@@ -213,6 +216,7 @@ uint8_t KiCalculateTimesTask(void)
 	point_t PlanterOrFieldPos;
 	static uint16_t TimeToPark = 0;
 	static float distanceToNextParkPos = 10;
+	static float distanceFromNextParkPosHome = 10;
 	
 	aktpos.Xpos = xPos;
 	aktpos.Ypos = yPos;
@@ -235,7 +239,10 @@ uint8_t KiCalculateTimesTask(void)
 	else if (IndexNextPlanter == 13)
 	{
 		PlanterOrFieldPos = PosPlanterL1;
-		
+	}
+	else if (IndexNextPlanter == 14)
+	{
+		PlanterOrFieldPos = PosFieldL2;
 	}
 	else if (IndexNextPlanter == 15)
 	{
@@ -257,6 +264,10 @@ uint8_t KiCalculateTimesTask(void)
 	{
 		PlanterOrFieldPos = PosPlanterR1;
 	}
+	else if (IndexNextPlanter == 24)
+	{
+		PlanterOrFieldPos = PosFieldR2;
+	}
 	else if (IndexNextPlanter == 25)
 	{
 		PlanterOrFieldPos = PosPlanterR2;
@@ -271,9 +282,16 @@ uint8_t KiCalculateTimesTask(void)
 	}
 	
 	distanceToNextParkPos = CalcDistance(aktpos, PlanterOrFieldPos);
-	
-	
-	if (IndexNextPlanter == 12 || IndexNextPlanter == 14 || IndexNextPlanter == 22 || IndexNextPlanter == 24 ) // if park at fields
+	if(SpielFarbe == BLUE)
+	{
+		distanceFromNextParkPosHome = CalcDistance(PlanterOrFieldPos,PosFieldL3);
+	}
+	if(SpielFarbe == Yellow)
+	{
+		distanceFromNextParkPosHome = CalcDistance(PlanterOrFieldPos,PosFieldR3);
+	}
+
+	if (IndexNextPlanter == 12 || IndexNextPlanter == 14 || IndexNextPlanter == 22 || IndexNextPlanter == 24 || IndexNextPlanter == 16 || IndexNextPlanter == 26 ) // if park at fields
 	{
 		TimeToPark = TimeParkNextPlantInField;
 	}
@@ -287,7 +305,7 @@ uint8_t KiCalculateTimesTask(void)
 		TimeToPark = 0;
 	}
 	
-	TimeParkNextPlant = (uint16_t)((distanceToNextParkPos / STANDARD_VELOCITY)*10.0) + TimeToPark + TimeForACCAndDCC;
+	TimeParkNextPlant = (uint16_t)(((distanceToNextParkPos+distanceFromNextParkPosHome) / STANDARD_VELOCITY)*10.0) + TimeToPark + 2*TimeForACCAndDCC;
 
 	return(CYCLE);
 }
