@@ -84,6 +84,7 @@ Data Stack size     : 1024
 #define TimePark2PlantsAtHome		50 //5 Seconds
 #define TimePark3PlantsAtHome		100 //10 Seconds
 #define TimeForACCAndDCC			20 //2 Seconds
+#define MinTimeHome					110 //11 Seconds
 
 // Struktur der Roboter (Position)
 typedef point_t robot_t;

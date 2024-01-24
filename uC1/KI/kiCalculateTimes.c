@@ -98,6 +98,9 @@ uint8_t KiCalculateTimesTask(void)
 		TimeParkPlantsMinus1AtHome = 0;
 	}
 	
+	uint16_t TimeParkPlantsMinus1AtHomeMin = ((TimeParkPlantsMinus1AtHome > MinTimeHome) ? TimeParkPlantsMinus1AtHome : MinTimeHome);
+	uint16_t TimeParkPlantsPlus1AtHomeMin = ((TimeParkPlantsPlus1AtHome > MinTimeHome) ? TimeParkPlantsPlus1AtHome : MinTimeHome);
+	
 	/**************************************************************************
 	***   Calculate Time to GetPlant					                    ***
 	**************************************************************************/
@@ -114,12 +117,12 @@ uint8_t KiCalculateTimesTask(void)
 	float distanceToPlant6000 = CalcDistance(start,PosPlant6000);
 	float distancePlant6000ToHome = CalcDistance(PosPlant6000,PosHome);
 	
-	TimeForPlant1000 = (uint16_t)((distanceToPlant1000 + distancePlant1000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHome + TimeForACCAndDCC;
-	TimeForPlant2000 = (uint16_t)((distanceToPlant2000 + distancePlant2000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHome + TimeForACCAndDCC;
-	TimeForPlant3000 = (uint16_t)((distanceToPlant3000 + distancePlant3000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHome + TimeForACCAndDCC;
-	TimeForPlant4000 = (uint16_t)((distanceToPlant4000 + distancePlant4000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHome + TimeForACCAndDCC;
-	TimeForPlant5000 = (uint16_t)((distanceToPlant5000 + distancePlant5000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHome + TimeForACCAndDCC;
-	TimeForPlant6000 = (uint16_t)((distanceToPlant6000 + distancePlant6000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHome + TimeForACCAndDCC;
+	TimeForPlant1000 = (uint16_t)((distanceToPlant1000 + distancePlant1000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHomeMin + TimeForACCAndDCC;
+	TimeForPlant2000 = (uint16_t)((distanceToPlant2000 + distancePlant2000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHomeMin + TimeForACCAndDCC;
+	TimeForPlant3000 = (uint16_t)((distanceToPlant3000 + distancePlant3000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHomeMin + TimeForACCAndDCC;
+	TimeForPlant4000 = (uint16_t)((distanceToPlant4000 + distancePlant4000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHomeMin + TimeForACCAndDCC;
+	TimeForPlant5000 = (uint16_t)((distanceToPlant5000 + distancePlant5000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHomeMin + TimeForACCAndDCC;
+	TimeForPlant6000 = (uint16_t)((distanceToPlant6000 + distancePlant6000ToHome)/(float)STANDARD_VELOCITY) + TimeHandleNextPlant + TimeParkPlantsPlus1AtHomeMin + TimeForACCAndDCC;
 	
 	/**************************************************************************
 	***   Calculate Time to Park					                    ***
@@ -147,17 +150,19 @@ uint8_t KiCalculateTimesTask(void)
 	float distanceFieldR2 = CalcDistance(start, PosFieldR2);
 	float distanceFieldR2ToHome = CalcDistance(PosFieldR2, PosFieldL3);
 	
-	TimeParkPlanterLMiddle = (uint16_t)((distancePlanterLMiddle+distancePlanterLMiddleToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkFieldL1 = (uint16_t)((distanceFieldL1+distanceFieldL1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkFieldL2 = (uint16_t)((distanceFieldL2+distanceFieldL2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkPlanterL1 = (uint16_t)((distancePlanterL1+distancePlanterL1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkPlanterL2 = (uint16_t)((distancePlanterL2+distancePlanterL2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkPlanterRMiddle = (uint16_t)((distancePlanterRMiddle+distancePlanterRMiddleToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkFieldR1 = (uint16_t)((distanceFieldR1+distanceFieldR1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkFieldR2 = (uint16_t)((distanceFieldR2+distanceFieldR2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkPlanterR1 = (uint16_t)((distancePlanterR1+distancePlanterR1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
-	TimeParkPlanterR2 = (uint16_t)((distancePlanterR2+distancePlanterR2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHome + TimeForACCAndDCC;
 	
+	
+	TimeParkPlanterLMiddle = (uint16_t)((distancePlanterLMiddle+distancePlanterLMiddleToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkFieldL1 = (uint16_t)((distanceFieldL1+distanceFieldL1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkFieldL2 = (uint16_t)((distanceFieldL2+distanceFieldL2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkPlanterL1 = (uint16_t)((distancePlanterL1+distancePlanterL1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkPlanterL2 = (uint16_t)((distancePlanterL2+distancePlanterL2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkPlanterRMiddle = (uint16_t)((distancePlanterRMiddle+distancePlanterRMiddleToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkFieldR1 = (uint16_t)((distanceFieldR1+distanceFieldR1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkFieldR2 = (uint16_t)((distanceFieldR2+distanceFieldR2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInField + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkPlanterR1 = (uint16_t)((distancePlanterR1+distancePlanterR1ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter + TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+	TimeParkPlanterR2 = (uint16_t)((distancePlanterR2+distancePlanterR2ToHome)/(float)STANDARD_VELOCITY) + TimeParkNextPlantInPlanter +TimeParkPlantsMinus1AtHomeMin + TimeForACCAndDCC;
+
 	/**************************************************************************
 	***   Calculate Time to Steal					                    ***
 	**************************************************************************/
@@ -187,7 +192,6 @@ uint8_t KiCalculateTimesTask(void)
 	
 	start.Xpos = xPos;
 	start.Ypos = yPos;
-
 	
 	float distanceToSolarPanelsMiddle = CalcDistance(start,PosSolarPanelsMiddle);
 	

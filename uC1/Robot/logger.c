@@ -146,7 +146,7 @@ void SendTaskInfo(uint8_t index[], uint8_t state[], uint8_t priority[])
 		{
 			sprintf(text, "%02d%1d%02d", index[i], state[i], priority[i]);
 			strcat(message, text);
-			if (i+1 <19)
+			if (i+1 < 21)
 			{
 				strcat(message, "|");
 			}
