@@ -290,7 +290,7 @@ uint8_t KiWatchTask(void)
 			
 		}
 
-		else if(!enemyRobotInPlanter2 && KI_Task[25].Status == PENDING && ConfigPlanter && counterPlanter2 >= 10) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
+		else if(!enemyRobotInPlanter2 && KI_Task[25].Status == PENDING && ConfigPlanter_Nextion && counterPlanter2 >= 10) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
 		{
 			KI_Task[25].Status = OPEN;
 			counterPlanter2 = 0;
@@ -378,7 +378,7 @@ uint8_t KiWatchTask(void)
 		{
 			KI_Task[15].Status = PENDING;
 		}
-		else if(!enemyRobotInPlanter2 && KI_Task[15].Status == PENDING && ConfigPlanter && counterPlanter2 >= 10) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
+		else if(!enemyRobotInPlanter2 && KI_Task[15].Status == PENDING && ConfigPlanter_Nextion && counterPlanter2 >= 10) // wenn Gegner stehen bleibt || (!ConfigPlanter && SpielZeit > 50)
 		{
 			KI_Task[15].Status = OPEN;
 			counterPlanter2 = 0;
@@ -579,7 +579,7 @@ uint8_t KiWatchTask(void)
 	OldKI_State = KI_State;
 	
 	
-	robot_t enemySend [5];
+	point_t enemySend [5];
 	uint8_t index [] = {1,2,3,4,5,6};
 
 	for (uint8_t i = 0; i < 5; i++)

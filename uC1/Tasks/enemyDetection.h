@@ -27,7 +27,7 @@ typedef struct
 	uint16_t offsetX;	// offset to center of robot in x-direction (in mm)
 	uint16_t offsetY;	// offset to center of robot in y-direction (in mm)
 	uint16_t offsetPhi;	// offset to inertial-system (orientation) of robot (in °)
-	robot_t pos;		// position of the detected obstacle (in mm)
+	point_t pos;		// position of the detected obstacle (in mm)
 	uint8_t variance;	// quality of measurement (0 .. 100)
 } usObstacleDetection_t;
 

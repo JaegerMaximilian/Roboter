@@ -122,7 +122,7 @@ typedef union
 _GLOBAL_EXTERN float Winkel_motor1, Winkel_motor2, Winkel_motor3;
 _GLOBAL_EXTERN float geschwindigkeitsVorzeichen;
 
-_GLOBAL_EXTERN uint8_t spielfarbeRAM, RobotType_RAM, Punkte_Kirschen, Punkte_SlaveRobot;
+_GLOBAL_EXTERN uint8_t RobotType_RAM;
 _GLOBAL_EXTERN uint16_t spielZeit_10telSek, spielzeit_100telSek;
 
 _GLOBAL_EXTERN uint16_t Stoppuhr_Start; // zum Stoppen der Zeitfunktion ob sie mit der Realität übereinstimmt, nur zum testen benötigt
@@ -144,8 +144,8 @@ _GLOBAL_EXTERN uint8_t StateOfGame;
 _GLOBAL_EXTERN uint16_t sysTime;
 _GLOBAL_EXTERN uint8_t gegnerErkennung;
 
-_GLOBAL_EXTERN uint8_t SpielFarbe_Nextion, Strategie, Page, ConfigPlanter_Nextion, ConfigStehlen_Nextion, Config4Plants_Nextion;
-_GLOBAL_EXTERN uint8_t SpielFarbe, Strategie, Page, ConfigPlanter, ConfigStehlen, Config4Plants;
+_GLOBAL_EXTERN uint8_t SpielFarbe_Nextion, Strategie_Nextion, Page_Nextion, ConfigPlanter_Nextion, ConfigStehlen_Nextion, Config4Plants_Nextion;
+_GLOBAL_EXTERN uint8_t SpielFarbe;
 _GLOBAL_EXTERN point_t PosPlant1000,PosPlant2000,PosPlant3000,PosPlant4000,PosPlant5000,PosPlant6000;
 _GLOBAL_EXTERN point_t PosHome, PosPlanterL1,PosPlanterR1,PosPlanterL2,PosPlanterR2,PosFieldL1,PosFieldR1,PosFieldL2,PosFieldR2,PosFieldL3,PosFieldR3,PosPlanterMidleBlue,PosPlanterMidleYellow,PosSolarPanelsBlue, PosSolarPanelsYellow, PosSolarPanelsMiddle;
 _GLOBAL_EXTERN uint16_t TimeToHome, TimeSolarPanelsMiddleToHome, TimeSolarPanelsHome,TimeAllSolarPanelsHome, TimeParkPlantsAtHome, TimeParkPlantsPlus1AtHome, TimeParkPlantsMinus1AtHome, TimeToSolarPanelsMiddle;

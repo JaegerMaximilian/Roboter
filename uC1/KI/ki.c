@@ -109,9 +109,6 @@ void InitKI(void)
 	nReachableCnt5000 = 0;
 	nReachableCnt6000 = 0;
 	planedPlants = 0;
-	ConfigPlanter = ConfigPlanter_Nextion;
-	ConfigStehlen = ConfigStehlen_Nextion;
-	Config4Plants = Config4Plants_Nextion;
 	velocity = STANDARD_VELOCITY;
 	SolarpanelsHomePosDone = 0;
 	SolarpanelsMiddleDone = 0;
@@ -231,9 +228,9 @@ void InitKI(void)
 
 	////////////////////Initialize Plant Tasks////////////////////
 
-	if (Strategie != NEXTION_STRATEGY_HOMOLOGATION)
+	if (Strategie_Nextion != NEXTION_STRATEGY_HOMOLOGATION)
 	{
-		switch (Strategie)
+		switch (Strategie_Nextion)
 		{
 			// Strategy M1 ==> R1 ==> R2 bzw. M1 ==> L1 ==> L2
 			case NEXTION_STRATEGY_L1_L2_P1: case NEXTION_STRATEGY_R1_R2_P1:
@@ -247,7 +244,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy M1 ==> M2 ==> R2  bzw. M1 ==> M2 ==> L2
@@ -261,7 +258,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy L1 ==> R1 ==> R2  bzw. R1 ==> L1 ==> L2
@@ -275,7 +272,7 @@ void InitKI(void)
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy L1 ==> M1 ==> R1  bzw. R1 ==> M1 ==> L1
@@ -289,7 +286,7 @@ void InitKI(void)
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy L1 ==> M1 ==> R2  bzw. R1 ==> M1 ==> L2
@@ -303,7 +300,7 @@ void InitKI(void)
 				KI_Task[4].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy L1 ==> M2 ==> R2  bzw. R1 ==> M2 ==> L2
@@ -317,7 +314,7 @@ void InitKI(void)
 				KI_Task[2].Priority = 90;
 				KI_Task[5].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy L1 ==> L2  bzw. R1 ==> R2
@@ -512,7 +509,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy R2 ==> R1 bzw. L2 ==> L1
@@ -526,7 +523,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 			//Strategy R2 ==> R1 ==> M1
@@ -553,7 +550,7 @@ void InitKI(void)
 				KI_Task[5].Priority = 90;
 				KI_Task[6].Priority = 90;
 				
-				ConfigPlanter = 1;
+				ConfigPlanter_Nextion = 1;
 				break;
 			}
 		}
@@ -578,7 +575,7 @@ void InitKI(void)
 			KI_Task[23].Status = OPEN;
 			KI_Task[26].Status = PENDING;
 			
-			if(ConfigPlanter == 1)
+			if(ConfigPlanter_Nextion == 1)
 			{
 				KI_Task[15].Status = OPEN;
 				KI_Task[14].Status = OPEN;
@@ -611,7 +608,7 @@ void InitKI(void)
 			KI_Task[16].Status = PENDING;
 			KI_Task[24].Status = LOCKED;
 			
-			if(ConfigPlanter == 1)
+			if(ConfigPlanter_Nextion == 1)
 			{
 				KI_Task[25].Status = OPEN;
 				KI_Task[24].Status = OPEN;
@@ -664,7 +661,7 @@ void InitKI(void)
 			planedPlants++;
 		}
 	}
-	if(Config4Plants)
+	if(Config4Plants_Nextion)
 	{
 		planedPlants = 4;
 	}
@@ -2182,7 +2179,7 @@ uint8_t KiTask(void)
 			}
 			
 			//Field 2
-			if(Config4Plants && KI_Task[15].Priority == 88 && PlantsInRobot == 4)
+			if(Config4Plants_Nextion && KI_Task[15].Priority == 88 && PlantsInRobot == 4)
 			{
 				KI_Task[14].Status = OPEN;
 			}
@@ -4233,14 +4230,18 @@ uint8_t KiTask(void)
 		case 31015:
 		{
 			//später löschen ==> fake task
-
+			
+			uint16_t LocTimeHome1 = TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels;
+			uint16_t LocTimeHome2 = TimeAllSolarPanelsHome +  TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels;
+			uint16_t LocTimeHome3 = TimeAllSolarPanelsHome + TimeParkPlantsAtHome +  TimeSolarpanels;
+			
 			//Wait specific time
-			if(spielZeit_10telSek < (TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels + TimeToHome))
+			if(spielZeit_10telSek < (((LocTimeHome1 > MinTimeHome) ? LocTimeHome1 : MinTimeHome) + TimeToHome))
 			{
 				KI_State = 60000;
 			}
-			else if((spielZeit_10telSek < (TimeParkPlantsAtHome + TimeAllSolarPanelsHome + TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels) && SolarpanelsMiddleDone == 0)
-			||(spielZeit_10telSek < (TimeParkPlantsAtHome + TimeAllSolarPanelsHome + TimeToHome + TimeSolarpanels) && SolarpanelsMiddleDone > 0))
+			else if((spielZeit_10telSek < (TimeToHome + (((LocTimeHome2 > MinTimeHome) ? LocTimeHome2 : MinTimeHome) + TimeToHome)) && SolarpanelsMiddleDone == 0)
+			||(spielZeit_10telSek < (TimeToHome + ((LocTimeHome3 > MinTimeHome) ? LocTimeHome3 : MinTimeHome)) && SolarpanelsMiddleDone > 0))
 			{
 				KI_State = 500;
 			}
@@ -4301,7 +4302,9 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(spielZeit_10telSek < (TimeParkPlantsAtHome + TimeAllSolarPanelsHome + TimeToHome + TimeSolarpanels + TimeSetPosAtSolarPanels))
+					uint16_t LocTimeHome1 = TimeAllSolarPanelsHome +  TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels;
+					
+					if(spielZeit_10telSek < (TimeToHome + ((LocTimeHome1 > MinTimeHome) ? LocTimeHome1 : MinTimeHome) ))
 					{
 						KI_State = 500;
 						velocity = STANDARD_VELOCITY;

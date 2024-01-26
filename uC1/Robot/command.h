@@ -197,7 +197,7 @@
 #define MASTER_ROBOT 1
 #define SLAVE_ROBOT 2
 
-_COMMAND_EXTERN robot_t master, slave;
+_COMMAND_EXTERN point_t master, slave;
 
 /* **************************** */
 /* ***      prototypes      *** */

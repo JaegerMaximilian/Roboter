@@ -198,8 +198,8 @@ uint8_t NextionTask(void)
 				/* 5. byte: Config Stehlen */
 				
 				/* readout playing colour and strategy */
-				Page = NextionArray[0];
-				Strategie = NextionArray[1];
+				Page_Nextion = NextionArray[0];
+				Strategie_Nextion = NextionArray[1];
 				SpielFarbe_Nextion = NextionArray[2];
 				ConfigPlanter_Nextion = NextionArray[3];
 				ConfigStehlen_Nextion = NextionArray[4];

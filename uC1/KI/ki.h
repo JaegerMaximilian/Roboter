@@ -86,8 +86,6 @@ Data Stack size     : 1024
 #define TimeForACCAndDCC			20 //2 Seconds
 #define MinTimeHome					110 //11 Seconds
 
-// Struktur der Roboter (Position)
-typedef point_t robot_t;
 
 typedef struct
 {
@@ -105,8 +103,8 @@ typedef struct
    uint16_t Start;				// KI-State an der die Aufgabe startet
    uint8_t taskTime;			// Wie lange braucht man für die Aufgabe braucht
    uint8_t Priority;			// Priorität der Aufgabe 
-   robot_t startPosition;		// Einstiegspunkt in die Aufgabe [0]
-   robot_t taskArea[2];			// gibt den Bereich der Aufgabe an ([0] ... links oben; [1] ... rechts unten)
+   point_t startPosition;		// Einstiegspunkt in die Aufgabe [0]
+   point_t taskArea[2];			// gibt den Bereich der Aufgabe an ([0] ... links oben; [1] ... rechts unten)
    int16_t timeToTask;			// Wie lange braucht man bis man beim Anfahrtspunkt der Aufgabe ist
 } task_t;
 

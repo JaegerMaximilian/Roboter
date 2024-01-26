@@ -245,9 +245,6 @@
     <Compile Include="HAL\ports.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="HAL\rrt_transmittingtask.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="HAL\systemclock.c">
       <SubType>compile</SubType>
     </Compile>
@@ -363,6 +360,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="RRTLAN\rrt_timeoutmanager.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RRTLAN\rrt_transmittingtask.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="RRTLAN\rrt_transmittingtask.h">

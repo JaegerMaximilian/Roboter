@@ -303,42 +303,6 @@ uint8_t ParserTask(void)
 						}
 					}
 					
-					else if(pArray[2] == CMD_TEILE && pArray[0] == ADR_VISION_ID_W)
-					{
-						uint8_t countElements = ASCII2Num(pArray[3]) * 10 + ASCII2Num(pArray[4]);
-						
-						
-						// 						for (int i=0; i<(sizeof(visionElements_2) / sizeof(visionElement_t)); i++)
-						// 						{
-						// 							visionElements_2[i].id=0;
-						// 						}
-						//
-						// 						for (int i=0; i<countElements ; i++)
-						// 						{
-						// 							visionElements_2[i].id=ASCII2Num(pArray[i*11+5]) * 10 + ASCII2Num(pArray[i*11+6]);
-						// 							visionElements_2[i].Xpos=ASCII2Num(pArray[i*11+7]) * 1000 + ASCII2Num(pArray[i*11+8])*100+ASCII2Num(pArray[i*11+9]) * 10 + ASCII2Num(pArray[i*11+10]);
-						// 							visionElements_2[i].Ypos=ASCII2Num(pArray[i*11+11]) * 1000 + ASCII2Num(pArray[i*11+12])*100+ASCII2Num(pArray[i*11+13]) * 10 + ASCII2Num(pArray[i*11+14]);
-						// 						}
-						//
-						// 						uint8_t text2[150];
-						// 						sprintf(text2, "#%dTT Last Received Element: %d\r\n %d\r\n*", CHECK_ROBOT_TYPE(ADR_MASTER_ID,ADR_SLAVE_ID),
-						// 						visionElements_2[countElements-1].id, visionElements_2[countElements-1].Ypos);
-						// 						writeString_usart(&WIFI_IF, text2);
-					}
-					
-					else if(pArray[2] == CMD_CHERRY && pArray[0] == ADR_CHERRY_ID)
-					{
-						Punkte_Kirschen = ASCII2Num(pArray[3]) * 10 + ASCII2Num(pArray[4]);
-
-						uint8_t cherryCount[80];
-						sprintf(cherryCount, "#1BD->CountCherries %d\r\n*", Punkte_Kirschen),
-						writeString_usart(&WIFI_IF, cherryCount);
-					}
-					
-					else if(pArray[2] == CMD_PUNKTE && pArray[0] == ADR_SLAVE_ID)
-					{
-						Punkte_SlaveRobot = ASCII2Num(pArray[3]) * 100 + ASCII2Num(pArray[4])*10+ ASCII2Num(pArray[5]);
-					}
 				}
 			}
 			/* store received data */
