@@ -60,6 +60,7 @@ void InitObservation(void)
 uint8_t ObservationTask(void)
 {
 	char text[100];
+	char text1[200];
 	
 	/* loop-index  */
 	int8_t k = 0;
@@ -108,17 +109,20 @@ uint8_t ObservationTask(void)
 	}
 	else
 	{
-		if((enemyRobotLidar[0].time < enemyPosRobotKamera[0].time) && (enemyRobotLidar[0].point.Xpos != 10000))
-		{
-			enemyRobot[0].Xpos = enemyRobotLidar[0].point.Xpos;
-			enemyRobot[0].Ypos = enemyRobotLidar[0].point.Ypos;
-		}
-		else
+		if((enemyRobotLidar[0].time >= enemyPosRobotKamera[0].time) && (enemyRobotLidar[0].point.Xpos == 10000))
 		{
 			enemyRobot[0].Xpos = enemyPosRobotKamera[0].point.Xpos;
 			enemyRobot[0].Ypos = enemyPosRobotKamera[0].point.Ypos;
 		}
+		else
+		{
+			enemyRobot[0].Xpos = enemyRobotLidar[0].point.Xpos;
+			enemyRobot[0].Ypos = enemyRobotLidar[0].point.Ypos;
+			
+		}
 	}
+	//sprintf(text1, "Lidar: %d Kam: %d En: %d  ",enemyRobotLidar[0].point.Xpos, enemyPosRobotKamera[0].point.Xpos, enemyRobot[0].Xpos);
+	//SendDebugMessage(text1,2);
 
 
 	/* observation is started -> observe the motion of the robot */

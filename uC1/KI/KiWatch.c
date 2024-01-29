@@ -475,12 +475,27 @@ uint8_t KiWatchTask(void)
 	
 	//Überwachung wenn Positionsänderung größer als 0,5 m ist ==> fail
 	//Position g
-	point_t aktPoint, oldPoint;
+	static point_t aktPoint, oldPoint;
 	float distance;
 	uint16_t timedif;
 	static uint8_t started = 0;
 	static uint16_t oldTime = 1000;
 	static uint16_t enemyStandstillCounter = 0;
+	
+	// --------------UNBEDINGT SPAETER WIEDER LOESCHEN!!! NUR ZUM TESTEN IM STAND -----------------
+	static uint8_t started2 = 0;
+	if(started2 == 0)
+	{
+		started2 = 1;
+		spielzeit_100telSek = 10000; //10000 1sec = 100
+	}
+	
+	if (spielzeit_100telSek > 0)
+	{
+		spielzeit_100telSek--;
+	}
+	spielZeit_10telSek = spielzeit_100telSek/10;
+	// ----------------------------------------------------------------------------------------------
 	
 	
 	//Init
@@ -499,34 +514,45 @@ uint8_t KiWatchTask(void)
 	if((aktPoint.Xpos == oldPoint.Xpos) && (aktPoint.Ypos == oldPoint.Ypos))
 	{
 		enemyStandstillCounter = enemyStandstillCounter <= 5 ? enemyStandstillCounter++ : 5;
+		
 	}
 	else
 	{
 		enemyStandstillCounter = 0;
 	}
 	
+	
 	//Calcualte Enemy Speed
-	if(aktPoint.Xpos != 10000 && oldPoint.Xpos != 10000 && (oldTime != spielZeit_10telSek)
+	if(aktPoint.Xpos != 10000 && oldPoint.Xpos != 10000 && aktPoint.Xpos != 0 && oldPoint.Xpos != 0 && (oldTime != spielZeit_10telSek) 
 	&& ((enemyStandstillCounter >= 5) || (aktPoint.Xpos != oldPoint.Xpos) || (aktPoint.Ypos != oldPoint.Ypos)))
 	{
+		
 		distance = CalcDistance(aktPoint,oldPoint);
 		timedif = oldTime - spielZeit_10telSek;
 		
 		oldTime = spielZeit_10telSek;
 		
+
 		VelocityEnemy = distance / (float)timedif;
 		
 		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy);
+		
+		//sprintf(text1, "APx: %d OPx: %d Vel: %f ", aktPoint.Xpos , oldPoint.Xpos, VelocityEnemy);
+		//SendDebugMessage(text1,2);
+		
+		//sprintf(text1, "dis: %f tdif: %f Vel: %f ", distance , (float)timedif , VelocityEnemy);
+		//SendDebugMessage(text1,2);
+		
 
 	}
-	
-	sprintf(text1, "APx: %d OPx: %d Vel: %f ", aktPoint.Xpos , oldPoint.Xpos, VelocityEnemy);
-	SendDebugMessage(text1,2);
-	
+		
 	oldPoint.Xpos = aktPoint.Xpos;
 	oldPoint.Ypos = aktPoint.Ypos;
 	
+	//sprintf(text1, "oldT: %d spT: %d Vel: %f ", oldTime , spielZeit_10telSek, VelocityEnemy);
+	//SendDebugMessage(text1,2);
 	
+		
 	
 	/****************************************************************************************
 	***   Check for multiple Poition-Differences from Messräder, Lidar (Beacons) and Kamera		***
