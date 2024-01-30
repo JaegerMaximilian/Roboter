@@ -483,6 +483,7 @@ uint8_t KiWatchTask(void)
 	static uint16_t enemyStandstillCounter = 0;
 	
 	// --------------UNBEDINGT SPAETER WIEDER LOESCHEN!!! NUR ZUM TESTEN IM STAND -----------------
+	/*
 	static uint8_t started2 = 0;
 	if(started2 == 0)
 	{
@@ -494,7 +495,8 @@ uint8_t KiWatchTask(void)
 	{
 		spielzeit_100telSek--;
 	}
-	spielZeit_10telSek = spielzeit_100telSek/10;
+	spielZeit_10telSek = spielzeit_100telSek/10; 
+	*/
 	// ----------------------------------------------------------------------------------------------
 	
 	
