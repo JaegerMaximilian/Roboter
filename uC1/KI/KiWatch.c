@@ -496,9 +496,9 @@ uint8_t KiWatchTask(void)
 		spielzeit_100telSek--;
 	}
 	spielZeit_10telSek = spielzeit_100telSek/10; 
-	*/
-	// ----------------------------------------------------------------------------------------------
 	
+	// ----------------------------------------------------------------------------------------------
+	*/
 	
 	//Init
 	
@@ -509,53 +509,50 @@ uint8_t KiWatchTask(void)
 		oldPoint.Ypos = enemyRobot[0].Ypos;
 		
 	}
+	if(enemyRobot[0].Xpos <= 3000 && enemyRobot[0].Ypos <= 2000)
+	{
+		aktPoint.Xpos = enemyRobot[0].Xpos;
+		aktPoint.Ypos = enemyRobot[0].Ypos;
+		
+	}
 	
-	aktPoint.Xpos = enemyRobot[0].Xpos;
-	aktPoint.Ypos = enemyRobot[0].Ypos;
 	
 	if((aktPoint.Xpos == oldPoint.Xpos) && (aktPoint.Ypos == oldPoint.Ypos))
 	{
-		enemyStandstillCounter = enemyStandstillCounter <= 5 ? enemyStandstillCounter++ : 5;
-		
+		enemyStandstillCounter = enemyStandstillCounter <= 3 ? enemyStandstillCounter++ : 3; // dieser Wert von StandStillCounter ist anpassbar
 	}
 	else
 	{
 		enemyStandstillCounter = 0;
 	}
 	
-	
 	//Calcualte Enemy Speed
-	if(aktPoint.Xpos != 10000 && oldPoint.Xpos != 10000 && aktPoint.Xpos != 0 && oldPoint.Xpos != 0 && (oldTime != spielZeit_10telSek) 
-	&& ((enemyStandstillCounter >= 5) || (aktPoint.Xpos != oldPoint.Xpos) || (aktPoint.Ypos != oldPoint.Ypos)))
+	
+	if(aktPoint.Xpos != 10000 && oldPoint.Xpos != 10000 && aktPoint.Xpos != 0 && oldPoint.Xpos != 0 && (oldTime != spielZeit_10telSek) )
+	//&& ( (aktPoint.Xpos != oldPoint.Xpos) || (aktPoint.Ypos != oldPoint.Ypos))) // enemyStandstillCounter >= 3 ||
 	{
-		
-		distance = CalcDistance(aktPoint,oldPoint);
+	
+		distance = sqrtf(pow(((float)aktPoint.Xpos - (float)oldPoint.Xpos), 2.0) + pow(((float)aktPoint.Ypos - (float)oldPoint.Ypos), 2.0));
+
 		timedif = oldTime - spielZeit_10telSek;
 		
 		oldTime = spielZeit_10telSek;
 		
-
-		VelocityEnemy = distance / (float)timedif;
+		// ----- VelocityEnemy schwankt noch  bis zu 150 mm/s im STILLSTAND an! 
+		// ----- vllt Stillstand-Schwelle festlegen, über der man sagt dass der Gegner fährt, oder über zB 3-5 Werte drübermitteln
+		// ----- dann bleibt noch die Frage wie oft wir die Geschw. brauchen: wenn wir über 5 Werte mitteln bekommen wir sie vllt nur alle 1000 ms
 		
-		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy);
-		
-		//sprintf(text1, "APx: %d OPx: %d Vel: %f ", aktPoint.Xpos , oldPoint.Xpos, VelocityEnemy);
+		VelocityEnemy = distance / ((float)timedif/10.0); // /10 wegen Zehntel-Sekunden
+		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy); // dann gehen wir davon aus dass der Enemy nicht schneller als 700 mm/s fahren kann
+			
+		//sprintf(text1, "APx: %d APy %d dis: %f Vel: %f",aktPoint.Xpos , aktPoint.Ypos, distance , VelocityEnemy);
 		//SendDebugMessage(text1,2);
-		
-		//sprintf(text1, "dis: %f tdif: %f Vel: %f ", distance , (float)timedif , VelocityEnemy);
-		//SendDebugMessage(text1,2);
-		
 
 	}
-		
-	oldPoint.Xpos = aktPoint.Xpos;
-	oldPoint.Ypos = aktPoint.Ypos;
-	
-	//sprintf(text1, "oldT: %d spT: %d Vel: %f ", oldTime , spielZeit_10telSek, VelocityEnemy);
-	//SendDebugMessage(text1,2);
-	
-		
-	
+		oldPoint.Xpos = aktPoint.Xpos;
+		oldPoint.Ypos = aktPoint.Ypos;
+
+
 	/****************************************************************************************
 	***   Check for multiple Poition-Differences from Messräder, Lidar (Beacons) and Kamera		***
 	***			to run Positionsfindung															***

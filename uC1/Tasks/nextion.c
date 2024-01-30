@@ -203,6 +203,7 @@ uint8_t NextionTask(void)
 				SpielFarbe_Nextion = NextionArray[2];
 				ConfigPlanter_Nextion = NextionArray[3];
 				ConfigStehlen_Nextion = NextionArray[4];
+				Config4Plants_Nextion = NextionArray[5];
 			}
 			/* store received data */
 			else if ((receiveEnable == TRUE) && (NextionIndex < sizeof(NextionArray)))

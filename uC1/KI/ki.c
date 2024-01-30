@@ -66,6 +66,7 @@ All Rights Reserved.
 
 
 char text[200];
+char text2[200];
 
 /* to stop the robot only once at end of match */
 uint8_t stopEngin = 0;
@@ -701,13 +702,15 @@ uint8_t KiTask(void)
 	SET_CYCLE(KI_TASKNBR, 100);
 	
 	char text1[300];
+	char text2[300];
+	
 	
 	//Position of enemy and my own robot
 	uint8_t index [] = {1,2,3,4,5,6};
 
 	
 	//State and Priority of Tasks
-	uint8_t index1 [] = {1,2,3,4,5,6,11,12,13,15,16,21,22,23,25,26,30,31,32};
+	uint8_t index1 [] = {1,2,3,4,5,6,11,12,13,14,15,16,21,22,23,24,25,26,30,31,32};
 	uint8_t state[] = {	KI_Task[1].Status,KI_Task[2].Status,KI_Task[3].Status,KI_Task[4].Status,KI_Task[5].Status,KI_Task[6].Status,
 		KI_Task[11].Status,KI_Task[12].Status,KI_Task[13].Status,KI_Task[14].Status,KI_Task[15].Status,KI_Task[16].Status,
 	KI_Task[21].Status,KI_Task[22].Status,KI_Task[23].Status,KI_Task[24].Status,KI_Task[25].Status,KI_Task[26].Status,KI_Task[30].Status,KI_Task[31].Status,KI_Task[32].Status};
@@ -862,17 +865,25 @@ uint8_t KiTask(void)
 			uint16_t LocTimeHomeSolar2 = (((TimeAllSolarPanelsHome + TimeParkPlantsMinus1AtHome) > MinTimeHome) ? (TimeAllSolarPanelsHome + TimeParkPlantsMinus1AtHome) : MinTimeHome);
 			uint16_t LocTimeGetPlant1 = ((TimeAllSolarPanelsHome > MinTimeHome) ? TimeAllSolarPanelsHome : MinTimeHome);
 			
-			if (OpenPlants != 0 && PlantsInRobot < 3)
+			if (OpenPlants != 0 && PlantsInRobot < 3 + Config4Plants_Nextion)
 			{
 				TimeGetAndParkNextPlant = CalcTimeRemainingPlants();
 				
-				//sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + TimeAllSolarPanelsHome + TimeParkPlantsAtHome);
-				//SendDebugMessage(text1,1);
+				sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + LocTimeHomeSolar1);
+				SendDebugMessage(text1,1);
+				
+				if (OpenPlants == 1) 
+				{
+						Stoppuhr_Start = 1;
+						sprintf(text2, "Stoppuhr gestartet");
+						SendDebugMessage(text2,2);
+				}
 			}
 			else
 			{
 				TimeGetAndParkNextPlant = 0;
 			}
+			
 			CalcOpenParkPositions();
 			PosHome = ((SpielFarbe = BLUE) ? PosFieldL3 : PosFieldR3);
 			//Select Next Step
@@ -997,7 +1008,6 @@ uint8_t KiTask(void)
 		{
 			point_t start, ziel;
 			
-			
 			// Start Position to begin movement from
 			start.Xpos = xPos;
 			start.Ypos = yPos;
@@ -1040,6 +1050,7 @@ uint8_t KiTask(void)
 		
 		case 1010:
 		{
+			
 			/* check observation-result */
 			switch (GetObservationResult())
 			{
@@ -1235,7 +1246,7 @@ uint8_t KiTask(void)
 					if(((spielZeit_10telSek < (TimeToHome + LocTimeHome)) && OpenPlanter == 0)
 					|| ((spielZeit_10telSek < (TimeParkNextPlant + MinTimeHome)) && OpenPlanter > 0)
 					|| (spielZeit_10telSek < (TimeToHome + MinTimeHome))
-					|| (planedPlants == 4))
+					|| (planedPlants == 4 && PlantsInRobot == 3))
 					{
 						KI_State = 500;
 					}
@@ -1407,7 +1418,7 @@ uint8_t KiTask(void)
 					if(((spielZeit_10telSek < (TimeToHome + LocTimeHome)) && OpenPlanter == 0)
 					|| ((spielZeit_10telSek < (TimeParkNextPlant + MinTimeHome)) && OpenPlanter > 0)
 					|| (spielZeit_10telSek < (TimeToHome + MinTimeHome))
-					|| (planedPlants == 4))
+					|| (planedPlants == 4 && PlantsInRobot == 3))
 					{
 						KI_State = 500;
 					}
@@ -1581,7 +1592,7 @@ uint8_t KiTask(void)
 					if(((spielZeit_10telSek < (TimeToHome + LocTimeHome)) && OpenPlanter == 0)
 					|| ((spielZeit_10telSek < (TimeParkNextPlant + MinTimeHome)) && OpenPlanter > 0)
 					|| (spielZeit_10telSek < (TimeToHome + MinTimeHome))
-					|| (planedPlants == 4))
+					|| (planedPlants == 4 && PlantsInRobot == 3))
 					{
 						KI_State = 500;
 					}
@@ -1751,7 +1762,7 @@ uint8_t KiTask(void)
 					if(((spielZeit_10telSek < (TimeToHome + LocTimeHome)) && OpenPlanter == 0)
 					|| ((spielZeit_10telSek < (TimeParkNextPlant + MinTimeHome)) && OpenPlanter > 0)
 					|| (spielZeit_10telSek < (TimeToHome + MinTimeHome))
-					|| (planedPlants == 4))
+					|| (planedPlants == 4 && PlantsInRobot == 3))
 					{
 						KI_State = 500;
 					}
@@ -1921,7 +1932,7 @@ uint8_t KiTask(void)
 					if(((spielZeit_10telSek < (TimeToHome + LocTimeHome)) && OpenPlanter == 0)
 					|| ((spielZeit_10telSek < (TimeParkNextPlant + MinTimeHome)) && OpenPlanter > 0)
 					|| (spielZeit_10telSek < (TimeToHome + MinTimeHome))
-					|| (planedPlants == 4))
+					|| (planedPlants == 4 && PlantsInRobot == 3))
 					{
 						KI_State = 500;
 					}
@@ -5893,9 +5904,11 @@ uint8_t KiTask(void)
 			//Ende im Gelände
 			Points = Points + 10;
 			
-			sprintf(text1, "Stoppuhr: %d", Stoppuhr);
-			SendDebugMessage(text1,2);
+			sprintf(text2, "Stoppuhr: %d", Stoppuhr);
+			SendDebugMessage(text2,2);
 			Stoppuhr_Start = 0;
+			
+			
 			
 			
 			

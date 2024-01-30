@@ -358,6 +358,7 @@ uint16_t CalcTimeRemainingPlants(void)
 	// nach dem testen das Printen in den Logger wieder auskommentieren!!!!
 	
 	char text1[300];
+	char text2[300];
 	//sprintf(text1, "Next Plant: %d", IndexMaxPrioPflanze);
 	//SendDebugMessage(text1,1);
 
@@ -460,12 +461,7 @@ uint16_t CalcTimeRemainingPlants(void)
 		}
 		
 		
-		if (IndexNextPlanter == 16 || IndexNextPlanter == 26)
-		{
-			Stoppuhr_Start = 1;
-			sprintf(text1, "Stoppuhr gestartet");
-			SendDebugMessage(text1,2);
-		}
+		
 		
 		/*
 		// wenn der nächste Planter == Home und SolarPanelsMitte OPEN -> Wege der SolarPanels dazurechnen!
