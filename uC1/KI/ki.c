@@ -164,7 +164,7 @@ void InitKI(void)
 	
 	Points = 0;
 	
-	PosHome = ((SpielFarbe = BLUE) ? PosFieldL3 : PosFieldR3);
+	PosHome = ((SpielFarbe == BLUE) ? PosFieldL3 : PosFieldR3);
 
 	//Set Gamecolors
 	if(SpielFarbe_Nextion == BLUE_L1 || SpielFarbe_Nextion == BLUE_L3 || SpielFarbe_Nextion == BLUE_R2)
@@ -872,11 +872,11 @@ uint8_t KiTask(void)
 				sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + LocTimeHomeSolar1);
 				SendDebugMessage(text1,1);
 				
-				if (OpenPlants == 1) 
+				if (OpenPlants == 1)
 				{
-						Stoppuhr_Start = 1;
-						sprintf(text2, "Stoppuhr gestartet");
-						SendDebugMessage(text2,2);
+					Stoppuhr_Start = 1;
+					sprintf(text2, "Stoppuhr gestartet");
+					SendDebugMessage(text2,2);
 				}
 			}
 			else
@@ -885,7 +885,7 @@ uint8_t KiTask(void)
 			}
 			
 			CalcOpenParkPositions();
-			PosHome = ((SpielFarbe = BLUE) ? PosFieldL3 : PosFieldR3);
+			PosHome = ((SpielFarbe == BLUE) ? PosFieldL3 : PosFieldR3);
 			//Select Next Step
 			if(spielZeit_10telSek < (TimeToHome + LocTimeHome1))
 			{
@@ -2174,6 +2174,9 @@ uint8_t KiTask(void)
 				enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
 			}
 			
+			sprintf(text1, "%f; %f; %f; %d", distance_PlanterMidle,distance_Planter1,distance_Planter2,SpielFarbe);
+			SendDebugMessage(text1,2);
+			
 			//Planter 2
 			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN)
 			&& ((distance_Planter2 < distance_PlanterMidle)||(KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN))
@@ -2190,7 +2193,7 @@ uint8_t KiTask(void)
 			}
 			
 			//Field 2
-			if(Config4Plants_Nextion && KI_Task[15].Priority == 88 && PlantsInRobot == 4)
+			if(Config4Plants_Nextion && KI_Task[15].Priority == 88 && PlantsInRobot == 4 && !(KI_Task[14].Status == DONE))
 			{
 				KI_Task[14].Status = OPEN;
 			}
@@ -3595,7 +3598,7 @@ uint8_t KiTask(void)
 		}
 		case 24012:
 		{
-			cmd_Drive(0,0,-200,0,0,2500,yPos,0,POS_ABS,ON,NULL,NULL,STANDARD_ACC,STANDARD_ACC);
+			cmd_Drive(0,0,-200,0,0,500,yPos,0,POS_ABS,ON,NULL,NULL,STANDARD_ACC,STANDARD_ACC);
 			KI_State=24015;
 			break;
 		}
