@@ -344,6 +344,7 @@ uint16_t CalcTimeRemainingPlants(void)
 	int IndexMaxPrioPflanze = 0;
 	int MaxPrio = 0;
 	uint16_t timeHandlenextPlant = 0;
+	uint16_t waysToDrive = 0;
 	
 	for (int i = 1; i <= 6; i++)
 	{
@@ -408,7 +409,7 @@ uint16_t CalcTimeRemainingPlants(void)
 	//SendDebugMessage(text1,1);
 	
 	uint8_t PrivatePlantsInRobot = PlantsInRobot;
-	uint16_t waysToDrive = 0;
+	
 	//uint8_t ArtificialPlantsInRobot = PlantsInRobot;
 	//
 	if (IndexMaxPrioPflanze != 0)
