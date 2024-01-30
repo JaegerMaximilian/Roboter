@@ -343,6 +343,7 @@ uint16_t CalcTimeRemainingPlants(void)
 
 	int IndexMaxPrioPflanze = 0;
 	int MaxPrio = 0;
+	uint16_t timeHandlenextPlant = 0;
 	
 	for (int i = 1; i <= 6; i++)
 	{
@@ -352,6 +353,8 @@ uint16_t CalcTimeRemainingPlants(void)
 			MaxPrio = KI_Task[i].Priority;
 			IndexMaxPrioPflanze = i;
 			
+			timeHandlenextPlant = TimeHandleNextPlant;
+			waysToDrive = waysToDrive + 1;
 		}
 		
 	}
@@ -421,113 +424,54 @@ uint16_t CalcTimeRemainingPlants(void)
 	// Berechne Zeit die es dauert, um alle Pflanzen der Reihe nach bei versch. Plantern abzustellen!!
 	uint8_t IndexNextPlanter;
 	uint16_t TimeToPark = 0;
-	
-	
-	
-	
+
 	
 	for(int i = 0; i< PrivatePlantsInRobot; i++)
 	{
 		IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
 		
-		
-	
-		
+
 		//sprintf(text1, "Planned Planter: %d PIR: %d", IndexNextPlanter,PrivatePlantsInRobot);
 		//SendDebugMessage(text1,1);
 
-		if (IndexNextPlanter==11){
-			PlanterOrFieldPos = PosPlanterMidleBlue;
+			if (IndexNextPlanter==11){
+				PlanterOrFieldPos = PosPlanterMidleBlue;
 			} else if (IndexNextPlanter == 12){
-			PlanterOrFieldPos = PosFieldL1;
+				PlanterOrFieldPos = PosFieldL1;
 			} else if (IndexNextPlanter == 13){
-			PlanterOrFieldPos = PosPlanterL1;
+				PlanterOrFieldPos = PosPlanterL1;
 			
 			} else if (IndexNextPlanter == 15){
-			PlanterOrFieldPos = PosPlanterL2;
+				PlanterOrFieldPos = PosPlanterL2;
 			} else if (IndexNextPlanter == 16){
-			PlanterOrFieldPos = PosFieldL3;
+				PlanterOrFieldPos = PosFieldL3;
 			} else if (IndexNextPlanter == 21){
-			PlanterOrFieldPos = PosPlanterMidleYellow;
+				PlanterOrFieldPos = PosPlanterMidleYellow;
 			} else if (IndexNextPlanter == 22){
-			PlanterOrFieldPos = PosFieldR1;
+				PlanterOrFieldPos = PosFieldR1;
 			} else if (IndexNextPlanter == 23){
-			PlanterOrFieldPos = PosPlanterR1;
+				PlanterOrFieldPos = PosPlanterR1;
 			
 			} else if (IndexNextPlanter == 25){
-			PlanterOrFieldPos = PosPlanterR2;
+				PlanterOrFieldPos = PosPlanterR2;
 			} else if (IndexNextPlanter == 26){
-			PlanterOrFieldPos = PosFieldR3;
-		}
-		
-		
-		
-		
-		/*
-		// wenn der nächste Planter == Home und SolarPanelsMitte OPEN -> Wege der SolarPanels dazurechnen!
-		if ((IndexNextPlanter == 16 || IndexNextPlanter == 26) && KI_Task[31].Status == OPEN)
-		{
-			Stoppuhr_Start = 1;
-			sprintf(text1, "Stoppuhr gestartet");
-			SendDebugMessage(text1,1);
-			
-			//totalDistance = totalDistance + CalcDistance(aktpos, PosSolarPanelsMiddle);
-			
-			if (SpielFarbe == BLUE)
-			{
-				totalDistance = totalDistance + CalcDistance(PosSolarPanelsMiddle, PosSolarPanelsBlue) + CalcDistance(PosSolarPanelsBlue, PlanterOrFieldPos);
-				
+				PlanterOrFieldPos = PosFieldR3;
 			}
-			else if (SpielFarbe == Yellow)
-			{
-				totalDistance = totalDistance + CalcDistance(PosSolarPanelsMiddle, PosSolarPanelsYellow) + CalcDistance(PosSolarPanelsYellow, PlanterOrFieldPos);
-			}
-			waysToDrive = waysToDrive + 3;
-		} // wenn nächster Planter == Home aber nur SolarPanelsHome machen!!
-		else if ((IndexNextPlanter == 16 || IndexNextPlanter == 26)) // die SolarPanelsHome machen wir eh in jedem Fall oder? 
-		{
-			Stoppuhr_Start = 1;
-			sprintf(text1, "Stoppuhr gestartet");
-			SendDebugMessage(text1,1);
-			
-			if (SpielFarbe == BLUE)
-			{
-				totalDistance = totalDistance + CalcDistance(aktpos, PosSolarPanelsBlue) + CalcDistance(PosSolarPanelsBlue, PlanterOrFieldPos);
-				
-			}
-			else if (SpielFarbe == Yellow)
-			{
-				totalDistance = totalDistance + CalcDistance(aktpos, PosSolarPanelsYellow) + CalcDistance(PosSolarPanelsYellow, PlanterOrFieldPos);
-			}
-			waysToDrive = waysToDrive + 2;
-		} 
-		else
-		{ 
-			totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
-			waysToDrive = waysToDrive + 1;
-		}*/
 		
 		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
 		waysToDrive = waysToDrive + 1;
 		
-		
-		
-		
-		
-		
+
 		if (IndexNextPlanter == 12 || IndexNextPlanter == 14 || IndexNextPlanter == 22 || IndexNextPlanter == 24 ) // if park at fields
 		{
-			TimeToPark = TimeToPark + TimeParkNextPlantInField;
+			TimeToPark =  TimeToPark + TimeParkNextPlantInField;
 		}
 		else if (IndexNextPlanter ==  11 || IndexNextPlanter ==  13 || IndexNextPlanter ==  15 || IndexNextPlanter ==  21 ||
 		IndexNextPlanter ==  23 || IndexNextPlanter ==  25 ) // if park at planters
 		{
 			TimeToPark = TimeToPark + TimeParkNextPlantInPlanter;
 		}
-		else if (PrivatePlantsInRobot > OpenParkPos) // if park at home
-		{
-			
-			
+		
 			// ANMERKUNGEN FÜR NÄCHSTES MAL: 
 			
 			// wir zählen ja die Wege nicht mit die der Roboter von der letzten Pflanze zu den SolarPanelsMitte braucht
@@ -535,24 +479,7 @@ uint16_t CalcTimeRemainingPlants(void)
 			// -> gemacht aber auskommentiert, da geben wir so hohe Zeiten zurück!
 			// was ist wenn wir nicht nur noch die eine Abstellstation Home haben, sondern noch mehrere vor uns? Müssten wir dafür nicht
 			// OpenParkPos zu zB PrivateOpenParkPos machen und in die Zukunft vorrechnen?
-			
-			
-			// ZÄHLEN WIR DIESE ZEIT NICHT SCHON BEI DER ABFRAGE IM CASE 500 als "TimeParkPlantsAtHome" mit???
-			if((PrivatePlantsInRobot - OpenParkPos) == 0)
-			{
-				TimeToPark = TimeToPark + TimePark1PlantAtHome;
-			}
-			else if((PrivatePlantsInRobot - OpenParkPos) == 1)
-			{
-				TimeToPark = TimeToPark + TimePark2PlantsAtHome;
-			}
-			else if((PrivatePlantsInRobot - OpenParkPos) == 2)
-			{
-				TimeToPark = TimeToPark + TimePark3PlantsAtHome;
-			}
-			
-		} 
-		
+
 		aktpos = PlanterOrFieldPos;
 		
 		if(IndexNextPlanter != 0)
@@ -565,21 +492,26 @@ uint16_t CalcTimeRemainingPlants(void)
 		}
 	}
 	
+	// ADDIERE WEG VON PLANTER ZU SOLARPANELS MITTE UND VON SOLARPANELS MITTE ZU HOME
+	if (SpielFarbe == BLUE)
+	{
+		totalDistance = totalDistance + CalcDistance(PlanterOrFieldPos,PosPlanterMidleBlue) + CalcDistance(PosPlanterMidleBlue,PosFieldL3);
+		waysToDrive = waysToDrive + 2;
+	}
+	else if (SpielFarbe == Yellow)
+	{
+		totalDistance = totalDistance + CalcDistance(PlanterOrFieldPos,PosPlanterMidleYellow) + CalcDistance(PosPlanterMidleYellow,PosFieldR3);
+		waysToDrive = waysToDrive + 2;
+	}
+	
+	
 	// LETZTER SCHRITT:
 	// devide a fixed Velocity by the total Distance
+	
 	uint16_t spazi = 0;
-	uint16_t timeHandlenextPlant = 0;
-
-	if(IndexMaxPrioPflanze != 0)
-	{
-		timeHandlenextPlant = TimeHandleNextPlant;
-	}
-	else
-	{
-		timeHandlenextPlant = 0;
-	}
 
 	uint16_t timeToDrive = ((uint16_t)((totalDistance/ STANDARD_VELOCITY)*10.0) + timeHandlenextPlant + TimeToPark +  spazi + waysToDrive*TimeForACCAndDCC);
+	
 	
 	//sprintf(text1, "TTP: %d Dis: %f", TimeToPark,totalDistance);
 	//SendDebugMessage(text1,1);
@@ -749,7 +681,7 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 	float y2;
 	float x3;
 	float y3;
-	int SpielFarbe = BLUE;
+	
 	
 	// !!! WICHTIG: DER LIDAR MUSS DIE DISTANZEN AUCH ABHÄNGIG VON DER SPIELFARBE UND IN DER REIHENFOLGE WIE IM "if-else" unterhalb SCHICKEN!!!!
 	if (SpielFarbe == Yellow)
