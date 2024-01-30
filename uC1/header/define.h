@@ -207,8 +207,8 @@
 
 #define GEGNER_ERKENNUNG_BEIDE		8
 #define GEGNER_ERKENNUNG_SMALL		9
-#define GEGNER_ERKENNUNG_BIG			10
-#define TECH_ABNAHME						11
+#define GEGNER_ERKENNUNG_BIG		10
+#define TECH_ABNAHME				11
 
 /**************************************************************************
 ***		                       STARTPOSITIONEN                      			
