@@ -345,6 +345,7 @@ uint16_t CalcTimeRemainingPlants(void)
 	int MaxPrio = 0;
 	uint16_t timeHandlenextPlant = 0;
 	uint16_t waysToDrive = 0;
+	uint8_t PrivatePlantsInRobot = PlantsInRobot;
 	
 	for (int i = 1; i <= 6; i++)
 	{
@@ -355,6 +356,7 @@ uint16_t CalcTimeRemainingPlants(void)
 			IndexMaxPrioPflanze = i;
 			
 			timeHandlenextPlant = TimeHandleNextPlant;
+			PrivatePlantsInRobot = PrivatePlantsInRobot + 1;
 			waysToDrive = waysToDrive + 1;
 		}
 		
@@ -405,28 +407,11 @@ uint16_t CalcTimeRemainingPlants(void)
 		PrivateKI_Task[i] = KI_Task[i];
 	}
 
-	//sprintf(text1, "Plants in Robot: %d", PlantsInRobot);
-	//SendDebugMessage(text1,1);
-	
-	uint8_t PrivatePlantsInRobot = PlantsInRobot;
-	
-	//uint8_t ArtificialPlantsInRobot = PlantsInRobot;
-	//
-	if (IndexMaxPrioPflanze != 0)
-	{ 
-		PrivatePlantsInRobot = PrivatePlantsInRobot + 1;
-		waysToDrive = 1;
-		//ArtificialPlantsInRobot = PrivatePlantsInRobot + 1;
-	}
-	
-	
-
 	// SCHRITT 4:
 	// Berechne Zeit die es dauert, um alle Pflanzen der Reihe nach bei versch. Plantern abzustellen!!
 	uint8_t IndexNextPlanter;
 	uint16_t TimeToPark = 0;
 
-	
 	for(int i = 0; i< PrivatePlantsInRobot; i++)
 	{
 		IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
@@ -475,11 +460,8 @@ uint16_t CalcTimeRemainingPlants(void)
 		
 			// ANMERKUNGEN FÜR NÄCHSTES MAL: 
 			
-			// wir zählen ja die Wege nicht mit die der Roboter von der letzten Pflanze zu den SolarPanelsMitte braucht
-			// und auch nicht den Weg von SolarPanelsMitte zu SolarPanelsHome, sondern nur den Weg von der letzten Pflanze zum Home
-			// -> gemacht aber auskommentiert, da geben wir so hohe Zeiten zurück!
-			// was ist wenn wir nicht nur noch die eine Abstellstation Home haben, sondern noch mehrere vor uns? Müssten wir dafür nicht
-			// OpenParkPos zu zB PrivateOpenParkPos machen und in die Zukunft vorrechnen?
+			// überprüfen ob er auch erkennt, wenn mehrere Pflanzen Daheim abgestellt werden, oder ob er immer denkt dass wir
+			// nur die letzte Pflanze daheim abstellen!!!
 
 		aktpos = PlanterOrFieldPos;
 		
@@ -493,7 +475,7 @@ uint16_t CalcTimeRemainingPlants(void)
 		}
 	}
 	
-	// ADDIERE WEG VON PLANTER ZU SOLARPANELS MITTE UND VON SOLARPANELS MITTE ZU HOME
+	// SCHRITT 4.5: ADDIERE WEG VON PLANTER ZU SOLARPANELS MITTE UND VON SOLARPANELS MITTE ZU HOME
 	if (SpielFarbe == BLUE)
 	{
 		totalDistance = totalDistance + CalcDistance(PlanterOrFieldPos,PosPlanterMidleBlue) + CalcDistance(PosPlanterMidleBlue,PosFieldL3);
