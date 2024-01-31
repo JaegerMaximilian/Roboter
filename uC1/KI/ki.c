@@ -865,13 +865,24 @@ uint8_t KiTask(void)
 			uint16_t LocTimeHomeSolar2 = (((TimeAllSolarPanelsHome + TimeParkPlantsMinus1AtHome) > MinTimeHome) ? (TimeAllSolarPanelsHome + TimeParkPlantsMinus1AtHome) : MinTimeHome);
 			uint16_t LocTimeGetPlant1 = ((TimeAllSolarPanelsHome > MinTimeHome) ? TimeAllSolarPanelsHome : MinTimeHome);
 			
-			if (OpenPlants != 0 && PlantsInRobot < 3 + Config4Plants_Nextion)
+			if (OpenPlants != 0 && PlantsInRobot < 3 + Config4Plants_Nextion ) 
 			{
 				TimeGetAndParkNextPlant = CalcTimeRemainingPlants();
 				
-				sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + LocTimeHomeSolar1);
-				SendDebugMessage(text1,1);
+				/* sagt noch um ca. 5 sek zu wenig an 
+				(liegt vielleicht daran dass die Funktion die SolarPanelsMitte nicht dazurechnet (soll sie auch nicht) => testen mit dieser Zeit, ob dann exakt
+				 jetzt nimmt er zwar die zwei Zeiten f?r SolarPanels mit (diese 3 + 2 sec gelten f?r alle 3 gesamt oder?), aber noch nicht den Weg dahin */
+				 
+				// sprintf(text1, "Time: %d", TimeGetAndParkNextPlant + LocTimeHomeSolar1 + TimeSolarpanels + TimeSetPosAtSolarPanels);
 				
+				// -----------------------------
+				// noch mal testen mit 4 Pflanzen ob er am Schluss nicht zwei nacheinander holt aber nur berechnet als würde er eine holen!!!
+				// -----------------------------
+				
+				sprintf(text2, "Time: %d", TimeGetAndParkNextPlant + LocTimeHomeSolar1 + TimeAllSolarPanelsHome); // das zweite TimeAllSolarPanelsHome ist für die 3 SolarPanels in der Mitte
+				SendDebugMessage(text2,1);
+				
+
 				if (OpenPlants == 1)
 				{
 					Stoppuhr_Start = 1;
@@ -901,7 +912,7 @@ uint8_t KiTask(void)
 				StateOfGame = SolarPanels;
 			}
 
-			else if(OpenPlants > 0 && PlantsInRobot < 4  && (spielZeit_10telSek > (TimeGetAndParkNextPlant + LocTimeGetPlant1))
+			else if(OpenPlants > 0 && PlantsInRobot < (3 + Config4Plants_Nextion)  && (spielZeit_10telSek > (TimeGetAndParkNextPlant + LocTimeGetPlant1))
 			&& ((OpenParkPos == 0)
 			|| ((ParkedPlants == 1 || ParkedPlants == 2) && (KI_Task[15].Status == DONE || KI_Task[15].Status == LOCKED) && (KI_Task[25].Status == DONE || KI_Task[25].Status == LOCKED))
 			|| (ParkedPlants == 0 && PlantsInRobot < planedPlants)
@@ -4259,8 +4270,8 @@ uint8_t KiTask(void)
 			//später löschen ==> fake task
 			
 			uint16_t LocTimeHome1 = TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels;
-			uint16_t LocTimeHome2 = TimeAllSolarPanelsHome +  TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels;
-			uint16_t LocTimeHome3 = TimeAllSolarPanelsHome + TimeParkPlantsAtHome +  TimeSolarpanels;
+			uint16_t LocTimeHome2 = TimeAllSolarPanelsHome +  TimeParkPlantsAtHome + TimeSolarpanels + TimeSetPosAtSolarPanels; 
+			uint16_t LocTimeHome3 = TimeAllSolarPanelsHome + TimeParkPlantsAtHome +  TimeSolarpanels; 
 			
 			//Wait specific time
 			if(spielZeit_10telSek < (((LocTimeHome1 > MinTimeHome) ? LocTimeHome1 : MinTimeHome) + TimeToHome))
@@ -5920,7 +5931,7 @@ uint8_t KiTask(void)
 			//Ende im Gelände
 			Points = Points + 10;
 			
-			sprintf(text2, "Stoppuhr: %d", Stoppuhr);
+			sprintf(text2, "Stopp");
 			SendDebugMessage(text2,2);
 			Stoppuhr_Start = 0;
 			

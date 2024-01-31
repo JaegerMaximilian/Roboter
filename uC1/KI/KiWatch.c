@@ -91,7 +91,7 @@ uint8_t KiWatchTask(void)
 			Stoppuhr = Stoppuhr + (oldSpielZeit - spielZeit_10telSek);
 		}
 		
-		sprintf(text1, "Stoppuhr: %d", Stoppuhr);
+		sprintf(text1, "Stoppuhr: %d PlantsInRobot: %d", Stoppuhr, PlantsInRobot);
 		SendDebugMessage(text1,2);
 		
 		oldSpielZeit = spielZeit_10telSek;
@@ -509,12 +509,15 @@ uint8_t KiWatchTask(void)
 		oldPoint.Ypos = enemyRobot[0].Ypos;
 		
 	}
+	
+	
 	if(enemyRobot[0].Xpos <= 3000 && enemyRobot[0].Ypos <= 2000)
 	{
 		aktPoint.Xpos = enemyRobot[0].Xpos;
 		aktPoint.Ypos = enemyRobot[0].Ypos;
 		
 	}
+	
 	
 	
 	if((aktPoint.Xpos == oldPoint.Xpos) && (aktPoint.Ypos == oldPoint.Ypos))
@@ -545,7 +548,7 @@ uint8_t KiWatchTask(void)
 		VelocityEnemy = distance / ((float)timedif/10.0); // /10 wegen Zehntel-Sekunden
 		VelocityEnemy = ((VelocityEnemy>700.0) ? 700.0 : VelocityEnemy); // dann gehen wir davon aus dass der Enemy nicht schneller als 700 mm/s fahren kann
 			
-		//sprintf(text1, "APx: %d APy %d dis: %f Vel: %f",aktPoint.Xpos , aktPoint.Ypos, distance , VelocityEnemy);
+		//sprintf(text1, "APx: %d APy %d dis: %f Vel: %f",enemyRobot[0].Xpos , enemyRobot[0].Ypos, distance , VelocityEnemy);
 		//SendDebugMessage(text1,2);
 
 	}

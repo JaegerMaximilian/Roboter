@@ -405,6 +405,10 @@ uint16_t CalcTimeRemainingPlants(void)
 	// BEREITE PrivateKI_Task[] vor um Prios der Planter nicht global herumzuschieben
 	
 	task_t PrivateKI_Task[MAX_KI_TASKS];
+	
+	uint8_t Next_Planters[3];
+	uint8_t PlanterCounter = 0;
+
 	point_t PlanterOrFieldPos;
 	
 	for(int i= 0; i<65;i++)
@@ -420,10 +424,6 @@ uint16_t CalcTimeRemainingPlants(void)
 	for(int i = 0; i< PrivatePlantsInRobot; i++)
 	{
 		IndexNextPlanter = PrivateSearchNextPlanter(aktpos, PrivateKI_Task);
-		
-
-		//sprintf(text1, "Planned Planter: %d PIR: %d", IndexNextPlanter,PrivatePlantsInRobot);
-		//SendDebugMessage(text1,1);
 
 		if (IndexNextPlanter==11){
 			PlanterOrFieldPos = PosPlanterMidleBlue;
@@ -463,22 +463,31 @@ uint16_t CalcTimeRemainingPlants(void)
 			TimeToPark = TimeToPark + TimeParkNextPlantInPlanter;
 		}
 		
-			// ANMERKUNGEN F�R N�CHSTES MAL: 
-			
-			// �berpr�fen ob er auch erkennt, wenn mehrere Pflanzen Daheim abgestellt werden, oder ob er immer denkt dass wir
-			// nur die letzte Pflanze daheim abstellen!!!
 
 		aktpos = PlanterOrFieldPos;
 		
 		if(IndexNextPlanter != 0)
 		{
 			PrivateKI_Task[IndexNextPlanter].Status = DONE;
+			
+			if (PlanterCounter < 3)
+			{
+				Next_Planters[PlanterCounter] = IndexNextPlanter;
+				PlanterCounter = PlanterCounter + 1;
+			}
+			else 
+			{
+				PlanterCounter = 0;
+			}
 		}
 		else
 		{
 			break;
 		}
 	}
+	
+	//sprintf(text2, "Pl1: %d Pl2: %d Pl3: %d", Next_Planters[0], Next_Planters[1], Next_Planters[2]);
+	//SendDebugMessage(text2,2);
 	
 	// SCHRITT 4.5: ADDIERE WEG VON PLANTER ZU SOLARPANELS MITTE UND VON SOLARPANELS MITTE ZU HOME
 	if (SpielFarbe == BLUE)
@@ -517,12 +526,13 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 {
 	
 	
-	point_t PlanterMidlePos, Planter2Pos, field1Pos, field3Pos, aktPos, Planter1Pos;
+	point_t PlanterMidlePos, Planter2Pos, field1Pos, field3Pos, aktPos, Planter1Pos, field2Pos; 
 	float distance_PlanterMidle;
 	float distance_Planter2;
 	float distance_Planter1;
 	float distance_Field1;
 	float distance_Field3;
+	float distance_Field2;
 	int enemyRobotInPlanter2;
 	
 	// Start Position to begin movement from
@@ -537,6 +547,8 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 		Planter2Pos = PosPlanterR2;
 		//Position of Field 1
 		field1Pos = PosFieldL1;
+		//Position of Field 2
+		field2Pos = PosFieldR2;
 		//Position of Field 3
 		field3Pos = PosFieldL3;
 	}
@@ -550,6 +562,8 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 		Planter2Pos = PosPlanterL2;
 		//Position of Field 1
 		field1Pos = PosFieldR1;
+		//Position of Field 2
+		field2Pos = PosFieldL2;
 		//Position of Field 3
 		field3Pos = PosFieldR3;
 	}
@@ -561,19 +575,25 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	//Distance to Planter2
 	distance_Planter2 = CalcDistance(aktPos,Planter2Pos);
 	//Distance to Field1
-	distance_Field1 = CalcDistance(aktPos,field1Pos);;
+	distance_Field1 = CalcDistance(aktPos,field1Pos);
 	//Distance to Field3
-	distance_Field3 = CalcDistance(aktPos,field3Pos);;
+	distance_Field2 = CalcDistance(aktPos,field2Pos);;
+	//Distance to Field3
+	distance_Field3 = CalcDistance(aktPos,field3Pos);
 	
 	//Default Prios
-	PrivateKI_Task[12].Priority = 80;
-	PrivateKI_Task[22].Priority = 80;
+	PrivateKI_Task[12].Priority = 84;
+	PrivateKI_Task[22].Priority = 84;
 	
 	//Priority for fixed Tasks
-	PrivateKI_Task[11].Priority = 88;
-	PrivateKI_Task[21].Priority = 88;
-	PrivateKI_Task[13].Priority = 86;
-	PrivateKI_Task[23].Priority = 86;
+	PrivateKI_Task[14].Priority = 89;
+	PrivateKI_Task[24].Priority = 89;
+	PrivateKI_Task[11].Priority = 86;
+	PrivateKI_Task[21].Priority = 86;
+	PrivateKI_Task[13].Priority = 84;
+	PrivateKI_Task[23].Priority = 84;
+	PrivateKI_Task[16].Priority = 81;
+	PrivateKI_Task[26].Priority = 81;
 	
 	//Detect if Enemy is in Area Planter 2
 	if(SpielFarbe == BLUE)
@@ -584,47 +604,66 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	{
 		enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
 	}
+	
 	//Planter 2
 	if((PrivateKI_Task[15].Status == OPEN || PrivateKI_Task[25].Status == OPEN)
 	&& ((distance_Planter2 < distance_PlanterMidle)||(PrivateKI_Task[11].Status != OPEN && PrivateKI_Task[21].Status != OPEN))
 	&& ((distance_Planter2 < distance_Planter1)||(PrivateKI_Task[13].Status != OPEN && PrivateKI_Task[23].Status != OPEN))
 	&& (enemyRobotInPlanter2 == 0))
 	{
-		PrivateKI_Task[15].Priority = 89;
-		PrivateKI_Task[25].Priority = 89;
+		PrivateKI_Task[15].Priority = 88;
+		PrivateKI_Task[25].Priority = 88;
 	}
 	else
 	{
-		PrivateKI_Task[15].Priority = 83;
-		PrivateKI_Task[25].Priority = 83;
-	}
-
-	//Task field 1 as Prio 87
-	if((PrivateKI_Task[11].Status != OPEN && PrivateKI_Task[21].Status != OPEN && PlantsInRobot > 1) && (PrivateKI_Task[13].Status == OPEN || PrivateKI_Task[23].Status == OPEN))
-	{
-		PrivateKI_Task[12].Priority = 87;
-		PrivateKI_Task[22].Priority = 87;
+		PrivateKI_Task[15].Priority = 82;
+		PrivateKI_Task[25].Priority = 82;
 	}
 	
-	//Task field1 and field3 as Prio 84/85
-	if((PrivateKI_Task[11].Status != OPEN && PrivateKI_Task[21].Status != OPEN && PrivateKI_Task[12].Status != OPEN && PrivateKI_Task[22].Status != OPEN))
+	//Field 2
+	if((PrivateKI_Task[14].Status == OPEN) || (PrivateKI_Task[14].Status == PENDING))
 	{
-		if(distance_Field1<distance_Field3)
+		if(Config4Plants_Nextion && PrivateKI_Task[15].Priority == 88 && PlantsInRobot == 4)
 		{
-			PrivateKI_Task[12].Priority = 85;
-			PrivateKI_Task[22].Priority = 85;
-			PrivateKI_Task[16].Priority = 84;
-			PrivateKI_Task[26].Priority = 84;
+			PrivateKI_Task[14].Status = OPEN;
 		}
 		else
 		{
-			
-			PrivateKI_Task[12].Priority = 84;
-			PrivateKI_Task[22].Priority = 84;
-			PrivateKI_Task[16].Priority = 85;
-			PrivateKI_Task[26].Priority = 85;
-			
+			PrivateKI_Task[14].Status = PENDING;
 		}
+	}
+	
+	if((PrivateKI_Task[24].Status == OPEN) || (PrivateKI_Task[24].Status == PENDING))
+	{
+		if(Config4Plants_Nextion && PrivateKI_Task[25].Priority == 88 && PlantsInRobot == 4)
+		{
+			PrivateKI_Task[24].Status = OPEN;
+		}
+		else
+		{
+			PrivateKI_Task[24].Status = PENDING;
+		}
+	}
+	
+	
+	//Field 1
+	if(PlantsInRobot == 4)
+	{
+		//Task field 1 as Prio 87
+		PrivateKI_Task[12].Priority = 87;
+		PrivateKI_Task[22].Priority = 87;
+	}
+	else if(PrivateKI_Task[11].Status != OPEN && PrivateKI_Task[21].Status != OPEN && PlantsInRobot > 1)
+	{
+		//Task field 1 as Prio 85
+		PrivateKI_Task[12].Priority = 85;
+		PrivateKI_Task[22].Priority = 85;
+	}
+	else
+	{
+		//Task field1  as Prio 83
+		PrivateKI_Task[12].Priority = 83;
+		PrivateKI_Task[22].Priority = 83;
 	}
 	
 	int MaxPlanterPrio = 0;
@@ -632,7 +671,7 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 	
 	for(uint8_t i= 11; i<=26;i++)
 	{
-		if((i<=16 || i>=21) && i != 24 && i!= 14 && PrivateKI_Task[i].Status == OPEN &&
+		if((i<=16 || i>=21) && PrivateKI_Task[i].Status == OPEN &&
 		PrivateKI_Task[i].Priority > MaxPlanterPrio)
 		{
 			MaxPlanterPrio = PrivateKI_Task[i].Priority;

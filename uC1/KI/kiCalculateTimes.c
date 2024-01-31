@@ -199,7 +199,7 @@ uint8_t KiCalculateTimesTask(void)
 	TimeToSolarPanelsMiddle = (uint16_t)((distanceToSolarPanelsMiddle /(float)STANDARD_VELOCITY)*10.0) + TimeForACCAndDCC; //In 10tel seconds
 	
 	//Time To Drive Home form Solar Panels Middle
-	TimeSolarPanelsMiddleToHome = (uint16_t)((1050.0/(float)STANDARD_VELOCITY)*10.0) + TimeForACCAndDCC;
+	TimeSolarPanelsMiddleToHome = (uint16_t)((1050.0/(float)STANDARD_VELOCITY)*10.0) + TimeForACCAndDCC; // wieso genau 1050.0 mm, können ja auch in die andere Richtung heimfahren? (andere Farbe)
 	
 	/**************************************************************************
 	***   Calculate Times Solar Panels Home			                        ***
