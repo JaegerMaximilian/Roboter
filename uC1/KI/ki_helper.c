@@ -173,12 +173,17 @@ void RePrioritisePlantTasks(void)
 	//Whole Distance
 	float quantifierEnemy = 1.0;
 	
-	float wholeDistance_1000 = distance_1000 + 0.8*(3000.0 - distanceEnemy_1000);
-	float wholeDistance_2000 = distance_2000 + 0.8*(3000.0 - distanceEnemy_2000);
-	float wholeDistance_3000 = distance_3000 + 0.8*(3000.0 - distanceEnemy_3000);
-	float wholeDistance_4000 = distance_4000 + 0.8*(3000.0 - distanceEnemy_4000);
-	float wholeDistance_5000 = distance_5000 + 0.8*(3000.0 - distanceEnemy_5000);
-	float wholeDistance_6000 = distance_6000 + 0.8*(3000.0 - distanceEnemy_6000);
+	float wholeDistance_1000 = distance_1000; //+ 0.8*(3000.0 - distanceEnemy_1000);
+	float wholeDistance_2000 = distance_2000;// + 0.8*(3000.0 - distanceEnemy_2000);
+	float wholeDistance_3000 = distance_3000;	// + 0.8*(3000.0 - distanceEnemy_3000);
+	float wholeDistance_4000 = distance_4000; //+ 0.8*(3000.0 - distanceEnemy_4000);
+	float wholeDistance_5000 = distance_5000; //+ 0.8*(3000.0 - distanceEnemy_5000);
+	float wholeDistance_6000 = distance_6000; // + 0.8*(3000.0 - distanceEnemy_6000);
+	
+	char text1 [200];
+	
+	sprintf(text1, "%d; %d; %d; %d; %d; %d", (uint16_t)distanceEnemy_1000,(uint16_t)distanceEnemy_2000,(uint16_t)distanceEnemy_3000,(uint16_t)distanceEnemy_4000,(uint16_t)distanceEnemy_5000,(uint16_t)distanceEnemy_6000);
+	SendDebugMessage(text1,2);
 	
 	//Sort values
 	float a = 0;
@@ -420,29 +425,29 @@ uint16_t CalcTimeRemainingPlants(void)
 		//sprintf(text1, "Planned Planter: %d PIR: %d", IndexNextPlanter,PrivatePlantsInRobot);
 		//SendDebugMessage(text1,1);
 
-			if (IndexNextPlanter==11){
-				PlanterOrFieldPos = PosPlanterMidleBlue;
+		if (IndexNextPlanter==11){
+			PlanterOrFieldPos = PosPlanterMidleBlue;
 			} else if (IndexNextPlanter == 12){
-				PlanterOrFieldPos = PosFieldL1;
+			PlanterOrFieldPos = PosFieldL1;
 			} else if (IndexNextPlanter == 13){
-				PlanterOrFieldPos = PosPlanterL1;
+			PlanterOrFieldPos = PosPlanterL1;
 			
 			} else if (IndexNextPlanter == 15){
-				PlanterOrFieldPos = PosPlanterL2;
+			PlanterOrFieldPos = PosPlanterL2;
 			} else if (IndexNextPlanter == 16){
-				PlanterOrFieldPos = PosFieldL3;
+			PlanterOrFieldPos = PosFieldL3;
 			} else if (IndexNextPlanter == 21){
-				PlanterOrFieldPos = PosPlanterMidleYellow;
+			PlanterOrFieldPos = PosPlanterMidleYellow;
 			} else if (IndexNextPlanter == 22){
-				PlanterOrFieldPos = PosFieldR1;
+			PlanterOrFieldPos = PosFieldR1;
 			} else if (IndexNextPlanter == 23){
-				PlanterOrFieldPos = PosPlanterR1;
+			PlanterOrFieldPos = PosPlanterR1;
 			
 			} else if (IndexNextPlanter == 25){
-				PlanterOrFieldPos = PosPlanterR2;
+			PlanterOrFieldPos = PosPlanterR2;
 			} else if (IndexNextPlanter == 26){
-				PlanterOrFieldPos = PosFieldR3;
-			}
+			PlanterOrFieldPos = PosFieldR3;
+		}
 		
 		totalDistance = totalDistance + CalcDistance(aktpos, PlanterOrFieldPos); // add distance
 		waysToDrive = waysToDrive + 1;
@@ -458,9 +463,9 @@ uint16_t CalcTimeRemainingPlants(void)
 			TimeToPark = TimeToPark + TimeParkNextPlantInPlanter;
 		}
 		
-			// ANMERKUNGEN FÜR NÄCHSTES MAL: 
+			// ANMERKUNGEN Fï¿½R Nï¿½CHSTES MAL: 
 			
-			// überprüfen ob er auch erkennt, wenn mehrere Pflanzen Daheim abgestellt werden, oder ob er immer denkt dass wir
+			// ï¿½berprï¿½fen ob er auch erkennt, wenn mehrere Pflanzen Daheim abgestellt werden, oder ob er immer denkt dass wir
 			// nur die letzte Pflanze daheim abstellen!!!
 
 		aktpos = PlanterOrFieldPos;
@@ -647,8 +652,8 @@ uint8_t PrivateSearchNextPlanter(point_t aktpos, task_t PrivateKI_Task[])
 ***   FUNKTION: Find Position of Robot again with the 3 Beacons					***
 ***   TRANSMIT PARAMETER: point_t                                               ***
 ***   RECEIVE PARAMETER.:	float d1 : distance to first beacon in m			***
-							float d2 : distance to second beacon	in m		***
-							float d3 : distance to third beacon	in m		***
+float d2 : distance to second beacon	in m		***
+float d3 : distance to third beacon	in m		***
 **************************************************************************/
 point_t FindRobotPosition(float d1, float d2, float d3)
 {
@@ -666,7 +671,7 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 	float y3;
 	
 	
-	// !!! WICHTIG: DER LIDAR MUSS DIE DISTANZEN AUCH ABHÄNGIG VON DER SPIELFARBE UND IN DER REIHENFOLGE WIE IM "if-else" unterhalb SCHICKEN!!!!
+	// !!! WICHTIG: DER LIDAR MUSS DIE DISTANZEN AUCH ABHï¿½NGIG VON DER SPIELFARBE UND IN DER REIHENFOLGE WIE IM "if-else" unterhalb SCHICKEN!!!!
 	if (SpielFarbe == Yellow)
 	{
 		//Beacon 1
@@ -708,7 +713,7 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 		returnPoint.Ypos = (int16_t)(1000*  ((C*D-A*F) / (B*D-A*E)) );
 	}
 	else if ((d1==0 && d2!=0 && d3!=0) || (d2==0 && d1!=0 && d3!=0) || (d3==0 && d2!=0 && d1!=0))
-	// wenn nur 2 Beacons vom Lidar erkannt: berechne die 2 Möglichen Lösungspunkte und schließe einen aus falls er außerhalb des Tisches liegt
+	// wenn nur 2 Beacons vom Lidar erkannt: berechne die 2 Mï¿½glichen Lï¿½sungspunkte und schlieï¿½e einen aus falls er auï¿½erhalb des Tisches liegt
 	// Quelle fuer Berechnung: https://math.stackexchange.com/questions/4629840/find-position-knowing-2-points-and-distances-to-those-points
 	
 	
@@ -737,7 +742,7 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 		float Xpos2 = (float) ( ((l/d)*(x2-x1)) - ((h/d)*(y2-y1)) + x1 );
 		float Ypos2 = (float) ( ((l/d)*(y2-y1)) + ((h/d)*(x2-x1)) + y1 );
 		
-		// wenn einer der beiden möglichen Punkte ausserhalb des Spielfeldes liegt -> den anderen nehmen (Plausibilität)
+		// wenn einer der beiden mï¿½glichen Punkte ausserhalb des Spielfeldes liegt -> den anderen nehmen (Plausibilitï¿½t)
 		if(Xpos1 > 3.0 || Ypos1 > 2.0)
 		{
 			returnPoint.Xpos = (int16_t)(1000*Xpos2);
@@ -745,7 +750,7 @@ point_t FindRobotPosition(float d1, float d2, float d3)
 		}
 		// diese Grenzen mit 3.0 und 2.0 Meter sind keine harten Grenzen, kann man auch nach innen verschieben weil die Robotermitte ja nie bei 3.0 oder 2.0 metern ist!!
 		// -> d.h. kann man noch anpassen empirisch!!! wenn neuer LIDAR da ist.
-		else if (Xpos2 > 3.0 || Ypos2 > 2.0) 
+		else if (Xpos2 > 3.0 || Ypos2 > 2.0)
 		{
 			returnPoint.Xpos = (int16_t)(1000*Xpos1);
 			returnPoint.Ypos = (int16_t)(1000*Ypos1);

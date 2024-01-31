@@ -1072,7 +1072,7 @@ uint8_t KiTask(void)
 					if(((spielZeit_10telSek < (TimeToHome + LocTimeHome)) && OpenPlanter == 0)
 					|| ((spielZeit_10telSek < (TimeParkNextPlant + MinTimeHome)) && OpenPlanter > 0)
 					|| (spielZeit_10telSek < (TimeToHome + MinTimeHome))
-					|| (planedPlants == 4))
+					|| (planedPlants == 4 && PlantsInRobot == 3))
 					{
 						KI_State = 500;
 					}
@@ -2173,10 +2173,7 @@ uint8_t KiTask(void)
 			{
 				enemyRobotInPlanter2 = Path_IsInArea(2400,1000,3000,2000);
 			}
-			
-			sprintf(text1, "%f; %f; %f; %d", distance_PlanterMidle,distance_Planter1,distance_Planter2,SpielFarbe);
-			SendDebugMessage(text1,2);
-			
+					
 			//Planter 2
 			if((KI_Task[15].Status == OPEN || KI_Task[25].Status == OPEN)
 			&& ((distance_Planter2 < distance_PlanterMidle)||(KI_Task[11].Status != OPEN && KI_Task[21].Status != OPEN))
@@ -2193,14 +2190,30 @@ uint8_t KiTask(void)
 			}
 			
 			//Field 2
-			if(Config4Plants_Nextion && KI_Task[15].Priority == 88 && PlantsInRobot == 4 && !(KI_Task[14].Status == DONE))
+			if((KI_Task[14].Status == OPEN) || (KI_Task[14].Status == PENDING))
 			{
-				KI_Task[14].Status = OPEN;
+				if(Config4Plants_Nextion && KI_Task[15].Priority == 88 && PlantsInRobot == 4)
+				{
+					KI_Task[14].Status = OPEN;
+				}
+				else
+				{
+					KI_Task[14].Status = PENDING;
+				}
 			}
-			else
+			
+			if((KI_Task[24].Status == OPEN) || (KI_Task[24].Status == PENDING))
 			{
-				KI_Task[14].Status = PENDING;
+				if(Config4Plants_Nextion && KI_Task[25].Priority == 88 && PlantsInRobot == 4)
+				{
+					KI_Task[24].Status = OPEN;
+				}
+				else
+				{
+					KI_Task[24].Status = PENDING;
+				}
 			}
+			
 			
 			//Field 1
 			if(PlantsInRobot == 4)
