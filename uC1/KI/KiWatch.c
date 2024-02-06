@@ -22,6 +22,7 @@
 #include "logger.h"
 #include "nextion.h"
 #include "observation.h"
+#include "mergeEnemyPos.h"
 
 void InitKiWatch(void)
 {

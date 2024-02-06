@@ -302,6 +302,12 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Navigation\mergeEnemyPos.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Navigation\mergeEnemyPos.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Navigation\observation.c">
       <SubType>compile</SubType>
     </Compile>

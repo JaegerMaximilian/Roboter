@@ -116,6 +116,7 @@
 #define ENEMY_TO_WIFI_TASKNBR					33
 #define US_DATA_SYNCHRON_TASKNBR				34
 #define OBSERVATION_TASKNBR						35
+#define MERGEENEMYPOS_TASKNBR					36
 
 
 /* ********************************** */
