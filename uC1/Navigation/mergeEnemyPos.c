@@ -21,17 +21,13 @@
 
 void InitMergeEnemyPos(void)
 {
-	/* cyclic task - cycle time: 500 ms */
-	SET_CYCLE(MERGEENEMYPOS_TASKNBR, 500);
-	SET_TASK(MERGEENEMYPOS_TASKNBR, CYCLE);
+	DISABLE_TASK(MERGEENEMYPOS_TASKNBR);
 	SET_TASK_HANDLE(MERGEENEMYPOS_TASKNBR, MergeEnemyPosTask);
 }
 
 uint8_t MergeEnemyPosTask(void)
 {
-	
-	SET_CYCLE(MERGEENEMYPOS_TASKNBR, 10);
-	
+
 	/**************************************************************************
 	***   merge Enemy Positions from Camera and Lidar                       ***
 	***   ---------------------------------------------------------------   ***
@@ -67,7 +63,7 @@ uint8_t MergeEnemyPosTask(void)
 	}
 	//sprintf(text1, "Lidar: %d Kam: %d En: %d  ",enemyRobotLidar[0].point.Xpos, enemyPosRobotKamera[0].point.Xpos, enemyRobot[0].Xpos);
 	//SendDebugMessage(text1,2);
-	return(CYCLE);	
+	return(DISABLE);	
 }
 
 

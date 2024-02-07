@@ -184,6 +184,7 @@ unsigned char rrtlanEnemyPos_GegnerTask(void)
 			enemyRobotLidar[i].point.Ypos = y[i].uint16[0];
 			enemyRobotLidar[i].time = spielzeit_100telSek;
 		}
+		SET_TASK(MERGEENEMYPOS_TASKNBR,ENABLE);
 
 
 		//sprintf(text1, "Gegner %d, (%d/%d), (%d/%d), (%d/%d)", receiveArray[0], enemyRobot[0].Xpos, enemyRobot[0].Ypos, enemyRobot[1].Xpos, enemyRobot[1].Ypos, enemyRobot[2].Xpos, enemyRobot[2].Ypos);

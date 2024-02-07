@@ -73,6 +73,7 @@ All Rights Reserved.
 #include "gripper.h"
 #include "observation.h"
 #include "nextion.h"
+#include "mergeEnemyPos.h"
 
 // define Robot type => save in EEPROM
 // (Position Süd = Master / Position Nord = Slave)
@@ -159,6 +160,7 @@ void initDevice ()
 	// *********************************
 	InitDebug();
 	InitStart();
+	InitMergeEnemyPos();
 	
 	// *********************************
 	// initialize the RRTLAN-system-tasks

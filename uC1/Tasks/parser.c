@@ -299,6 +299,7 @@ uint8_t ParserTask(void)
 									enemyPosRobotKamera[enemyPosCount].time = spielzeit_100telSek;
 									enemyPosCount++;
 								}
+								SET_TASK(MERGEENEMYPOS_TASKNBR,ENABLE);
 							}
 						}
 					}
