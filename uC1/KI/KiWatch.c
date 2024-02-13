@@ -129,7 +129,7 @@ uint8_t KiWatchTask(void)
 	
 	if(CounterArea1000 >= MaxCountInArea)
 	{
-		KI_Task[1].Status = DID;
+		KI_Task[1].Status = DID_OK;
 	}
 	
 	//Position 2000
@@ -152,7 +152,7 @@ uint8_t KiWatchTask(void)
 	
 	if(CounterArea2000 >= MaxCountInArea)
 	{
-		KI_Task[2].Status = DID;
+		KI_Task[2].Status = DID_OK;
 	}
 	
 	//Position 3000
@@ -175,7 +175,7 @@ uint8_t KiWatchTask(void)
 	
 	if(CounterArea3000 >= MaxCountInArea)
 	{
-		KI_Task[3].Status = DID;
+		KI_Task[3].Status = DID_OK;
 	}
 	
 	//Position 4000
@@ -198,7 +198,7 @@ uint8_t KiWatchTask(void)
 	
 	if(CounterArea4000 >= MaxCountInArea)
 	{
-		KI_Task[4].Status = DID;
+		KI_Task[4].Status = DID_OK;
 	}
 	
 	//Position 5000
@@ -220,7 +220,7 @@ uint8_t KiWatchTask(void)
 	}
 	if(CounterArea5000 >= MaxCountInArea)
 	{
-		KI_Task[5].Status = DID;
+		KI_Task[5].Status = DID_OK;
 	}
 	
 	//Position 6000
@@ -243,7 +243,7 @@ uint8_t KiWatchTask(void)
 	
 	if(CounterArea6000 >= MaxCountInArea)
 	{
-		KI_Task[6].Status = DID;
+		KI_Task[6].Status = DID_OK;
 	}
 	
 	

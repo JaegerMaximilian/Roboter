@@ -69,7 +69,7 @@ void ActivatePlantAsObstacle(void)
 {
 	for (int i = 1; i<7; i++)
 	{
-		if(KI_Task[i].Status == PENDING)
+		if(KI_Task[i].Status == PENDING || KI_Task[i].Status == DID_NOK)
 		{
 			PATH_ENABLE_OBSTACLE(i+2);
 		}

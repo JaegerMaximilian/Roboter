@@ -179,22 +179,22 @@ void initDevice ()
 	// *********************************
 	// Servos initialisieren
 	// *********************************
-	tcd0_init();
-	tcd1_init();
-	tce1_init();
+	//tcd0_init();
+	//tcd1_init();
+	//tce1_init();
 	
-	InitServo();
+	//InitServo();
 	
 	
 	// *********************************
 	// initialize presure sensor PE541 -> front left, front right
 	// *********************************
 	// 	PSE541_init();
-	UNDK20_init();
-	U300D50_init();
+	//UNDK20_init();
+	//U300D50_init();
 	
 	/* start sensor task */
-	InitSensor();
+	//InitSensor();
 	
 	/* start parser for debug-interface */
 	InitParser();

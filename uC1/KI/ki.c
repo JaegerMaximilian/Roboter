@@ -1143,7 +1143,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[1].Status != DID && spielZeit_10telSek > TimeForPlant1000
+					if(motionFailureCount<3 && KI_Task[1].Status != DID_OK && KI_Task[1].Status != DID_NOK && spielZeit_10telSek > TimeForPlant1000
 					&! (OpenPlanter == 0 && (spielZeit_10telSek < (TimeForPlant1000)))
 					&! (spielZeit_10telSek < (TimeToHome + MinTimeHome)))
 					{
@@ -1155,7 +1155,7 @@ uint8_t KiTask(void)
 						nReachableCnt1000++;
 						if(nReachableCnt1000 >= 3)
 						{
-							KI_Task[1].Status = DID;
+							KI_Task[1].Status = DID_OK;
 						}
 
 						velocity = STANDARD_VELOCITY;
@@ -1316,7 +1316,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[2].Status != DID && spielZeit_10telSek > TimeForPlant2000
+					if(motionFailureCount<3 && KI_Task[2].Status != DID_OK && KI_Task[1].Status != DID_NOK && spielZeit_10telSek > TimeForPlant2000
 					&! (OpenPlanter == 0 && (spielZeit_10telSek < (TimeForPlant2000)))
 					&! (spielZeit_10telSek < (TimeToHome + MinTimeHome)))
 					{
@@ -1330,7 +1330,7 @@ uint8_t KiTask(void)
 						
 						if(nReachableCnt2000 >= 3)
 						{
-							KI_Task[2].Status = DID;
+							KI_Task[2].Status = DID_OK;
 						}
 
 						velocity = STANDARD_VELOCITY;
@@ -1487,7 +1487,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[3].Status != DID && spielZeit_10telSek > TimeForPlant3000
+					if(motionFailureCount<3 && KI_Task[3].Status != DID_OK && KI_Task[1].Status != DID_NOK && spielZeit_10telSek > TimeForPlant3000
 					&! (OpenPlanter == 0 && (spielZeit_10telSek < (TimeForPlant3000)))
 					&! (spielZeit_10telSek < (TimeToHome + MinTimeHome)))
 					{
@@ -1501,7 +1501,7 @@ uint8_t KiTask(void)
 						
 						if(nReachableCnt3000 >= 3)
 						{
-							KI_Task[3].Status = DID;
+							KI_Task[3].Status = DID_OK;
 						}
 
 						velocity = STANDARD_VELOCITY;
@@ -1661,7 +1661,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[4].Status != DID && spielZeit_10telSek > TimeForPlant4000
+					if(motionFailureCount<3 && KI_Task[4].Status != DID_OK && KI_Task[1].Status != DID_NOK && spielZeit_10telSek > TimeForPlant4000
 					&! (OpenPlanter == 0 && (spielZeit_10telSek < (TimeForPlant4000)))
 					&! (spielZeit_10telSek < (TimeToHome + MinTimeHome)))
 					{
@@ -1675,7 +1675,7 @@ uint8_t KiTask(void)
 						
 						if(nReachableCnt4000 >= 3)
 						{
-							KI_Task[4].Status = DID;
+							KI_Task[4].Status = DID_OK;
 						}
 
 						velocity = STANDARD_VELOCITY;
@@ -1831,7 +1831,7 @@ uint8_t KiTask(void)
 				/* motion was OK */
 				case OBSERVATION_MOTION_OK:
 				{
-					if(motionFailureCount<3 && KI_Task[5].Status != DID  && spielZeit_10telSek > TimeForPlant5000
+					if(motionFailureCount<3 && KI_Task[5].Status != DID_OK && KI_Task[1].Status != DID_NOK && spielZeit_10telSek > TimeForPlant5000
 					&! (OpenPlanter == 0 && (spielZeit_10telSek < (TimeForPlant5000)))
 					&! (spielZeit_10telSek < (TimeToHome + MinTimeHome)))
 					{
@@ -1845,7 +1845,7 @@ uint8_t KiTask(void)
 						
 						if(nReachableCnt5000 >= 3)
 						{
-							KI_Task[5].Status = DID;
+							KI_Task[5].Status = DID_OK;
 						}
 
 						velocity = STANDARD_VELOCITY;
@@ -2002,7 +2002,7 @@ uint8_t KiTask(void)
 				case OBSERVATION_MOTION_OK:
 				{
 					
-					if(motionFailureCount<3 && KI_Task[6].Status != DID && spielZeit_10telSek > TimeForPlant6000
+					if(motionFailureCount<3 && KI_Task[6].Status != DID_OK && KI_Task[1].Status != DID_NOK && spielZeit_10telSek > TimeForPlant6000
 					&! (OpenPlanter == 0 && (spielZeit_10telSek < (TimeForPlant6000)))
 					&! (spielZeit_10telSek < (TimeToHome + MinTimeHome)))
 					{
@@ -2016,7 +2016,7 @@ uint8_t KiTask(void)
 						
 						if(nReachableCnt6000 >= 3)
 						{
-							KI_Task[6].Status = DID;
+							KI_Task[6].Status = DID_OK;
 						}
 
 						velocity = STANDARD_VELOCITY;

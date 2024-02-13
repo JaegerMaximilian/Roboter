@@ -87,6 +87,7 @@
 #include "nextion.h"
 #include "logger.h"
 #include "observation.h"
+#include "ki_helper.h"
 
 /* index to receive-array */
 uint8_t pIndex = 0;
@@ -188,8 +189,6 @@ uint8_t ParserTask(void)
 	volatile int16_t angle;
 	static uint8_t receiveEnable = FALSE;
 	
-
-	
 	SET_CYCLE(PARSER_TASKNBR, 10);
 	
 	while (1)
@@ -246,16 +245,8 @@ uint8_t ParserTask(void)
 					else if(pArray[2] == CMD_DIGITAL_OUT)
 					{
 					}
-					/* vacuum-command -> Vnnv */
-					/* nn ... output-number	  */
-					/* v ... value (0/1)	  */
-					else if(pArray[2] == CMD_VACUUM)
-					{
-						uint8_t nbr = ASCII2Num(pArray[1]) * 10 + ASCII2Num(pArray[2]);
-						uint8_t val = ASCII2Num(pArray[3]);
-						cmd_CtrlVacuum(nbr, val);
-					}
-					else if(pArray[2] == CMD_TEILE && pArray[0] == ADR_VISION_ID_V)
+
+					else if(pArray[2] == CMD_POSITION && pArray[0] == ADR_VISION_ID_V)
 					{
 						for (uint8_t i = 0; i <= 5; i++)
 						{
@@ -299,11 +290,180 @@ uint8_t ParserTask(void)
 									enemyPosRobotKamera[enemyPosCount].time = spielzeit_100telSek;
 									enemyPosCount++;
 								}
-								SET_TASK(MERGEENEMYPOS_TASKNBR,ENABLE);
 							}
 						}
+						SET_TASK(MERGEENEMYPOS_TASKNBR,ENABLE);
 					}
-					
+					else if (pArray[2] == CMD_BLUMEN)
+					{
+						char text1[200];
+						for (int i = 3; i < 400; i=i+7)
+						{
+							if(pArray[i] == NULL)
+							{
+								break;
+							}
+							
+							uint16_t nbr = ASCII2Num(pArray[i]) * 10 + ASCII2Num(pArray[i+1]);
+							uint16_t plantsUp = ASCII2Num(pArray[i+2]) * 10 + ASCII2Num(pArray[i+3]);
+							uint16_t plantsDown = ASCII2Num(pArray[i+4]) * 10 + ASCII2Num(pArray[i+5]);
+							
+							
+							switch(nbr)
+							{
+								case 1:
+								{
+									if(plantsUp > 4 && plantsDown == 0 && (KI_Task[1].Status == DID_OK||KI_Task[1].Status == DID_NOK))
+									{
+										KI_Task[1].Status = PENDING;
+									}
+									else if(plantsDown > 0 || (KI_Task[1].Status == DID_OK && plantsUp > 0))
+									{
+										KI_Task[1].Status = DID_NOK;
+									}
+									else if(KI_Task[1].Status == DID_NOK && plantsDown == 0 && plantsUp == 0)
+									{
+										KI_Task[1].Status = DID_OK;
+									}
+
+									break;
+								}
+								case 2:
+								{
+									if(plantsUp > 4 && plantsDown == 0 && (KI_Task[2].Status == DID_OK||KI_Task[2].Status == DID_NOK))
+									{
+										KI_Task[2].Status = PENDING;
+									}
+									else if(plantsDown > 0 || (KI_Task[2].Status == DID_OK && plantsUp > 0))
+									{
+										KI_Task[2].Status = DID_NOK;
+									}
+									else if(KI_Task[2].Status == DID_NOK && plantsDown == 0 && plantsUp == 0)
+									{
+										KI_Task[2].Status = DID_OK;
+									}
+
+									break;
+								}
+								case 3:
+								{
+									if(plantsUp > 4 && plantsDown == 0 && (KI_Task[3].Status == DID_OK||KI_Task[3].Status == DID_NOK))
+									{
+										KI_Task[3].Status = PENDING;
+									}
+									else if(plantsDown > 0 || (KI_Task[3].Status == DID_OK && plantsUp > 0))
+									{
+										KI_Task[3].Status = DID_NOK;
+									}
+									else if(KI_Task[3].Status == DID_NOK && plantsDown == 0 && plantsUp == 0)
+									{
+										KI_Task[3].Status = DID_OK;
+									}
+
+									break;
+								}
+								case 4:
+								{
+									if(plantsUp > 4 && plantsDown == 0 && (KI_Task[4].Status == DID_OK||KI_Task[4].Status == DID_NOK))
+									{
+										KI_Task[4].Status = PENDING;
+									}
+									else if(plantsDown > 0 || (KI_Task[4].Status == DID_OK && plantsUp > 0))
+									{
+										KI_Task[4].Status = DID_NOK;
+									}
+									else if(KI_Task[4].Status == DID_NOK && plantsDown == 0 && plantsUp == 0)
+									{
+										KI_Task[4].Status = DID_OK;
+									}
+
+									break;
+								}
+								case 5:
+								{
+									if(plantsUp > 4 && plantsDown == 0 && (KI_Task[5].Status == DID_OK||KI_Task[5].Status == DID_NOK))
+									{
+										KI_Task[5].Status = PENDING;
+									}
+									else if(plantsDown > 0 || (KI_Task[5].Status == DID_OK && plantsUp > 0))
+									{
+										KI_Task[5].Status = DID_NOK;
+									}
+									else if(KI_Task[5].Status == DID_NOK && plantsDown == 0 && plantsUp == 0)
+									{
+										KI_Task[5].Status = DID_OK;
+									}
+
+									break;
+								}
+								case 6:
+								{
+									if(plantsUp > 4 && plantsDown == 0 && (KI_Task[6].Status == DID_OK||KI_Task[6].Status == DID_NOK))
+									{
+										KI_Task[6].Status = PENDING;
+									}
+									else if(plantsDown > 0 || (KI_Task[6].Status == DID_OK && plantsUp > 0))
+									{
+										KI_Task[6].Status = DID_NOK;
+									}
+									else if(KI_Task[6].Status == DID_NOK && plantsDown == 0 && plantsUp == 0)
+									{
+										KI_Task[6].Status = DID_OK;
+									}
+									break;
+								}
+								case 11:
+								{
+									break;
+								}
+								case 12:
+								{
+									break;
+								}
+								case 13:
+								{
+									break;
+								}
+								case 14:
+								{
+									break;
+								}
+								case 15:
+								{
+									break;
+								}
+								case 16:
+								{
+									break;
+								}
+								case 21:
+								{
+									break;
+								}
+								case 22:
+								{
+									break;
+								}
+								case 23:
+								{
+									break;
+								}
+								case 24:
+								{
+									break;
+								}
+								case 25:
+								{
+									break;
+								}
+								case 26:
+								{
+									break;
+								}
+							}
+							ActivatePlantAsObstacle();
+						}
+					}
 				}
 			}
 			/* store received data */

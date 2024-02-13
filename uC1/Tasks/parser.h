@@ -24,24 +24,13 @@
 #define CMD_MOTOR		'M'
 /* digital-output-command */
 #define CMD_DIGITAL_OUT	'O'
-/* vacuum-command */
-#define CMD_VACUUM		'v'
-/* velocity-command */
-#define CMD_VELOCITY		'V'
-/* position-command */
-#define CMD_POSITION		'P'
+/* blumen: ob Plant.Status */
+#define CMD_BLUMEN		'B'
 /* Teile von Vision -command */
-#define CMD_TEILE		'T'
-/* Roboter Position -command */
-#define CMD_ROBOTER		'R'
-/* Punkte -command */
-#define CMD_PUNKTE		'p'
-/* Sperrgebiet -command */
-#define CMD_ZONE		'Z'
+#define CMD_POSITION	'T'
 /* Debugmessage -command */
 #define CMD_DEBUG		'D'
-/* Cherry -command */
-#define CMD_CHERRY		'C'
+
 /*Robot 1 (Master)*/
 #define ADR_MASTER_ID	'1'
 /*Robot 2 (Slave)*/
@@ -49,13 +38,12 @@
 /*Vision 1*/
 #define ADR_VISION_ID_V		'V'
 /*Computer*/
-#define ADR_COMPUTER_ID		'T'
+#define ADR_LOGGER_ID		'T'
 /*Broadcast*/
 #define ADR_BROADCAST_ID	'B'
 /*Vision 2*/
 #define ADR_VISION_ID_W		'W'
-/*Cherry Count*/
-#define ADR_CHERRY_ID		'K'
+
 
 
 

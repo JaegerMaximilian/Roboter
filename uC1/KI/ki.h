@@ -47,10 +47,11 @@ Data Stack size     : 1024
 // Status der Tasks
 #define DONE				0     // Die eigene Aufgabe wurde bereits erledigt
 #define OPEN				1     // Die eigene/fremde Aufgabe ist noch offen
-#define DID					2     // Die fremde Aufgaben wurde bereits erledigt
+#define DID_OK				2     // Die fremde Aufgaben wurde bereits erledigt und Pflanzen sind weg
 #define IS_DOING			3     // Der fremde Roboter erledigt diese Aufgabe im Augenblick
 #define PENDING				4	  // Aufgabe die noch nicht vorhanden ist
 #define LOCKED				5	  // Task locked if it is not configured or enemy area
+#define DID_NOK				6	  // Die fremde Aufgaben wurde bereits erledigt und Pflanzen sind noch teilweise da
 
 
 //State of Game

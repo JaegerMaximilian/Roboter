@@ -14,7 +14,7 @@
 
 #include "define.h"
 #include "observation.h"
-#include "../../uC2/RTOS/multitask.h"
+#include "multitask.h"
 #include "mergeEnemyPos.h"
 #include <stdint.h>
 #include "global.h"
