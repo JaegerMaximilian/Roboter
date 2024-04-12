@@ -214,7 +214,7 @@ void OBSTACLE_Scan2Pos(rpLidar_Scan_t* scan)
 		#endif
 		
 		
-		SET_TASK(OBSTACLE_DETECTION_TASKNBR, ENABLE);
+		OBSTACLE_DetectionTask();
 		/* store address of first element in scan-array */
 		firstScanElement = start;
 		/* store number of elements */
