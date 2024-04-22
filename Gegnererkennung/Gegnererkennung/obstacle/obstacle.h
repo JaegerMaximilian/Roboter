@@ -89,6 +89,7 @@ _OBSTACLE_EXTERN OBSTACLE_list_t obstacleList[OBSTACLE_LIST_LENGTH];
 /*			PROTOTYPES			 */
 /* ***************************** */
 void OBSTACLE_InitDetection();
-uint8_t OBSTACLE_DetectionTask();
+void OBSTACLE_DetectionTask();
+
 
 #endif /* OBSTACLE_H_ */

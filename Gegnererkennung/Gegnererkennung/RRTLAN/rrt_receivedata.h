@@ -56,7 +56,7 @@ Data Stack size     : 1024
 ***                          Prototypen-Definition                      ***
 **************************************************************************/
 void InitReceiveData(void);
-unsigned char rrtlanRoboPos_Task(void);
+uint8_t rrtlanRoboPos_Task(void);
 
 
 #endif

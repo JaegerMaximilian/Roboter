@@ -44,6 +44,7 @@ All Rights Reserved.
 #include "define.h"
 #include "global.h"
 #include "obstacle.h"
+#include "usart.h"
 
 
 
@@ -71,6 +72,10 @@ void enemyPosMsg()
 	char sendArray[100];
 	uint8_t j = 1;
 	
+	//uint8_t text1[150];
+	//sprintf(text1, "%d;%d \r\n",obstacleList[0].centerX[0],obstacleList[0].centerY[0]);
+	//writeString_usart(&usartD0,text1);
+	
 	for (uint8_t i = 0; i < OBSTACLE_LIST_LENGTH; i++)
 	{
 		if (obstacleList[i].nbrObstacle == 1)
@@ -84,10 +89,10 @@ void enemyPosMsg()
 	
 	sendArray[0] = (j-1) / 4;
 	
-// 	if (j > 1)
-// 	{
-		Send_Application_Data(&MCU1, POS_MSG_GEGNER_PORTNBR, sendArray, j);
-//	}
+	// 	if (j > 1)
+	// 	{
+	Send_Application_Data(&MCU1, POS_MSG_GEGNER_PORTNBR, sendArray, j);
+	//	}
 	
 
 }

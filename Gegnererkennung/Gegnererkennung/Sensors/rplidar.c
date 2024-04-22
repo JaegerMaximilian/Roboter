@@ -446,12 +446,19 @@ uint8_t rpLidar_MsgHandlerTask()
 					/* readout scan quality */
 					rpLidar.scan.distance = (float)((uint16_t)rpLidar.recBuf[3] + ((uint16_t)rpLidar.recBuf[4] << 8)) / 4.0;
 
+
+	
 					/* reset message index */
 					rpLidar.msg_index = 0;
 
 					/* operate scan */
-					if(rpLidar.scan.distance > 100.0)
+					if(rpLidar.scan.distance > 100.0 && rpLidar.scan.distance < 4000.0)
 					{
+						//uint16_t angle = (uint16_t)rpLidar.scan.angle;
+						//uint16_t dis = (uint16_t)rpLidar.scan.distance;
+					//uint8_t text1[150];
+					//sprintf(text1, "angle:%u dis:%u \r\n",angle,dis);
+					//writeString_usart(&usartD0,text1);
 						OBSTACLE_Scan2Pos(&(rpLidar.scan));
 					}
 					

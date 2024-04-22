@@ -61,7 +61,7 @@ IN: -
 OUT: task is disabled after execution
 VERSION: 1.0 - Michael Zauner (03.06.2021)
 **********************************************************/
-uint8_t OBSTACLE_DetectionTask()
+void OBSTACLE_DetectionTask()
 {
 	uint8_t obstacleIndex = 0;
 	uint8_t text[1000];
@@ -164,14 +164,14 @@ uint8_t OBSTACLE_DetectionTask()
 				sprintf(text,"#;O%d;%d;%d\r\n*",k,obstacleList[k].centerX[0],obstacleList[k].centerY[0]);
 				debugMsg(text);
 				#endif
-				
+													//uint8_t text1[150];
+													//sprintf(text1, "%d;%d \r\n",obstacleList[k].centerX[0],obstacleList[k].centerY[0]);
+													//writeString_usart(&usartD0,text1);
 			}
 		}
 	}
 	
 	enemyPosMsg();
-	
-	return(DISABLE);
 }
 
 
@@ -250,6 +250,11 @@ void OBSTACLE_Scan2Pos(rpLidar_Scan_t* scan)
 			sprintf(text,"%d;%d;%d;%.0f;%.0f;\r\n",timeStamp,x,y,scan->angle,scan->distance);
 			debugMsg(text);
 			#endif
+			
+									
+									//uint8_t text1[150];
+									//sprintf(text1, "x:%d y:%d \r\n",x,y);
+									//writeString_usart(&usartD0,text1);
 			
 			/* store point to scan-array */
 			scanArray[scanArray_In].x = (uint16_t)x;
