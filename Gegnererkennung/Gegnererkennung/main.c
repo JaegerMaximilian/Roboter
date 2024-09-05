@@ -150,6 +150,7 @@ void initDevice()
 	
 	/* initialize LIDAR */
  	rpLidar_Init();
+	 TimeCount_Init();
  	
  	OBSTACLE_InitDetection();
 

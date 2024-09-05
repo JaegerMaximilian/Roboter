@@ -120,6 +120,8 @@ int16_t xPos, yPos, phiPos;
 /* toggle dedicated pin */
 #define TOGGLE_PIN(port, pin) port.OUT ^= (0x01 << pin)
 
+_GLOBAL_EXTERN uint16_t timeCount; 
+
 
 /* **************************** */
 /* ***      prototypes      *** */

@@ -87,7 +87,10 @@ uint8_t rrtlanRoboPos_Task(void)
 		yPos = d.int16[0];
 		d.uint8[0] = receiveArray[4];
 		d.uint8[1] = receiveArray[5];
+		
 		phiPos = d.int16[0];
+		
+
 	}
 	
 	//uint8_t text1[150];

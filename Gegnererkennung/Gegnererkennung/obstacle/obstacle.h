@@ -32,7 +32,7 @@
 #define OBSTACLE_MAX_SIZE				400
 
 /* offset (x-position) between lidar-position and odometrie [mm] */
-#define OBSTACLE_LIDAR_OFFSET_X			60.0
+#define OBSTACLE_LIDAR_OFFSET_X			0.0
 /* offset (y-position) between lidar-position and odometrie [mm] */
 #define OBSTACLE_LIDAR_OFFSET_Y			0.0
 
@@ -89,7 +89,7 @@ _OBSTACLE_EXTERN OBSTACLE_list_t obstacleList[OBSTACLE_LIST_LENGTH];
 /*			PROTOTYPES			 */
 /* ***************************** */
 void OBSTACLE_InitDetection();
-void OBSTACLE_DetectionTask();
+void Detect_Obstacles();
 
 
 #endif /* OBSTACLE_H_ */

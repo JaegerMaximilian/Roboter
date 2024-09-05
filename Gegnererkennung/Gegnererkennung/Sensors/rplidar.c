@@ -15,9 +15,6 @@
 *      a function call.
 *
 *
-* \par Documentation
-*      This file contains the initialization of the graphic-LCD.
-*
 * \author
 *      Michael Zauner
 *      RRT (University of Applied Sciences Upper Austria)  http://rrt.fh-wels.at \n
@@ -89,24 +86,24 @@ void rpLidar_Init()
 	SET_TASK_HANDLE(RPLIDAR_MSG_HANDLER_TASKNBR, rpLidar_MsgHandlerTask);
 
 	/* cyclic task - cycle time: 500 ms */
-	SET_CYCLE(RPLIDAR_TASKNBR, 500);
+	SET_CYCLE(RPLIDAR_TASKNBR, 1000);
 	SET_TASK(RPLIDAR_TASKNBR, CYCLE);
 	SET_TASK_HANDLE(RPLIDAR_TASKNBR, rpLidar_Task);
 	
-	/* initialize display */
+	/* initialize Uart */
 	rpLidar.usart = &usartC0;
 	rpLidar.mode = RPLIDAR_IDLE;
-	rpLidar.state = RPLIDAR_RESET_STATE;
+	rpLidar.state = RPLIDAR_CHECK_HEALTH_STATE;
 	rpLidar.scan_active = 0;
 	rpLidar.qTimer0 = &TCD0;
 	rpLidar.timer = 0;
 	rpLidar.channel = CH_A;
 	rpLidar.msg_index = 0;
-	
+
 	/* inti timer D0 to 25 kHz PWM on channel A */
 	tcd0_init();
 	/* set PWM to 60 % */
-	rpLidar_setPWM(&rpLidar, 35);
+	rpLidar_setPWM(&rpLidar, 50);
 }
 
 
@@ -246,8 +243,7 @@ uint8_t rpLidar_MsgHandlerTask()
 {
 	uint8_t text[100];
 	uint16_t x, y;
-	
-	
+
 	/* set cycle-time to 1 ms */
 	SET_CYCLE(RPLIDAR_MSG_HANDLER_TASKNBR, 1);
 	
@@ -256,6 +252,7 @@ uint8_t rpLidar_MsgHandlerTask()
 	/* *************************** */
 	switch (rpLidar.mode)
 	{
+		
 		/* ***************************************** */
 		/* idle-state -> ready to send a new message */
 		/* ***************************************** */
@@ -353,7 +350,6 @@ uint8_t rpLidar_MsgHandlerTask()
 						/* after a GET HEALTH message -> start scanning */
 						rpLidar.state = RPLIDAR_START_SCAN_STATE;
 						SET_CYCLE(RPLIDAR_TASKNBR, 500);
-						SET_TASK(RPLIDAR_TASKNBR, CYCLE);
 					}
 					
 					/* switch back to IDLE mode */
@@ -442,43 +438,38 @@ uint8_t rpLidar_MsgHandlerTask()
 					/* readout scan quality */
 					rpLidar.scan.quality = rpLidar.recBuf[0] >> 2;
 					/* readout scan quality */
-					rpLidar.scan.angle = (float)(((uint16_t)rpLidar.recBuf[1] >> 1) + ((uint16_t)rpLidar.recBuf[2] << 7)) / 64.0;
+					rpLidar.scan.angle = (float)(((uint16_t)rpLidar.recBuf[1] >> 1) + ((uint16_t)rpLidar.recBuf[2] << 7)) / 64.0; //received data is q6
 					/* readout scan quality */
-					rpLidar.scan.distance = (float)((uint16_t)rpLidar.recBuf[3] + ((uint16_t)rpLidar.recBuf[4] << 8)) / 4.0;
+					rpLidar.scan.distance = (float)((uint16_t)rpLidar.recBuf[3] + ((uint16_t)rpLidar.recBuf[4] << 8)) / 4.0;  //received data is q2
+					
+					rpLidar.scan.startFlag = rpLidar.recBuf[0] & 0x01;
+					uint8_t InvertedStartFlag = rpLidar.recBuf[0] & 0x02;
+					uint8_t CheckBit = rpLidar.recBuf[1] & 0x01;
+					
+					uint8_t CheckOk = (rpLidar.scan.startFlag ^ InvertedStartFlag) && CheckBit;
 
-
-	
 					/* reset message index */
 					rpLidar.msg_index = 0;
+					
+					//if(rpLidar.scan.startFlag)
+					//{
+						//uint8_t text1[150];
+						//sprintf(text1, "%u \r\n",timeCount);
+						//writeString_usart(&usartD0,text1);
+						//timeCount = 0;
+					//}
 
 					/* operate scan */
-					if(rpLidar.scan.distance > 100.0 && rpLidar.scan.distance < 4000.0)
+					if(rpLidar.scan.distance > 100.0 && rpLidar.scan.distance < 3600.0 && CheckOk)
 					{
 						//uint16_t angle = (uint16_t)rpLidar.scan.angle;
 						//uint16_t dis = (uint16_t)rpLidar.scan.distance;
-					//uint8_t text1[150];
-					//sprintf(text1, "angle:%u dis:%u \r\n",angle,dis);
-					//writeString_usart(&usartD0,text1);
+						//uint8_t text1[150];
+						//sprintf(text1, "angle:%u dis:%u \r\n",angle,dis);
+						//writeString_usart(&usartD0,text1);
+						
 						OBSTACLE_Scan2Pos(&(rpLidar.scan));
 					}
-					
-					// 					x = xPos + (uint16_t)(cos(DEG2RAD(RPLIDAR_CONV_ANGLE(rpLidar.scan.angle) + phiPos)) * rpLidar.scan.distance);
-					// 					y = yPos + (uint16_t)(sin(DEG2RAD(RPLIDAR_CONV_ANGLE(rpLidar.scan.angle) + phiPos)) * rpLidar.scan.distance);
-					// //					if ((rpLidar.scan.distance > 0.0) && (rpLidar.scan.distance < 3000.0))//((rpLidar.recBuf[0] & 0x01))
-					//
-					// 					if ((x > 0) && (x < 3000) && (y > 0) && (y < 2000))
-					// 					{
-					//
-					// 						//sprintf(text,"%.0f;%.0f\r\n", rpLidar.scan.angle, rpLidar.scan.distance);
-					// 					//	sprintf(text,"%.1f;%.0f\r\n", rpLidar.scan.angle, rpLidar.scan.distance);
-					// 						sprintf(text,"R - %.d;%.d\r\n",x,y);
-					// 						writeString_usart(&usartD0, text);
-					// 					}
-					
-
-					
-
-					
 				}
 				/* ******************************* */
 				/* scan isn't active -> start scan */
@@ -498,6 +489,7 @@ uint8_t rpLidar_MsgHandlerTask()
 						rpLidar.scan_active = 1;
 						/* reset message index */
 						rpLidar.msg_index = 0;
+						
 						#ifdef _DEBUG_LIDAR_
 						sprintf(text, "Start SCAN!\r\n");
 						writeString_usart(&usartD0, text);
@@ -513,99 +505,80 @@ uint8_t rpLidar_MsgHandlerTask()
 		/* *********************************** */
 		/* wait for an response (EXPRESS SCAN) */
 		/*  ********************************** */
- 		case RPLIDAR_EXPRESS_SCAN:
- 		{
- 			/* readout serial data */
- 			lidarData = getChar_uart(rpLidar.usart);
- 			
- 			/* check if new date has been received */
- 			while (lidarData.Status == USART_REC_OK)
- 			{
-	 			rpLidar.recBuf[rpLidar.msg_index] = lidarData.Data;
-	 			
-	 			/* limit message index to 99 -> buffer has only a size of 100! */
-	 			rpLidar.msg_index = ((++(rpLidar.msg_index) <= 99) ? rpLidar.msg_index : 99);
-	 			
-	 			/* after the reception of a complete message */
-	 			/* *************************** */
-	 			/* scan is active -> read data */
-	 			/* *************************** */
-	 			if ((rpLidar.scan_active == 1) && (rpLidar.msg_index == 5))
-	 			{
-		 			/* reset timeout */
-		 			SET_CYCLE(RPLIDAR_TASKNBR, 500);
-		 			
-		 			/* readout scan quality */
-		 			rpLidar.scan.quality = rpLidar.recBuf[0] >> 2;
-		 			/* readout scan quality */
-		 			rpLidar.scan.angle = (float)(((uint16_t)rpLidar.recBuf[1] >> 1) + ((uint16_t)rpLidar.recBuf[2] << 7)) / 64.0;
-		 			/* readout scan quality */
-		 			rpLidar.scan.distance = (float)((uint16_t)rpLidar.recBuf[3] + ((uint16_t)rpLidar.recBuf[4] << 8)) / 4.0;
+		case RPLIDAR_EXPRESS_SCAN:
+		{
+			/* readout serial data */
+			lidarData = getChar_uart(rpLidar.usart);
+			
+			/* check if new date has been received */
+			while (lidarData.Status == USART_REC_OK)
+			{
+				rpLidar.recBuf[rpLidar.msg_index] = lidarData.Data;
+				
+				/* limit message index to 99 -> buffer has only a size of 100! */
+				rpLidar.msg_index = ((++(rpLidar.msg_index) <= 99) ? rpLidar.msg_index : 99);
+				
+				/* after the reception of a complete message */
+				/* *************************** */
+				/* scan is active -> read data */
+				/* *************************** */
+				if ((rpLidar.scan_active == 1) && (rpLidar.msg_index == 5))
+				{
+					/* reset timeout */
+					SET_CYCLE(RPLIDAR_TASKNBR, 500);
+					
+					/* readout scan quality */
+					rpLidar.scan.quality = rpLidar.recBuf[0] >> 2;
+					/* readout scan quality */
+					rpLidar.scan.angle = (float)(((uint16_t)rpLidar.recBuf[1] >> 1) + ((uint16_t)rpLidar.recBuf[2] << 7)) / 64.0;
+					/* readout scan quality */
+					rpLidar.scan.distance = (float)((uint16_t)rpLidar.recBuf[3] + ((uint16_t)rpLidar.recBuf[4] << 8)) / 4.0;
 
-		 			/* reset message index */
-		 			rpLidar.msg_index = 0;
+					/* reset message index */
+					rpLidar.msg_index = 0;
 
-		 			/* operate scan */
-		 			if(rpLidar.scan.distance > 100.0)
-		 			{
-			 			OBSTACLE_Scan2Pos(&(rpLidar.scan));
-		 			}
-		 			
-		 			// 					x = xPos + (uint16_t)(cos(DEG2RAD(RPLIDAR_CONV_ANGLE(rpLidar.scan.angle) + phiPos)) * rpLidar.scan.distance);
-		 			// 					y = yPos + (uint16_t)(sin(DEG2RAD(RPLIDAR_CONV_ANGLE(rpLidar.scan.angle) + phiPos)) * rpLidar.scan.distance);
-		 			// //					if ((rpLidar.scan.distance > 0.0) && (rpLidar.scan.distance < 3000.0))//((rpLidar.recBuf[0] & 0x01))
-		 			//
-		 			// 					if ((x > 0) && (x < 3000) && (y > 0) && (y < 2000))
-		 			// 					{
-		 			//
-		 			// 						//sprintf(text,"%.0f;%.0f\r\n", rpLidar.scan.angle, rpLidar.scan.distance);
-		 			// 					//	sprintf(text,"%.1f;%.0f\r\n", rpLidar.scan.angle, rpLidar.scan.distance);
-		 			// 						sprintf(text,"R - %.d;%.d\r\n",x,y);
-		 			// 						writeString_usart(&usartD0, text);
-		 			// 					}
-		 			
+					/* operate scan */
+					if(rpLidar.scan.distance > 100.0)
+					{
+						OBSTACLE_Scan2Pos(&(rpLidar.scan));
+					}
+				}
+				/* ******************************* */
+				/* scan isn't active -> start scan */
+				/* ******************************* */
+				else if ((rpLidar.scan_active == 0) && (rpLidar.msg_index == 7))
+				{
+					/* check response packet -> 0xA5::0x5A::0x05::0x00::0x00::0x40::0x81 */
+					if ((rpLidar.recBuf[0] == RPLIDAR_STX1) &&
+					(rpLidar.recBuf[1] == RPLIDAR_STX2) &&
+					(rpLidar.recBuf[2] == 0x54) &&
+					(rpLidar.recBuf[3] == 0x00) &&
+					(rpLidar.recBuf[4] == 0x00) &&
+					(rpLidar.recBuf[5] == 0x40) &&
+					(rpLidar.recBuf[6] == 0x82))
+					{
+						/* activate scan */
+						rpLidar.scan_active = 1;
+						/* reset message index */
+						rpLidar.msg_index = 0;
+						#ifdef _DEBUG_LIDAR_
+						sprintf(text, "Start SCAN!\r\n");
+						writeString_usart(&usartD0, text);
+						#endif
+					}
+				}
+				/* readout new data */
+				lidarData = getChar_uart(rpLidar.usart);
+			}
 
-		 			
-
-		 			
-	 			}
-	 			/* ******************************* */
-	 			/* scan isn't active -> start scan */
-	 			/* ******************************* */
-	 			else if ((rpLidar.scan_active == 0) && (rpLidar.msg_index == 7))
-	 			{
-		 			/* check response packet -> 0xA5::0x5A::0x05::0x00::0x00::0x40::0x81 */
-		 			if ((rpLidar.recBuf[0] == RPLIDAR_STX1) &&
-		 			(rpLidar.recBuf[1] == RPLIDAR_STX2) &&
-		 			(rpLidar.recBuf[2] == 0x54) &&
-		 			(rpLidar.recBuf[3] == 0x00) &&
-		 			(rpLidar.recBuf[4] == 0x00) &&
-		 			(rpLidar.recBuf[5] == 0x40) &&
-		 			(rpLidar.recBuf[6] == 0x82))
-		 			{
-			 			/* activate scan */
-			 			rpLidar.scan_active = 1;
-			 			/* reset message index */
-			 			rpLidar.msg_index = 0;
-			 			#ifdef _DEBUG_LIDAR_
-			 			sprintf(text, "Start SCAN!\r\n");
-			 			writeString_usart(&usartD0, text);
-			 			#endif
-		 			}
-	 			}
-	 			/* readout new data */
-	 			lidarData = getChar_uart(rpLidar.usart);
- 			}
-
- 			break;
- 		}
+			break;
+		}
 		/* ********************************* */
 		/* wait for an response (FORCE SCAN) */
 		/*  ******************************** */
 		case RPLIDAR_FORCE_SCAN:
 		{
 
-			
 			break;
 		}
 	}
@@ -631,6 +604,10 @@ uint8_t rpLidar_Task()
 	/* set cycle-time to 500 ms */
 	SET_CYCLE(RPLIDAR_TASKNBR, 500);
 	
+	uint8_t text1[150];
+	sprintf(text1, "%u \r\n",rpLidar.state);
+	writeString_usart(&usartD0,text1);
+	
 	switch (rpLidar.state)
 	{
 		/* *********************** */
@@ -648,10 +625,9 @@ uint8_t rpLidar_Task()
 			/* reset receive buffer */
 			rpLidar.usart->RecIndexIn = 0;
 			rpLidar.usart->RecIndexOut = 0;
-			/* switch to START SCAN state */
-			rpLidar.state = RPLIDAR_START_SCAN_STATE;
-			return (DISABLE);
-			
+
+			SET_CYCLE(RPLIDAR_TASKNBR, 1000); //Check Health again if Timeout
+
 			break;
 		}
 		/* ************** */
@@ -661,6 +637,8 @@ uint8_t rpLidar_Task()
 		{
 			/* check health result */
 			/* when the health is GOOD -> start scanning */
+			sprintf(text1, "health: %u \r\n",rpLidar.health.status);
+			writeString_usart(&usartD0,text1);
 			if (rpLidar.health.status == RPLIDAR_HEALTH_GOOD)
 			{
 				#ifdef _DEBUG_LIDAR_
@@ -669,11 +647,10 @@ uint8_t rpLidar_Task()
 				#endif
 				/* start scanning */
 				rpLidar_sendRequest(&rpLidar, RPLIDAR_SCAN);
-				/* set next state (RESET STATE) - occurs only if timeout happens */
-				rpLidar.state = RPLIDAR_RESET_STATE;
-				/* set first timeout to 5000 ms, so the LIDAR can startup and
-				stabilize the motor rotation */
-				SET_CYCLE(RPLIDAR_TASKNBR, 5000);
+				/* set next state (HEALTH STATE) - occurs only if timeout happens */
+				rpLidar.state = RPLIDAR_CHECK_HEALTH_STATE;
+
+				SET_CYCLE(RPLIDAR_TASKNBR, 1000);
 				return (CYCLE);
 			}
 			/* else -> reset laser */
@@ -686,8 +663,8 @@ uint8_t rpLidar_Task()
 			break;
 		}
 		/* ****************************************************************** */
-		/* reset LIDAR - this state is active during scanning and is executed */
-		/*   after a timeout                                                  */
+		/* reset LIDAR														  */
+		/*					                                                  */
 		/* ****************************************************************** */
 		case RPLIDAR_RESET_STATE:
 		{

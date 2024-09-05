@@ -29,7 +29,7 @@
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <EraseKey />
     <avrtool>com.atmel.avrdbg.tool.ispmk2</avrtool>
-    <avrtoolserialnumber>000200116616</avrtoolserialnumber>
+    <avrtoolserialnumber>000200048954</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x1E9847</avrdeviceexpectedsignature>
     <avrtoolinterface>PDI</avrtoolinterface>
     <com_atmel_avrdbg_tool_atmelice>
@@ -74,7 +74,7 @@
         <InterfaceName>PDI</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
-      <ToolNumber>000200116616</ToolNumber>
+      <ToolNumber>000200048954</ToolNumber>
       <ToolName>AVRISP mkII</ToolName>
     </com_atmel_avrdbg_tool_ispmk2>
   </PropertyGroup>
@@ -308,10 +308,17 @@
     <Compile Include="Tasks\debug.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Time\TimeCount.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Time\TimeCount.c">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="HAL" />
     <Folder Include="header" />
+    <Folder Include="Time" />
     <Folder Include="obstacle" />
     <Folder Include="RRTLAN" />
     <Folder Include="Tasks" />

@@ -87,7 +87,7 @@
 #define RPLIDAR_HEALTH_ERROR	2
 
 /* converts the measured angle from RPLIDAR to real */
-#define RPLIDAR_CONV_ANGLE(a) (45.0 - (a))//(360.0 - (a) + 45.0)
+#define RPLIDAR_CONV_ANGLE(a) (-a)	// ((45.0 - (a)))
 
 
 /*!< Info structure */
@@ -134,6 +134,8 @@ typedef struct
 	/*!< Measured object distance related to RPLIDAR’s rotation center. In millimeter (mm) 
 	     unit. Represents using fix point. Set to 0 when the measurement is invalid. */
 	float distance;
+	uint8_t startFlag;
+	
 } rpLidar_Scan_t;
 
 

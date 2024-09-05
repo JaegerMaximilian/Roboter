@@ -118,9 +118,9 @@ uint8_t usartc0_init(uint16_t sizeRecBuf, uint16_t sizeTransBuf)
 	
 #ifdef _RPLIDAR_A2_M8
  	/* 115200 Baud */
- 	USARTC0.BAUDCTRLA=0x2E;
+ 	USARTC0.BAUDCTRLA=0x80;
  	/* CTRLB: BSCALE[3:0]:BSEL[11:8] */
- 	USARTC0.BAUDCTRLB=0x98;
+ 	USARTC0.BAUDCTRLB=0x90;
 #else
 	bsel =  109;//16 * ((F_MCU / 4096000L) - 1);
 	USARTC0.BAUDCTRLA =(uint8_t)bsel;
